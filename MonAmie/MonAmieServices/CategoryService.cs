@@ -7,6 +7,17 @@ namespace MonAmieServices
 {
     public class CategoryService : ICategoryService
     {
+        private MonAmieContext _context;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        public CategoryService(MonAmieContext context)
+        {
+            _context = context;
+        }
+
         /// <summary>
         /// Add a new category to the database
         /// </summary>
