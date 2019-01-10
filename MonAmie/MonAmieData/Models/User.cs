@@ -15,6 +15,6 @@ namespace MonAmieData.Models
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
         public DateTime CreationDate { get; set; }
-        public DateTime LastLoginDate { get; set; }
+        public DateTime? LastLoginDate { get; set; }
     }
 }
