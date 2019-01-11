@@ -30,8 +30,9 @@ namespace MonAmieData.Interfaces
         /// Get a user's full name
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="lastInitial"></param>
         /// <returns></returns>
-        string GetFullName(int userId);
+        string GetFullName(int userId, bool lastInitial);
 
         /// <summary>
         /// Get a user's first name

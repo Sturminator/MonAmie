@@ -84,11 +84,13 @@ namespace MonAmieServices
         /// Get a user's full name
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="lastInitial"></param>
         /// <returns></returns>
-        public string GetFullName(int userId)
+        public string GetFullName(int userId, bool lastInitial)
         {
             User user = GetById(userId);
-            return string.Format("{0} {1}", user.FirstName, user.LastName);
+
+            return lastInitial ? string.Format("{0} {1}", user.FirstName, user.LastName[0]) : string.Format("{0} {1}", user.FirstName, user.LastName);
         }
 
         /// <summary>
