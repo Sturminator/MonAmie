@@ -1,7 +1,9 @@
-﻿using MonAmieData;
+﻿using Microsoft.EntityFrameworkCore;
+using MonAmieData;
 using MonAmieData.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MonAmieServices
 {
@@ -21,19 +23,20 @@ namespace MonAmieServices
         /// <summary>
         /// Add a new category to the database
         /// </summary>
-        /// <param name="newCategory"></param>
-        public void Add(Category newCategory)
+        /// <param name="category"></param>
+        public void AddCategory(Category category)
         {
-            throw new NotImplementedException();
+            _context.Add(category);
+            _context.SaveChanges();
         }
 
         /// <summary>
         /// Get all categories stored in the database
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Category> GetAll()
+        public IEnumerable<Category> GetAllCategories()
         {
-            throw new NotImplementedException();
+            return _context.Category;
         }
 
         /// <summary>
@@ -43,8 +46,8 @@ namespace MonAmieServices
         /// <returns></returns>
         public Category GetById(int categoryId)
         {
-            throw new NotImplementedException();
-        }
+            return _context.Category.FirstOrDefault(cat => cat.CategoryId == categoryId);
+        }   
 
         /// <summary>
         /// Get whether a category can be used for events
@@ -53,7 +56,7 @@ namespace MonAmieServices
         /// <returns></returns>
         public bool GetCanEvent(int categoryId)
         {
-            throw new NotImplementedException();
+            return GetById(categoryId).CanEvent;
         }
 
         /// <summary>
@@ -63,7 +66,7 @@ namespace MonAmieServices
         /// <returns></returns>
         public bool GetCanGroup(int categoryId)
         {
-            throw new NotImplementedException();
+            return GetById(categoryId).CanGroup;
         }
 
         /// <summary>
@@ -73,7 +76,7 @@ namespace MonAmieServices
         /// <returns></returns>
         public bool GetCanInterest(int categoryId)
         {
-            throw new NotImplementedException();
+            return GetById(categoryId).CanInterest;
         }
 
         /// <summary>
@@ -83,7 +86,7 @@ namespace MonAmieServices
         /// <returns></returns>
         public string GetCategoryName(int categoryId)
         {
-            throw new NotImplementedException();
+            return GetById(categoryId).CategoryName;
         }
     }
 }

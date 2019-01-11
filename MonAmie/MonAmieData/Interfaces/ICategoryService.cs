@@ -11,7 +11,7 @@ namespace MonAmieData
         /// Get all categories stored in the database
         /// </summary>
         /// <returns></returns>
-        IEnumerable<Category> GetAll();
+        IEnumerable<Category> GetAllCategories();
 
         /// <summary>
         /// Get a category by its id
@@ -23,8 +23,8 @@ namespace MonAmieData
         /// <summary>
         /// Add a new category to the database
         /// </summary>
-        /// <param name="newCategory"></param>
-        void Add(Category newCategory);
+        /// <param name="category"></param>
+        void AddCategory(Category category);
 
         /// <summary>
         /// Get a category's name
