@@ -72,7 +72,8 @@ namespace MonAmieData.Migrations
                     GroupId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     GroupName = table.Column<string>(type: "varchar(255)", nullable: false),
-                    CategoryId = table.Column<int>(nullable: false)
+                    CategoryId = table.Column<int>(nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "smalldatetime", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -126,6 +127,33 @@ namespace MonAmieData.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "GroupHasUser",
+                columns: table => new
+                {
+                    GroupHasUserId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    GroupId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
+                    JoinDate = table.Column<DateTime>(type: "smalldatetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupHasUser", x => x.GroupHasUserId);
+                    table.ForeignKey(
+                        name: "FK_GroupHasUser_Group_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Group",
+                        principalColumn: "GroupId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupHasUser_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Event_CategoryId",
                 table: "Event",
@@ -135,6 +163,16 @@ namespace MonAmieData.Migrations
                 name: "IX_Group_CategoryId",
                 table: "Group",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupHasUser_GroupId",
+                table: "GroupHasUser",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupHasUser_UserId",
+                table: "GroupHasUser",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Interest_CategoryId",
@@ -153,7 +191,7 @@ namespace MonAmieData.Migrations
                 name: "Event");
 
             migrationBuilder.DropTable(
-                name: "Group");
+                name: "GroupHasUser");
 
             migrationBuilder.DropTable(
                 name: "Interest");
@@ -162,10 +200,13 @@ namespace MonAmieData.Migrations
                 name: "UserAddress");
 
             migrationBuilder.DropTable(
-                name: "Category");
+                name: "Group");
 
             migrationBuilder.DropTable(
                 name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Category");
         }
     }
 }

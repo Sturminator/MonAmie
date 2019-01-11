@@ -10,8 +10,8 @@ using MonAmieData;
 namespace MonAmieData.Migrations
 {
     [DbContext(typeof(MonAmieContext))]
-    [Migration("20190110084422_Add Initial Entity Models")]
-    partial class AddInitialEntityModels
+    [Migration("20190111050206_Add Tag & GroupHasTag Tables")]
+    partial class AddTagGroupHasTagTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -69,6 +69,9 @@ namespace MonAmieData.Migrations
 
                     b.Property<int>("CategoryId");
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("smalldatetime");
+
                     b.Property<string>("GroupName")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
@@ -78,6 +81,47 @@ namespace MonAmieData.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Group");
+                });
+
+            modelBuilder.Entity("MonAmieData.Models.GroupHasTag", b =>
+                {
+                    b.Property<int>("GroupHasTagId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("GroupId");
+
+                    b.Property<int>("TagId");
+
+                    b.HasKey("GroupHasTagId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("GroupHasTag");
+                });
+
+            modelBuilder.Entity("MonAmieData.Models.GroupHasUser", b =>
+                {
+                    b.Property<int>("GroupHasUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("GroupId");
+
+                    b.Property<DateTime>("JoinDate")
+                        .HasColumnType("smalldatetime");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("GroupHasUserId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("GroupHasUser");
                 });
 
             modelBuilder.Entity("MonAmieData.Models.Interest", b =>
@@ -97,6 +141,21 @@ namespace MonAmieData.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Interest");
+                });
+
+            modelBuilder.Entity("MonAmieData.Models.Tag", b =>
+                {
+                    b.Property<int>("TagId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("TagName")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("TagId");
+
+                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("MonAmieData.Models.User", b =>
@@ -179,6 +238,32 @@ namespace MonAmieData.Migrations
                     b.HasOne("MonAmieData.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MonAmieData.Models.GroupHasTag", b =>
+                {
+                    b.HasOne("MonAmieData.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MonAmieData.Models.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MonAmieData.Models.GroupHasUser", b =>
+                {
+                    b.HasOne("MonAmieData.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MonAmieData.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
