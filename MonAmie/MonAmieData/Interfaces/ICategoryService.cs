@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MonAmieData
+namespace MonAmieData.Interfaces
 {
     public interface ICategoryService
     {
