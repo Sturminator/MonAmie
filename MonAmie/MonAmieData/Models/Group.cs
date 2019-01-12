@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MonAmieData.Models
@@ -16,5 +17,9 @@ namespace MonAmieData.Models
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+
+        [Required]
+        [Column(TypeName = "smalldatetime")]
+        public DateTime CreationDate { get; set; }
     }
 }

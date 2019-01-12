@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonAmieData", "MonAmieData\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonAmieServices", "MonAmieServices\MonAmieServices.csproj", "{12F5AC35-E5FF-4737-A283-EDB02A799676}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonAmieTests", "MonAmieTests\MonAmieTests.csproj", "{03C8C9CF-B7B8-43A7-8F8A-28EE38BB9350}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonAmieTests", "MonAmieTests\MonAmieTests.csproj", "{03C8C9CF-B7B8-43A7-8F8A-28EE38BB9350}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

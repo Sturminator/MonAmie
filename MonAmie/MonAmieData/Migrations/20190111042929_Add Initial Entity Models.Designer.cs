@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MonAmieData;
 
 namespace MonAmieData.Migrations
 {
     [DbContext(typeof(MonAmieContext))]
-    partial class MonAmieContextModelSnapshot : ModelSnapshot
+    [Migration("20190111042929_Add Initial Entity Models")]
+    partial class AddInitialEntityModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,25 +83,6 @@ namespace MonAmieData.Migrations
                     b.ToTable("Group");
                 });
 
-            modelBuilder.Entity("MonAmieData.Models.GroupHasTag", b =>
-                {
-                    b.Property<int>("GroupHasTagId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("GroupId");
-
-                    b.Property<int>("TagId");
-
-                    b.HasKey("GroupHasTagId");
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("GroupHasTag");
-                });
-
             modelBuilder.Entity("MonAmieData.Models.GroupHasUser", b =>
                 {
                     b.Property<int>("GroupHasUserId")
@@ -139,21 +122,6 @@ namespace MonAmieData.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Interest");
-                });
-
-            modelBuilder.Entity("MonAmieData.Models.Tag", b =>
-                {
-                    b.Property<int>("TagId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("TagName")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("TagId");
-
-                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("MonAmieData.Models.User", b =>
@@ -236,19 +204,6 @@ namespace MonAmieData.Migrations
                     b.HasOne("MonAmieData.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("MonAmieData.Models.GroupHasTag", b =>
-                {
-                    b.HasOne("MonAmieData.Models.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("MonAmieData.Models.Tag", "Tag")
-                        .WithMany()
-                        .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

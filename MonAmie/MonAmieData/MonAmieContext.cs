@@ -13,5 +13,8 @@ namespace MonAmieData
         public DbSet<Interest> Interest { get; set; }
         public DbSet<Group> Group { get; set; }
         public DbSet<Event> Event { get; set; }
+        public DbSet<Tag> Tag { get; set; }
+        public DbSet<GroupHasUser> GroupHasUser { get; set; }
+        public DbSet<GroupHasTag> GroupHasTag { get; set; }
     }
 }
