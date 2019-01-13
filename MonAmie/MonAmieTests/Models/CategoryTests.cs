@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MonAmieData.Models;
+using MonAmieData.Interfaces;
 
 namespace MonAmieTests
 {
@@ -17,6 +18,7 @@ namespace MonAmieTests
                 CanGroup = true,
                 CanInterest = true
             };
+
             Assert.AreEqual("Sports", category.CategoryName);
         }
     }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonAmie.Controllers
 {
+    [Route("api/[controller]")]
     public class CategoryController : Controller
     {
         private ICategoryService _categories;
@@ -17,7 +18,8 @@ namespace MonAmie.Controllers
             _categories = categories;
         }
 
-        public IActionResult Index()
+        [HttpGet("[action]")]
+        public IEnumerable<CategoryViewModel> GetAll()
         {
             var categoryModels = _categories.GetAllCategories();
 
@@ -30,7 +32,7 @@ namespace MonAmie.Controllers
                 CanEvent = result.CanEvent
             });
 
-            return View(results.ToList());
+            return results.ToList();
         }
     }
 }
