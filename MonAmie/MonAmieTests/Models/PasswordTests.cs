@@ -17,7 +17,7 @@ namespace MonAmieTests.Models
         {
             IPasswordService ps = new PasswordService();
 
-            string salt = ps.CreateSalt(10);
+            string salt = ps.CreateSalt(16);
 
             Assert.IsNotNull(salt);
         }
@@ -27,7 +27,7 @@ namespace MonAmieTests.Models
         {
             IPasswordService ps = new PasswordService();
 
-            string salt = ps.CreateSalt(10);
+            string salt = ps.CreateSalt(16);
             string pwd = "Admin123";
 
             string hashedPwd = ps.GenerateSHA256Hash(pwd, salt);
@@ -43,8 +43,8 @@ namespace MonAmieTests.Models
         {
             IPasswordService ps = new PasswordService();
 
-            string salt = ps.CreateSalt(10);
-            string salt2 = ps.CreateSalt(10);
+            string salt = ps.CreateSalt(16);
+            string salt2 = ps.CreateSalt(16);
             string pwd = "Admin123";
 
             string hashedPwd = ps.GenerateSHA256Hash(pwd, salt);
@@ -60,7 +60,7 @@ namespace MonAmieTests.Models
         {
             IPasswordService ps = new PasswordService();
 
-            string salt = ps.CreateSalt(10);
+            string salt = ps.CreateSalt(16);
             string pwd = "Admin123";
             string pwd2 = "123Admin";
 

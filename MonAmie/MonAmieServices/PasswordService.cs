@@ -1,10 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MonAmieData;
-using MonAmieData.Interfaces;
-using MonAmieData.Models;
+﻿using MonAmieData.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace MonAmieServices

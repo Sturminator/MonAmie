@@ -7,7 +7,7 @@ using MonAmieData;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MonAmieTests
+namespace MonAmieTests.Models
 {
     [TestClass]
     public class CategoryTests

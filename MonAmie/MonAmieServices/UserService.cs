@@ -12,6 +12,11 @@ namespace MonAmieServices
     {
         private MonAmieContext _context;
 
+        public UserService()
+        {
+
+        }
+
         /// <summary>
         /// 
         /// </summary>
