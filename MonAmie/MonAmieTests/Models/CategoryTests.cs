@@ -25,6 +25,7 @@ namespace MonAmieTests
                 CanInterest = true
             };
 
+            Assert.IsNotNull(category);
             Assert.AreEqual("Sports", category.CategoryName);
         }
 
