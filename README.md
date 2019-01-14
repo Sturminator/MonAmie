@@ -43,7 +43,7 @@ Table of Contents
 
 
 
-        Introduction
+# Introduction
 
 **1.1 Purpose**
 	The Mon Amie application is a friend finding software that will allow people of all demographics and backgrounds to connect with other individuals in their area with shared interests. Mon Amie will allow for peer-to-peer connectivity as well as group and event based functionality.
@@ -73,7 +73,7 @@ Event Planning
 
 
 
-   User Classes and Characteristics
+# User Classes and Characteristics
 User
 Frequent use of the application, most software features are designed around user interaction.
 Organization/Team/Group
@@ -105,7 +105,7 @@ Facebook integration is also planned mainly as a way to allow facebook users a f
 **2.7   Assumptions and Dependencies**
  	Mon Amie will rely initially on at least two 3rd party APIs. A messaging API that will handle security and message storage for the app as well as the Facebook API to allow for users to integrate their Facebook account with the app. Due to the team’s lack of experience with Android (and mobile) development, it would be ideal that the development of a web-based version of the app is completed first. Since we plan to only develop an Android version of Mon Amie and not an IOS version, no issues should surface with the product due to the operating environment.
 
-   	External Interface Requirements
+# External Interface Requirements
 
 **3.1   User Interfaces**
 	
@@ -159,7 +159,7 @@ Messaging will use a third party software. This software will handle communicati
 **3.4.3 Server**
 The server will handle the communication between the application and the databases. The server will also handle any communication not covered by the third party messaging service.
  
-  	System Features
+# System Features
 
 **4.1   Profile Creation/Customization**
 
@@ -242,7 +242,7 @@ Once users have rsvp’d they are able to chat with others who have also rsvp’
 	REQ-1: A database table to store events. Possibly 2 seperate tables for upcoming events and past events. 
 	REQ-2: Similar algorithm used for finding groups and friends that suggests events based on a user’s interests/hobbies as well as the groups they belong to.
  
-  	Other Nonfunctional Requirements
+# Other Nonfunctional Requirements
 
 **5.1   Performance Requirements**
 	All functionality and tasks should perform at a reasonable speed. Sign up process should be flexible and allow users to either sign up and get right into finding friends, or fill out their profile more delicately to allow for more accurate friend/group/event suggestions. No part of the app should result in excessive loading whether it be loading users from our sql database or stored messages through the 3rd party API. Users should be able to easily flow throughout the product’s layout due to a design that is intuitive and minimal, while still conveying all necessary information.
@@ -259,7 +259,8 @@ The goal with this software is for it to be easily maintainable and reusable. In
 **5.5   Business Rules**
 The users and groups will only be able to create an account and access the user interface and general functionality of the application. Administrator roles will be able to remove accounts that appear to be spam or violating site policies as well as provide user support and take in user suggestions.
  
-  	Other Requirements
+# Other Requirements
+
 Mon Amie requires a hosting server in order to operate its databases. A paid subscription to another third-party chat service is also required in order for chat operations.
 
 
