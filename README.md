@@ -57,7 +57,7 @@ This document is intended for developers and project managers, such that they ha
 **1.4   Product Scope**
 	The Scope of this product is to make finding people to do stuff with easily accessible by all ages. The main goal we’re trying to achieve is that those individuals who have had their friends move on, and those individuals who might be new to or visiting an area, can connect with others in that area that they may have otherwise never met.
 
-   	Overall Description
+# Overall Description
 
 **2.1   Product Perspective**
 	The Mon Amie application is a new self-contained product. This software may be expanded upon in the future to provide new features and services. Outside of 3rd party systems, all functionality present in the application will be newly created. 
