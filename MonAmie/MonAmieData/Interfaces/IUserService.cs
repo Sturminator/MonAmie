@@ -61,5 +61,6 @@ namespace MonAmieData.Interfaces
         /// <param name="userId"></param>
         /// <returns></returns>
         string GetEmail(int userId);
+
     }
 }
