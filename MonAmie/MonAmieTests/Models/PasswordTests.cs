@@ -71,5 +71,26 @@ namespace MonAmieTests.Models
             Assert.IsNotNull(hashedPwd2);
             Assert.AreNotEqual(hashedPwd, hashedPwd2);
         }
+
+        [DataTestMethod]
+        public void LoginValidation()
+        {
+            var dbOptionsBuilder = new DbContextOptionsBuilder().UseSqlServer("Data Source=SQL5006.site4now.net;Initial Catalog=DB_A38FB2_MonAmie;User Id=DB_A38FB2_MonAmie_admin;Password=Raeder130583;");
+
+            var db = new MonAmieContext(dbOptionsBuilder.Options);
+
+            IUserService us = new UserService(db);
+
+            User user = us.GetByEmail("johnsmith@gmail.com");
+
+            IPasswordService ps = new PasswordService();
+            string pwdEntered = "Jsmith123";
+            string hashedPwd = ps.GenerateSHA256Hash(pwdEntered, user.PasswordSalt);
+
+            Assert.IsNotNull(user);
+            Assert.AreEqual("John", user.FirstName);
+            Assert.AreEqual("Smith", user.LastName);
+            Assert.AreEqual(hashedPwd, user.PasswordHash);
+        }
     }
 }

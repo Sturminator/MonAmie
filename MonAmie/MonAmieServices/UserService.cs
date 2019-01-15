@@ -66,6 +66,17 @@ namespace MonAmieServices
         }
 
         /// <summary>
+        /// Get a user by its email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public User GetByEmail(string email)
+        {
+            return _context.User.FirstOrDefault(u => u.Email == email);
+
+        }
+
+        /// <summary>
         /// Get a user's email
         /// </summary>
         /// <param name="userId"></param>

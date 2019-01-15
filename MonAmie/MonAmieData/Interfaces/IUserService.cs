@@ -21,6 +21,13 @@ namespace MonAmieData.Interfaces
         User GetById(int userId);
 
         /// <summary>
+        /// Get a user by its email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        User GetByEmail(string email);
+
+        /// <summary>
         /// Add a new user to the database
         /// </summary>
         /// <param name="user"></param>
