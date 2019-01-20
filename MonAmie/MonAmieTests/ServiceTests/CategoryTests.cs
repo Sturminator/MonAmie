@@ -7,14 +7,12 @@ using MonAmieData;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MonAmieTests.Models
+namespace MonAmieTests.ServiceTests
 {
     [TestClass]
     public class CategoryTests
     {
-
-        [TestMethod]
-        public void AddCategory()
+        public Category CreateCategory()
         {   
             Category category = new Category()
             {
@@ -25,18 +23,22 @@ namespace MonAmieTests.Models
                 CanInterest = true
             };
 
-            Assert.IsNotNull(category);
-            Assert.AreEqual("Sports", category.CategoryName);
+            return category;
         }
 
-        [DataTestMethod]
+        [TestMethod]
         public void GetCategories()
         {
-            var dbOptionsBuilder = new DbContextOptionsBuilder().UseSqlServer("Data Source=SQL5006.site4now.net;Initial Catalog=DB_A38FB2_MonAmie;User Id=DB_A38FB2_MonAmie_admin;Password=Raeder130583;");
+            var dbOptionsBuilder = new DbContextOptionsBuilder<MonAmieContext>()
+                .UseInMemoryDatabase(databaseName: "GetCategories");
 
             var db = new MonAmieContext(dbOptionsBuilder.Options);
 
             ICategoryService cs = new CategoryService(db);
+
+            Category category = CreateCategory();
+
+            cs.AddCategory(category);
 
             IEnumerable<Category> categories = cs.GetAllCategories().ToList();
 

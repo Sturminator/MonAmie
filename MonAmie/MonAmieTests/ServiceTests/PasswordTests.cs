@@ -4,14 +4,33 @@ using MonAmieData.Models;
 using MonAmieData.Interfaces;
 using MonAmieServices;
 using MonAmieData;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.Data.Sqlite;
+using System;
 
-namespace MonAmieTests.Models
+namespace MonAmieTests.ServiceTests
 {
     [TestClass]
     public class PasswordTests
     {
+        public User CreateUser(string hashedPwd, string salt)
+        {
+            User user = new User()
+            {
+                UserId = 1,
+                FirstName = "John",
+                LastName = "Smith",
+                BirthDate = DateTime.Now.AddYears(-21),
+                Email = "johnsmith@gmail.com",
+                PhoneNumber = "5423415923",
+                PasswordHash = hashedPwd,
+                PasswordSalt = salt,
+                CreationDate = DateTime.Now,
+                LastLoginDate = DateTime.Now
+            };
+
+            return user;
+        }
+
         [TestMethod]
         public void CreateSalt()
         {
@@ -72,25 +91,34 @@ namespace MonAmieTests.Models
             Assert.AreNotEqual(hashedPwd, hashedPwd2);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         public void LoginValidation()
         {
-            var dbOptionsBuilder = new DbContextOptionsBuilder().UseSqlServer("Data Source=SQL5006.site4now.net;Initial Catalog=DB_A38FB2_MonAmie;User Id=DB_A38FB2_MonAmie_admin;Password=Raeder130583;");
+            var dbOptionsBuilder = new DbContextOptionsBuilder<MonAmieContext>()
+                .UseInMemoryDatabase(databaseName: "LoginValidation");
 
             var db = new MonAmieContext(dbOptionsBuilder.Options);
 
             IUserService us = new UserService(db);
-
-            User user = us.GetByEmail("johnsmith@gmail.com");
-
             IPasswordService ps = new PasswordService();
-            string pwdEntered = "Jsmith123";
-            string hashedPwd = ps.GenerateSHA256Hash(pwdEntered, user.PasswordSalt);
 
-            Assert.IsNotNull(user);
-            Assert.AreEqual("John", user.FirstName);
-            Assert.AreEqual("Smith", user.LastName);
-            Assert.AreEqual(hashedPwd, user.PasswordHash);
+            string salt = ps.CreateSalt(16);
+            string pwd = "Jsmith123";
+            string hashedPwd = ps.GenerateSHA256Hash(pwd, salt);
+
+            User user = CreateUser(hashedPwd, salt);
+
+            us.AddUser(user);
+
+            User returnedUser = us.GetByEmail("johnsmith@gmail.com");
+
+            string pwdEntered = "Jsmith123";
+            string returnedHashedPwd = ps.GenerateSHA256Hash(pwdEntered, returnedUser.PasswordSalt);
+
+            Assert.IsNotNull(returnedUser);
+            Assert.AreEqual("John", returnedUser.FirstName);
+            Assert.AreEqual("Smith", returnedUser.LastName);
+            Assert.AreEqual(returnedHashedPwd, returnedUser.PasswordHash);
         }
     }
 }

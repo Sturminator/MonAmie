@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace MonAmieTests.Models
+namespace MonAmieTests.ServiceTests
 {
     [TestClass]
     public class UserTests

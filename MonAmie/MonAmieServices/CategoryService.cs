@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MonAmieData;
+﻿using MonAmieData;
 using MonAmieData.Interfaces;
 using MonAmieData.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,7 +33,17 @@ namespace MonAmieServices
         /// <param name="category"></param>
         public void AddCategory(Category category)
         {
-            _context.Add(category);
+            _context.Category.Add(category);
+            _context.SaveChanges();
+        }
+
+        /// <summary>
+        /// Deletes a category from the database
+        /// </summary>
+        /// <param name="category"></param>
+        public void DeleteCategory(Category category)
+        {
+            _context.Category.Remove(category);
             _context.SaveChanges();
         }
 
@@ -46,6 +54,33 @@ namespace MonAmieServices
         public IEnumerable<Category> GetAllCategories()
         {
             return _context.Category;
+        }
+
+        /// <summary>
+        /// Get all categories stored in the database that can be used for events
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Category> GetEventCategories()
+        {
+            return GetAllCategories().Where(cat => cat.CanEvent);
+        }
+
+        /// <summary>
+        /// Get all categories stored in the database that can be used for groups
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Category> GetGroupCategories()
+        {
+            return GetAllCategories().Where(cat => cat.CanGroup);
+        }
+
+        /// <summary>
+        /// Get all categories stored in the database that can be used for interests
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Category> GetInterestCategories()
+        {
+            return GetAllCategories().Where(cat => cat.CanInterest);
         }
 
         /// <summary>
