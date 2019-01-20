@@ -12,6 +12,11 @@ namespace MonAmieServices
     {
         private MonAmieContext _context;
 
+        public UserService()
+        {
+
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -58,6 +63,17 @@ namespace MonAmieServices
         public User GetById(int userId)
         {
             return _context.User.FirstOrDefault(u => u.UserId == userId);
+        }
+
+        /// <summary>
+        /// Get a user by its email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public User GetByEmail(string email)
+        {
+            return _context.User.FirstOrDefault(u => u.Email == email);
+
         }
 
         /// <summary>

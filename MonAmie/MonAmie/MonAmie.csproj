@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MonAmieData\MonAmieData.csproj" />
+    <ProjectReference Include="..\MonAmieServices\MonAmieServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>

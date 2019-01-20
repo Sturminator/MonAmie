@@ -15,6 +15,14 @@ namespace MonAmieServices
         /// <summary>
         /// 
         /// </summary>
+        public CategoryService()
+        {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="context"></param>
         public CategoryService(MonAmieContext context)
         {
