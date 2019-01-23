@@ -38,13 +38,33 @@ namespace MonAmieServices
         }
 
         /// <summary>
+        /// Updates an existing category in the database
+        /// </summary>
+        /// <param name="category"></param>
+        public void UpdateCategory(Category category)
+        {
+            var entity = _context.Category.FirstOrDefault(c => c.CategoryId == category.CategoryId);
+
+            if(entity != null)
+            {
+                _context.Category.Update(category);
+                _context.SaveChanges();
+            }
+        }
+
+        /// <summary>
         /// Deletes a category from the database
         /// </summary>
         /// <param name="category"></param>
         public void DeleteCategory(Category category)
         {
-            _context.Category.Remove(category);
-            _context.SaveChanges();
+            var entity = _context.Category.FirstOrDefault(c => c.CategoryId == category.CategoryId);
+
+            if(entity != null)
+            {
+                _context.Category.Remove(category);
+                _context.SaveChanges();
+            }
         }
 
         /// <summary>

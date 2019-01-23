@@ -45,6 +45,12 @@ namespace MonAmieData.Interfaces
         void AddCategory(Category category);
 
         /// <summary>
+        /// Updates an existing category in the database
+        /// </summary>
+        /// <param name="category"></param>
+        void UpdateCategory(Category category);
+
+        /// <summary>
         /// Deletes a category from the database
         /// </summary>
         /// <param name="category"></param>
