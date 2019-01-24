@@ -24,9 +24,9 @@ namespace MonAmie.Controllers
         [HttpGet("[action]")]
         public IEnumerable<CategoryViewModel> GetAll()
         {
-            var categoryModels = _categories.GetAllCategories();
+            var categories = _categories.GetAllCategories();
 
-            var results = categoryModels.Select(result => new CategoryViewModel
+            var results = categories.Select(result => new CategoryViewModel
             {
                 CategoryId = result.CategoryId,
                 CategoryName = result.CategoryName,
@@ -39,9 +39,18 @@ namespace MonAmie.Controllers
         }
 
         [HttpGet("[action]")]
-        public Category Get(int id)
+        public CategoryViewModel Get(int id)
         {
-            return _categories.GetById(id);
+            var category = _categories.GetById(id);
+
+            return new CategoryViewModel
+            {
+                CategoryId = category.CategoryId,
+                CategoryName = category.CategoryName,
+                CanInterest = category.CanInterest,
+                CanGroup = category.CanGroup,
+                CanEvent = category.CanEvent
+            };
         }
 
         [HttpPost("[action]")]

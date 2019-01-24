@@ -33,8 +33,13 @@ namespace MonAmieServices
         /// <param name="category"></param>
         public void AddCategory(Category category)
         {
-            _context.Category.Add(category);
-            _context.SaveChanges();
+            var entity = _context.Category.FirstOrDefault(c => c.CategoryName == category.CategoryName);
+
+            if(entity == null)
+            {
+                _context.Category.Add(category);
+                _context.SaveChanges();
+            }
         }
 
         /// <summary>
