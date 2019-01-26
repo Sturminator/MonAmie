@@ -22,8 +22,9 @@ export class Login extends Component {
         });
     }
 
-    handleSubmit = event => {
+    handleSubmit = event => {    
         event.preventDefault();
+        console.log('You clicked Submit.');
     }
 
     render() {

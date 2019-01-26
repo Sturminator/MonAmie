@@ -11,7 +11,6 @@ using MonAmieData.Models;
 
 namespace MonAmie.Controllers
 {
-    [Route("api/[controller]")]
     public class CategoryController : Controller
     {
         private ICategoryService _categories;
@@ -21,7 +20,8 @@ namespace MonAmie.Controllers
             _categories = categories;
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
+        [Route("api/Category/GetAll")]
         public IEnumerable<CategoryViewModel> GetAll()
         {
             var categories = _categories.GetAllCategories();
@@ -38,7 +38,8 @@ namespace MonAmie.Controllers
             return results.ToList();
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
+        [Route("api/Category/Get/{id}")]
         public CategoryViewModel Get(int id)
         {
             var category = _categories.GetById(id);
@@ -53,19 +54,22 @@ namespace MonAmie.Controllers
             };
         }
 
-        [HttpPost("[action]")]
+        [HttpPost]
+        [Route("api/Category/Add")]
         public void Add(Category category)
         {
             _categories.AddCategory(category);
         }
 
-        [HttpPut("[action]")]
+        [HttpPut]
+        [Route("api/Category/Edit")]
         public void Update(Category category)
         {
             _categories.UpdateCategory(category);
         }
 
-        [HttpDelete("[action]")]
+        [HttpDelete]
+        [Route("api/Category/Delete")]
         public void Delete(Category category)
         {
             _categories.DeleteCategory(category);

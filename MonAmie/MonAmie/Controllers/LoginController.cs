@@ -11,7 +11,6 @@ using MonAmieData.Models;
 
 namespace MonAmie.Controllers
 {
-    [Route("api/[controller]")]
     public class LoginController : Controller
     {
         private IUserService _users;
@@ -23,7 +22,8 @@ namespace MonAmie.Controllers
             _passwords = passwords;
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
+        [Route("api/Login/ValidateUser")]
         public bool ValidateUser(string emailInput, string passwordInput)
         {
             var user = _users.GetByEmail(emailInput);
