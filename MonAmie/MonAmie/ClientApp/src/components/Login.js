@@ -1,6 +1,6 @@
 ﻿import React, { Component } from "react"
-import { Redirect} from 'react-router-dom'
-import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap"
+import { Redirect } from 'react-router-dom'
+import { Button, FormGroup, FormControl, ControlLabel, Checkbox, ButtonToolbar } from "react-bootstrap"
 import "../css/Login.css"
 
 export class Login extends Component {
@@ -10,12 +10,14 @@ export class Login extends Component {
         this.state = {
             email: "",
             password: "",
+            rememberUser: false,
+            isLoading: false,
             validLogin: false
         };
     }
 
     validateForm() {
-        return this.state.email.length > 0 && this.state.password.length > 0;
+        return this.state.email.length > 0 && this.state.password.length > 8;
     }
 
     handleChange = event => {
@@ -26,6 +28,7 @@ export class Login extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
+        this.setState({ isLoading: true });
         fetch('api/Login/ValidateUser', {
             method: 'POST',
             headers: {
@@ -37,16 +40,19 @@ export class Login extends Component {
             })
         }).then(res => res.json())
             .then(data =>
-                this.setState({ validLogin: data.validLogin })
+                this.setState({ validLogin: data.validLogin, isLoading: data.validLogin })
             );
     }
 
     render() {
+        const { isLoading } = this.state;
+
         if (this.state.validLogin)
             return <Redirect to="/home" />
-        return (           
+        return (
             <div className="Login">
                 <form onSubmit={this.handleSubmit}>
+                    <h2 className="LoginTitle">User Login</h2>
                     <FormGroup controlId="email" bsSize="large">
                         <ControlLabel>Email</ControlLabel>
                         <FormControl
@@ -64,14 +70,23 @@ export class Login extends Component {
                             type="password"
                         />
                     </FormGroup>
+                    <Checkbox
+                        className="CheckBoxRemember"
+                        value={this.state.rememberUser}
+                        onChange={this.handleChange}
+                        id="RememberUserCheckBox"
+                    >Remember Me</Checkbox>
                     <Button
                         block
+                        disabled={isLoading}
+                        bsStyle="primary"
                         bsSize="large"
-                        disabled={!this.validateForm()}
                         type="submit"
-                    >
-                        Login
-          </Button>
+                    >{isLoading ? 'Logging In...' : 'Login'}</Button>
+                    <ButtonToolbar>
+                        <Button className="ForgotPasswordButton">Forgot Password?</Button>
+                        <Button className="CreateAccountButton">Create New Account</Button>
+                    </ButtonToolbar>
                 </form>
             </div>
         );

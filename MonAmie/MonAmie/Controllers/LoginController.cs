@@ -41,9 +41,6 @@ namespace MonAmie.Controllers
                     return Ok(new
                     {
                         Id = user.UserId,
-                        Email = user.Email,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
                         ValidLogin = true
                     });
             }

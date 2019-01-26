@@ -1,4 +1,20 @@
-﻿@media all and (min-width: 480px) {
+﻿.LoginTitle {
+    text-align: center;
+}
+
+.CheckBoxRemember {
+    font-weight: bold;
+}
+
+.ForgotPasswordButton {
+    margin-top: 10px;
+}
+
+.CreateAccountButton {
+    margin-top: 10px;
+}
+
+@media all and (min-width: 480px) {
     .Login {
         padding: 60px 0;
     }
