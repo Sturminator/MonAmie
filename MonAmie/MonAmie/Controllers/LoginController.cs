@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Web.Http;
-using System.Net.Http;
 using MonAmie.Models;
 using MonAmieData.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using MonAmieData.Models;
 
 namespace MonAmie.Controllers
@@ -22,10 +18,19 @@ namespace MonAmie.Controllers
             _passwords = passwords;
         }
 
-        [HttpGet]
-        [Route("api/Login/ValidateUser")]
-        public bool ValidateUser(string emailInput, string passwordInput)
+        public class LoginInfo
         {
+            public string Email { get; set; }
+            public string Password { get; set; }
+        }
+
+        [HttpPost]
+        [Route("api/Login/ValidateUser")]
+        public IActionResult ValidateUser([FromBody] LoginInfo login)
+        {
+            var emailInput = login.Email;
+            var passwordInput = login.Password;
+
             var user = _users.GetByEmail(emailInput);
 
             if(user != null)
@@ -33,10 +38,17 @@ namespace MonAmie.Controllers
                 var hashedPwdInput = _passwords.GenerateSHA256Hash(passwordInput, user.PasswordSalt);
 
                 if (hashedPwdInput == user.PasswordHash)
-                    return true;
+                    return Ok(new
+                    {
+                        Id = user.UserId,
+                        Email = user.Email,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        ValidLogin = true
+                    });
             }
 
-            return false;
+            return BadRequest(new { message = "Username or password is incorrect", ValidLogin = false });
         }
     }
 }

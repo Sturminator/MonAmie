@@ -1,4 +1,5 @@
-﻿import React, { Component } from "react";
+﻿import React, { Component } from "react"
+import { Redirect} from 'react-router-dom'
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap"
 import "../css/Login.css"
 
@@ -8,7 +9,8 @@ export class Login extends Component {
 
         this.state = {
             email: "",
-            password: ""
+            password: "",
+            validLogin: false
         };
     }
 
@@ -22,13 +24,27 @@ export class Login extends Component {
         });
     }
 
-    handleSubmit = event => {    
+    handleSubmit = event => {
         event.preventDefault();
-        console.log('You clicked Submit.');
+        fetch('api/Login/ValidateUser', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: this.state.email,
+                password: this.state.password
+            })
+        }).then(res => res.json())
+            .then(data =>
+                this.setState({ validLogin: data.validLogin })
+            );
     }
 
     render() {
-        return (
+        if (this.state.validLogin)
+            return <Redirect to="/home" />
+        return (           
             <div className="Login">
                 <form onSubmit={this.handleSubmit}>
                     <FormGroup controlId="email" bsSize="large">

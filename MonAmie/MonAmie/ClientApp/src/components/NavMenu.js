@@ -12,13 +12,13 @@ export class NavMenu extends Component {
       <Navbar inverse fixedTop fluid collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <Link to={'/'}>ReactTutorial</Link>
+            <Link to={'/home'}>ReactTutorial</Link>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            <LinkContainer to={'/'} exact>
+            <LinkContainer to={'/home'} exact>
               <NavItem>
                 <Glyphicon glyph='home' /> Home
               </NavItem>

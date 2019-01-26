@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Web.Http;
-using System.Net.Http;
 using MonAmie.Models;
 using MonAmieData.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using MonAmieData.Models;
 
 namespace MonAmie.Controllers

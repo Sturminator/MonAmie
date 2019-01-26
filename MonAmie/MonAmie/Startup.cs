@@ -25,6 +25,8 @@ namespace MonAmie
         {
             services.AddSingleton(Configuration);
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IPasswordService, PasswordService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
