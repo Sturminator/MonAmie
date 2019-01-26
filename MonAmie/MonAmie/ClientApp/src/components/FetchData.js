@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export class FetchData extends Component {
+export default class FetchData extends Component {
 
     static renderCategoriesTable(categories) {
         return (

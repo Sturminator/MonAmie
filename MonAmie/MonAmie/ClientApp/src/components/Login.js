@@ -3,9 +3,11 @@ import { Redirect } from 'react-router-dom'
 import { Button, FormGroup, FormControl, ControlLabel, Checkbox, ButtonToolbar } from "react-bootstrap"
 import "../css/Login.css"
 
-export class Login extends Component {
+export default class Login extends Component {
     constructor(props) {
         super(props);
+
+        this.routeChange = this.routeChange.bind(this);
 
         this.state = {
             email: "",
@@ -42,6 +44,11 @@ export class Login extends Component {
             .then(data =>
                 this.setState({ validLogin: data.validLogin, isLoading: data.validLogin })
             );
+    }
+
+    routeChange() {
+        var path = `/registration`;
+        this.props.history.push(path);
     }
 
     render() {
@@ -85,7 +92,7 @@ export class Login extends Component {
                     >{isLoading ? 'Logging In...' : 'Login'}</Button>
                     <ButtonToolbar>
                         <Button className="ForgotPasswordButton">Forgot Password?</Button>
-                        <Button className="CreateAccountButton">Create New Account</Button>
+                        <Button className="CreateAccountButton" onClick={this.routeChange} > Create New Account</Button>
                     </ButtonToolbar>
                 </form>
             </div>
