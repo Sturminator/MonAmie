@@ -16,6 +16,7 @@ export default class Registration extends Component {
             firstName: "",
             lastName: "",
             isLoading: false,
+            accountCreated: false,
             EmailTaken: true
         };
     }
@@ -52,12 +53,17 @@ export default class Registration extends Component {
                 password: this.state.password,
                 birthdate: this.state.birthdate.toJSON()
             })
-        });
+        }).then(res => res.json())
+            .then(data =>
+                this.setState({ accountCreated: data.accountCreated, isLoading: data.accountCreated })
+            );
     }
 
     render() {
         const { isLoading } = this.state;
 
+        if (this.state.accountCreated)
+            return <Redirect to="/" />
         return (
             <div className="Registration">
                 <form onSubmit={this.handleSubmit}>

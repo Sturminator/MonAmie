@@ -26,10 +26,6 @@ namespace MonAmieData.Models
         public string Email { get; set; }
 
         [Required]
-        [Column(TypeName = "varchar(25)")]
-        public string PhoneNumber { get; set; }
-
-        [Required]
         [Column(TypeName = "varchar(255)")]
         public string PasswordHash { get; set; }
 

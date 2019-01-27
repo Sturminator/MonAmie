@@ -79,10 +79,14 @@ namespace MonAmie.Controllers
                         CreationDate = DateTime.UtcNow,
                         LastLoginDate = DateTime.UtcNow
                     };
+
+                    _users.AddUser(user);
+
+                    return Ok(new { message = "Account successfully created", accountCreated = true });
                 }
             }
 
-            return BadRequest(new { message = "User already exists", UserTaken = true });
+            return BadRequest(new { message = "User already exists", accountCreated = false });
         }
     }
 }

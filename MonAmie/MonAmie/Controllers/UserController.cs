@@ -33,7 +33,6 @@ namespace MonAmie.Controllers
                 LastName = result.LastName,
                 BirthDate = result.BirthDate,
                 Email = result.Email,
-                PhoneNumber = result.PhoneNumber
             });
 
             return results.ToList();
@@ -52,7 +51,6 @@ namespace MonAmie.Controllers
                 LastName = user.LastName,
                 BirthDate = user.BirthDate,
                 Email = user.Email,
-                PhoneNumber = user.PhoneNumber
             };
         }
 

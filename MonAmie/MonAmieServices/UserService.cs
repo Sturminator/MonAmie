@@ -32,13 +32,17 @@ namespace MonAmieServices
         /// <param name="user"></param>
         public void AddUser(User user)
         {
-            var entity = _context.User.FirstOrDefault(u => u.Email == user.Email);
-
-            if(entity == null)
-            {
-                _context.User.Add(user);
-                _context.SaveChanges();
-            }
+            _context.User.Add(new User {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                BirthDate = user.BirthDate,
+                PasswordHash = user.PasswordHash,
+                PasswordSalt = user.PasswordSalt,
+                CreationDate = user.CreationDate,
+                LastLoginDate = user.LastLoginDate
+            });
+            _context.SaveChanges();
         }
 
         /// <summary>

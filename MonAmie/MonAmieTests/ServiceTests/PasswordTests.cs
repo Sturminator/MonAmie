@@ -21,7 +21,6 @@ namespace MonAmieTests.ServiceTests
                 LastName = "Smith",
                 BirthDate = DateTime.Now.AddYears(-21),
                 Email = "johnsmith@gmail.com",
-                PhoneNumber = "5423415923",
                 PasswordHash = hashedPwd,
                 PasswordSalt = salt,
                 CreationDate = DateTime.Now,
