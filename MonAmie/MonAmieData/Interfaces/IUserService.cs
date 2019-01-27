@@ -14,6 +14,13 @@ namespace MonAmieData.Interfaces
         IEnumerable<User> GetAllUsers();
 
         /// <summary>
+        /// Checks if there is already a user with the specified email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        bool IsEmailAvailable(string email);
+
+        /// <summary>
         /// Get a user by its id
         /// </summary>
         /// <param name="userId"></param>

@@ -19,7 +19,7 @@ export default class Login extends Component {
     }
 
     validateForm() {
-        return this.state.email.length > 0 && this.state.password.length > 8;
+        return this.state.email.length > 0 && this.state.password.length > 8 && !this.state.isLoading;
     }
 
     handleChange = event => {
@@ -31,6 +31,7 @@ export default class Login extends Component {
     handleSubmit = event => {
         event.preventDefault();
         this.setState({ isLoading: true });
+
         fetch('api/Login/ValidateUser', {
             method: 'POST',
             headers: {
@@ -85,7 +86,7 @@ export default class Login extends Component {
                     >Remember Me</Checkbox>
                     <Button
                         block
-                        disabled={isLoading}
+                        disabled={!this.validateForm()}
                         bsStyle="primary"
                         bsSize="large"
                         type="submit"

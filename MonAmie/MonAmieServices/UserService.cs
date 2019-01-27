@@ -61,6 +61,18 @@ namespace MonAmieServices
         }
 
         /// <summary>
+        /// Checks if there is already a user with the specified email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public bool IsEmailAvailable(string email)
+        {
+            var exists = _context.User.FirstOrDefault(u => u.Email == email);
+
+            return exists == null;
+        }
+
+        /// <summary>
         /// Get a user by its id
         /// </summary>
         /// <param name="userId"></param>

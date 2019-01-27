@@ -13,9 +13,15 @@ export default class Registration extends Component {
             email: "",
             password: "",
             birthdate: "",
+            firstName: "",
+            lastName: "",
             isLoading: false,
             EmailTaken: true
         };
+    }
+
+    validateForm() {
+        return this.state.email.length > 0 && this.state.password.length > 8 && !this.state.isLoading;
     }
 
     handleDateChange(date) {
@@ -33,6 +39,20 @@ export default class Registration extends Component {
     handleSubmit = event => {
         event.preventDefault();
         this.setState({ isLoading: true });
+
+        fetch('api/Login/RegisterUser', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                email: this.state.email,
+                password: this.state.password,
+                birthdate: this.state.birthdate.toJSON()
+            })
+        });
     }
 
     render() {
@@ -42,10 +62,27 @@ export default class Registration extends Component {
             <div className="Registration">
                 <form onSubmit={this.handleSubmit}>
                     <h2 className="LoginTitle">User Registration</h2>
+                    <FormGroup controlId="firstName" bsSize="large">
+                        <ControlLabel>First Name</ControlLabel>
+                        <FormControl
+                            autoFocus
+                            type="text"
+                            value={this.state.firstName}
+                            onChange={this.handleChange}
+                        />
+                    </FormGroup>
+                    <FormGroup controlId="lastName" bsSize="large">
+                        <ControlLabel>Last Name</ControlLabel>
+                        <FormControl
+                            autoFocus
+                            type="text"
+                            value={this.state.lastName}
+                            onChange={this.handleChange}
+                        />
+                    </FormGroup>
                     <FormGroup controlId="email" bsSize="large">
                         <ControlLabel>Email</ControlLabel>
                         <FormControl
-                            autoFocus
                             type="email"
                             value={this.state.email}
                             onChange={this.handleChange}
@@ -64,13 +101,19 @@ export default class Registration extends Component {
                             <div class="col-sm-4"><ControlLabel>Date of Birth</ControlLabel></div>
                             <div class="col-sm-8"><DatePicker
                                 selected={this.state.birthdate}
+                                placeholderText="mm/dd/yyyy"
+                                peekNextMonth
+                                showMonthDropdown
+                                showYearDropdown
+                                dropdownMode="select"
+                                maxDate={new Date()}
                                 onChange={this.handleDateChange.bind(this)}
                             /></div>
                         </div>
                     </FormGroup>
                     <Button
                         block
-                        disabled={isLoading}
+                        disabled={!this.validateForm()}
                         bsStyle="primary"
                         bsSize="large"
                         type="submit"

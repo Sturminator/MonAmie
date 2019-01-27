@@ -4,6 +4,7 @@ using MonAmieData.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using MonAmieData.Models;
+using System;
 
 namespace MonAmie.Controllers
 {
@@ -22,6 +23,9 @@ namespace MonAmie.Controllers
         {
             public string Email { get; set; }
             public string Password { get; set; }
+            public string BirthDate { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
         }
 
         [HttpPost]
@@ -49,10 +53,36 @@ namespace MonAmie.Controllers
         }
 
         [HttpPost]
-        [Route("api/Login/Register")]
-        public IActionResult RegisterUser()
+        [Route("api/Login/RegisterUser")]
+        public IActionResult RegisterUser([FromBody] LoginInfo login)
         {
-            return BadRequest(new { message = "User already exists", ValidLogin = false });
+            var emailInput = login.Email.ToLower();
+            var passwordInput = login.Password;
+            var firstName = login.FirstName;
+            var lastName = login.LastName;
+
+            if(DateTime.TryParse(login.BirthDate, out DateTime dobInput))
+            {
+                if(_users.IsEmailAvailable(emailInput))
+                {
+                    var salt = _passwords.CreateSalt(16);
+                    var hash = _passwords.GenerateSHA256Hash(passwordInput, salt);
+
+                    User user = new User
+                    {
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Email = emailInput,
+                        BirthDate = dobInput,
+                        PasswordSalt = salt,
+                        PasswordHash = hash,
+                        CreationDate = DateTime.UtcNow,
+                        LastLoginDate = DateTime.UtcNow
+                    };
+                }
+            }
+
+            return BadRequest(new { message = "User already exists", UserTaken = true });
         }
     }
 }
