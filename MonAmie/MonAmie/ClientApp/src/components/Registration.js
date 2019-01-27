@@ -1,19 +1,38 @@
 ﻿import React, { Component } from "react"
 import { Redirect, NavLink } from 'react-router-dom'
+import DatePicker from "react-datepicker"
 import { Button, FormGroup, FormControl, ControlLabel, Checkbox, ButtonToolbar } from "react-bootstrap"
 import "../css/Registration.css"
+import "react-datepicker/dist/react-datepicker.css";
 
 export default class Registration extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
+            email: "",
+            password: "",
+            birthdate: "",
+            isLoading: false,
             EmailTaken: true
         };
     }
 
+    handleDateChange(date) {
+        this.setState({
+            birthdate: date
+        });
+    }
+
+    handleChange = event => {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
+    }
+
     handleSubmit = event => {
         event.preventDefault();
+        this.setState({ isLoading: true });
     }
 
     render() {
@@ -40,6 +59,15 @@ export default class Registration extends Component {
                             type="password"
                         />
                     </FormGroup>
+                    <FormGroup>
+                        <div class="row">
+                            <div class="col-sm-4"><ControlLabel>Date of Birth</ControlLabel></div>
+                            <div class="col-sm-8"><DatePicker
+                                selected={this.state.birthdate}
+                                onChange={this.handleDateChange.bind(this)}
+                            /></div>
+                        </div>
+                    </FormGroup>
                     <Button
                         block
                         disabled={isLoading}
@@ -47,10 +75,9 @@ export default class Registration extends Component {
                         bsSize="large"
                         type="submit"
                     >{isLoading ? 'Submitting...' : 'Sign up'}</Button>
-                    <div class="row">
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-7">Already have an account?</div>
-                        <NavLink to="/" class="col-sm-3">Sign In</NavLink>
+                    <div class="row" className="footer-margin">
+                        <div class="col-sm-8">Already have an account?</div>
+                        <NavLink to="/" class="col-sm-4">Sign In</NavLink>
                     </div>
                 </form>
             </div>

@@ -47,5 +47,12 @@ namespace MonAmie.Controllers
 
             return BadRequest(new { message = "Username or password is incorrect", ValidLogin = false });
         }
+
+        [HttpPost]
+        [Route("api/Login/Register")]
+        public IActionResult RegisterUser()
+        {
+            return BadRequest(new { message = "User already exists", ValidLogin = false });
+        }
     }
 }

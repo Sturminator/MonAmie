@@ -92,7 +92,7 @@ export default class Login extends Component {
                     >{isLoading ? 'Logging In...' : 'Login'}</Button>
                     <ButtonToolbar>
                         <Button className="ForgotPasswordButton">Forgot Password?</Button>
-                        <Button className="CreateAccountButton" onClick={this.routeChange} > Create New Account</Button>
+                        <Button className="CreateAccountButton" onClick={this.routeChange} >Create New Account</Button>
                     </ButtonToolbar>
                 </form>
             </div>

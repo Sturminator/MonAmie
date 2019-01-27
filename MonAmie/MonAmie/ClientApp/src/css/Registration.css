@@ -2,11 +2,8 @@
     text-align: center;
 }
 
-.block-black {
-    width: 6rem;
-    height: 6rem;
-    margin: 0.5rem;
-    display: inline-block;
+.footer-margin {
+    margin: 1.0rem;
 }
 
 @media all and (min-width: 480px) {
