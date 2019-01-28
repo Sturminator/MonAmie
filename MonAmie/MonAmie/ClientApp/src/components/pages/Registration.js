@@ -2,7 +2,7 @@
 import { Redirect, NavLink } from 'react-router-dom'
 import DatePicker from "react-datepicker"
 import { Button, FormGroup, FormControl, ControlLabel, Checkbox, ButtonToolbar } from "react-bootstrap"
-import "../css/Registration.css"
+import "../../css/Registration.css"
 import "react-datepicker/dist/react-datepicker.css";
 
 export default class Registration extends Component {

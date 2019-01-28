@@ -24,4 +24,8 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ClientApp\src\components\forms\" />
+  </ItemGroup>
+
 </Project>

@@ -55,12 +55,5 @@ namespace MonAmie.Controllers
                 State = userAddress.State
             };
         }
-
-        [HttpPost]
-        [Route("api/User/Add")]
-        public void Add(User user)
-        {
-            _users.AddUser(user);
-        }
     }
 }

@@ -1,30 +1,22 @@
-import React, { Component } from 'react';
-import { Route, Redirect, Switch, NavLink } from 'react-router-dom';
-import "./css/App.css";
-import Layout from './components/Layout';
-import Home from './components/Home';
-import FetchData from './components/FetchData';
-import Counter from './components/Counter';
-import Login from './components/Login';
-import Registration from './components/Registration';
-import UserProfile from './components/UserProfile';
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
+import Layout from './components/pages/Layout';
+import Home from './components/pages/Home';
+import FetchData from './components/pages/FetchData';
+import Login from './components/pages/Login';
+import Registration from './components/pages/Registration';
+import UserProfile from './components/pages/UserProfile';
 
-export default class App extends Component {
-    displayName = App.name
+const App = () => <div>
+    <Switch>
+            <Route path='/' exact component={Home} />
+        <Route path='/login' exact component={Login} />
+        <Route path='/registration' component={Registration} />
+        <Layout>
+            <Route path='/userprofile' component={UserProfile} />
+            <Route path='/fetchdata' component={FetchData} />
+        </Layout>
+    </Switch>
+</div>;
 
-    render() {
-        return (
-            <div className="App">
-                <Switch>
-                    <Route exact path='/' component={Login} />
-                    <Route path='/registration' component={Registration} />
-                    <Layout>
-                        <Route exact path='/home' component={Home} />
-                        <Route path='/userprofile' component={UserProfile} />
-                        <Route path='/fetchdata' component={FetchData} />
-                    </Layout>
-                </Switch>
-            </div>
-        );
-    }
-}
+export default App;
