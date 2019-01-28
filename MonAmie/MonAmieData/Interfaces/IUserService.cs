@@ -1,7 +1,6 @@
 ﻿using MonAmieData.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MonAmieData.Interfaces
 {
@@ -76,5 +75,44 @@ namespace MonAmieData.Interfaces
         /// <returns></returns>
         string GetEmail(int userId);
 
+        /// <summary>
+        /// Add a user address to the database
+        /// </summary>
+        /// <param name="ua"></param>
+        void AddUserAddress(UserAddress ua);
+
+        /// <summary>
+        /// Get all user addresses in database
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<UserAddress> GetUserAddresses();
+
+        /// <summary>
+        /// Get a user address by that user's id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        UserAddress GetUserAddressByUserId(int id);
+
+        /// <summary>
+        /// Get a user's state
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        string GetState(int id);
+
+        /// <summary>
+        /// Get a user's city
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        string GetCity(int id);
+
+        /// <summary>
+        /// Calculates the user's age as an int given a DateTime representing their birthdate
+        /// </summary>
+        /// <param name="birthDate"></param>
+        /// <returns></returns>
+        int CalculateUserAge(DateTime birthDate);
     }
 }

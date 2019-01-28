@@ -7,6 +7,7 @@ import FetchData from './components/FetchData';
 import Counter from './components/Counter';
 import Login from './components/Login';
 import Registration from './components/Registration';
+import UserProfile from './components/UserProfile';
 
 export default class App extends Component {
     displayName = App.name
@@ -19,7 +20,7 @@ export default class App extends Component {
                     <Route path='/registration' component={Registration} />
                     <Layout>
                         <Route exact path='/home' component={Home} />
-                        <Route path='/counter' component={Counter} />
+                        <Route path='/userprofile' component={UserProfile} />
                         <Route path='/fetchdata' component={FetchData} />
                     </Layout>
                 </Switch>

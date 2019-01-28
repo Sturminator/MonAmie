@@ -31,8 +31,7 @@ namespace MonAmie.Controllers
                 UserId = result.UserId,
                 FirstName = result.FirstName,
                 LastName = result.LastName,
-                BirthDate = result.BirthDate,
-                Email = result.Email,
+                Age = _users.CalculateUserAge(result.BirthDate)
             });
 
             return results.ToList();
@@ -44,13 +43,16 @@ namespace MonAmie.Controllers
         {
             var user = _users.GetById(id);
 
+            var userAddress = _users.GetUserAddressByUserId(id); 
+
             return new UserViewModel
             {
                 UserId = user.UserId,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                BirthDate = user.BirthDate,
-                Email = user.Email,
+                Age = _users.CalculateUserAge(user.BirthDate),
+                City = userAddress.City,
+                State = userAddress.State
             };
         }
 
