@@ -5,8 +5,6 @@ namespace MonAmieData
 {
     public class MonAmieContext : DbContext
     {
-        public MonAmieContext() { }
-
         public MonAmieContext(DbContextOptions<MonAmieContext> options) : base(options) { }
 
         public DbSet<User> User { get; set; }
