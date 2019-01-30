@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using MonAmieData;
 using MonAmieServices;
 using MonAmieData.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace MonAmie
 {
@@ -27,9 +30,31 @@ namespace MonAmie
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IAuthService, AuthService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWTSecretKey"))
+                            )
+                    };
+                });
+
+            services.AddSingleton<IAuthService>(
+                new AuthService(
+                    Configuration.GetValue<string>("JWTSecretKey"),
+                    Configuration.GetValue<int>("JWTLifespan")
+                )
+            );
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

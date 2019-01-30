@@ -1,4 +1,4 @@
-﻿namespace MonAmie.Models
+﻿namespace MonAmie.ViewModels
 {
     public class CategoryViewModel
     {

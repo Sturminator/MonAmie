@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MonAmie.Models;
+using MonAmie.ViewModels;
 using MonAmieData.Interfaces;
 using System.Collections.Generic;
 using System.Linq;

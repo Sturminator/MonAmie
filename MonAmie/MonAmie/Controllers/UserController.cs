@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Web.Http;
 using System.Net.Http;
-using MonAmie.Models;
+using MonAmie.ViewModels;
 using MonAmieData.Interfaces;
 using System;
 using System.Collections.Generic;

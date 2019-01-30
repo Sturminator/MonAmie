@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MonAmie.Models
+namespace MonAmie.ViewModels
 {
     public class UserViewModel
     {
