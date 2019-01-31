@@ -19,7 +19,7 @@ namespace MonAmieServices
             this.jwtLifespan = jwtLifespan;
         }
 
-        public AuthData GetAuthData(string id)
+        public AuthData GetAuthData(int id)
         {
             var expirationTime = DateTime.UtcNow.AddSeconds(jwtLifespan);
 
@@ -27,7 +27,7 @@ namespace MonAmieServices
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, id)
+                    new Claim(ClaimTypes.Name, id.ToString())
                 }),
                 Expires = expirationTime,
                 SigningCredentials = new SigningCredentials(

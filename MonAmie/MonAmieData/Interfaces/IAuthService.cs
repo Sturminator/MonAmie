@@ -4,6 +4,6 @@ namespace MonAmieData.Interfaces
 {
     public interface IAuthService
     {
-        AuthData GetAuthData(string id);
+        AuthData GetAuthData(int id);
     }
 }
