@@ -1,6 +1,6 @@
 ﻿import { authHeader } from '../Helpers';
 
-export const authenticationService = {
+export const authService = {
     login,
     logout
 };

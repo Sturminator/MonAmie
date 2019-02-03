@@ -3,7 +3,7 @@ import { authService } from '../Services';
 import { alertActions } from '../Actions';
 import { history } from '../Helpers';
 
-export const userActions = {
+export const authActions = {
     login,
     logout
 };
