@@ -1,81 +1,71 @@
 ﻿using System;
-using MonAmieData.ViewModels;
+using AutoMapper;
 using MonAmieData.Interfaces;
-using MonAmieData.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using MonAmie.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+using MonAmie.Helpers;
+using MonAmie.Dtos;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace MonAmie.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private IAuthService authService;
         private IUserService userService;
         private IPasswordService passwordService;
+        private readonly AppSettings appSettings;
 
-        public AuthController(IAuthService authService, IUserService userService, IPasswordService passwordService)
+        public AuthController(IUserService userService, IPasswordService passwordService, IOptions<AppSettings> appSettings)
         {
-            this.authService = authService;
             this.userService = userService;
             this.passwordService = passwordService;
+            this.appSettings = appSettings.Value;
         }
 
-        [HttpPost("login")]
-        public ActionResult<AuthData> Post([FromBody]LoginViewModel model)
+        [AllowAnonymous]
+        [Route("api/Auth/authenticate")]
+        public IActionResult Authenticate([FromBody]UserDto userDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var user = userService.GetByEmail(userDto.Email);
 
-            var user = userService.GetByEmail(model.Email);
+            if (user == null)
+                return BadRequest(new { message = "No user registered to this email" });
 
-            if(user == null)
-                return BadRequest(new { email = "No user exists with this email" });
+            var hashedPwd = passwordService.GenerateSHA256Hash(userDto.Password, user.PasswordSalt);
 
-            var hashedPwdInput = passwordService.GenerateSHA256Hash(model.Password, user.PasswordSalt);
+            if (hashedPwd != user.PasswordHash)
+                return BadRequest(new { message = "Password is incorrect" });
 
-            if(hashedPwdInput != user.PasswordHash)
-                return BadRequest(new { password = "Invalid password" });
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
-            return authService.GetAuthData(user.UserId);
-        }
-
-        [HttpPost("register")]
-        public ActionResult<AuthData> Post([FromBody]RegisterViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var isEmailAvailable = userService.IsEmailAvailable(model.Email);
-
-            if(!isEmailAvailable)
-                return BadRequest(new { email = "A user with this email already exists" });
-
-            if(DateTime.TryParse(model.BirthDate, out DateTime birthDate))
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                var salt = passwordService.CreateSalt(16);
-                var hash = passwordService.GenerateSHA256Hash(model.Password, salt);
-
-                User user = new User
+                Subject = new ClaimsIdentity(new Claim[]
                 {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Email = model.Email,
-                    BirthDate = birthDate,
-                    PasswordSalt = salt,
-                    PasswordHash = hash,
-                    CreationDate = DateTime.UtcNow,
-                    LastLoginDate = DateTime.UtcNow
-                };
+                    new Claim(ClaimTypes.Name, user.UserId.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
 
-                userService.AddUser(user);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
 
-                return authService.GetAuthData(userService.GetByEmail(user.Email).UserId);
-            }
-
-            return BadRequest(new { birthDate = "The date entered is not valid" });
+            return Ok(new
+            {
+                Id = user.UserId,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Token = tokenString
+            });
         }
     }
 }
