@@ -1,4 +1,4 @@
-﻿import { authHeader } from '../Helpers/auth-header';
+﻿import { authHeader } from '../Helpers';
 
 export const userService = {
     login,

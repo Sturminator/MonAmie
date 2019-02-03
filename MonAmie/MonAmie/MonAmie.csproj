@@ -25,4 +25,8 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ClientApp\src\Components\RegistrationPage\" />
+  </ItemGroup>
+
 </Project>

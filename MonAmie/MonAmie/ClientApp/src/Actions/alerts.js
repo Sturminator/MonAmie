@@ -1,4 +1,4 @@
-﻿import { alertConstants } from '../Constants/alerts';
+﻿import { alertConstants } from '../Constants';
 
 // Allows for the display of alert notifications in the app.
 // Example: dispatch(alertActions.success('Registration successful')); would display

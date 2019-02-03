@@ -2,11 +2,11 @@
 import { Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { history } from '../Helpers/history';
-import { alertActions } from '../Actions/alerts';
-import { PrivateRoute } from '../Components/PrivateRoute';
-import { HomePage } from '../Components/HomePage/HomePage';
-import { LoginPage } from '../Components/LoginPage/LoginPage';
+import { history } from '../Helpers';
+import { alertActions } from '../Actions';
+import { PrivateRoute } from '../Components';
+import { HomePage } from '../Components/HomePage';
+import { LoginPage } from '../Components/LoginPage';
 
 class App extends Component {
     constructor(props) {
