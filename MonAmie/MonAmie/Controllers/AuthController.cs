@@ -1,5 +1,4 @@
 ﻿using System;
-using AutoMapper;
 using MonAmieData.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using MonAmieData.Models;
 
 namespace MonAmie.Controllers
 {
@@ -29,8 +29,9 @@ namespace MonAmie.Controllers
         }
 
         [AllowAnonymous]
-        [Route("api/Auth/authenticate")]
-        public IActionResult Authenticate([FromBody]UserDto userDto)
+        [HttpPost]
+        [Route("api/Auth/login")]
+        public IActionResult Login([FromBody]UserDto userDto)
         {
             var user = userService.GetByEmail(userDto.Email);
 
@@ -64,8 +65,51 @@ namespace MonAmie.Controllers
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Birthdate = user.BirthDate,
                 Token = tokenString
             });
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("api/Auth/register")]
+        public IActionResult Register([FromBody]UserDto userDto)
+        {
+            var emailInput = userDto.Email.ToLower();
+            var passwordInput = userDto.Password;
+            var firstName = userDto.FirstName;
+            var lastName = userDto.LastName;
+
+            if (DateTime.TryParse(userDto.Birthdate, out DateTime dobInput))
+            {
+                try
+                {
+                    var salt = passwordService.CreateSalt(16);
+                    var hash = passwordService.GenerateSHA256Hash(passwordInput, salt);
+
+                    User user = new User
+                    {
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Email = emailInput,
+                        BirthDate = dobInput,
+                        PasswordSalt = salt,
+                        PasswordHash = hash,
+                        CreationDate = DateTime.UtcNow,
+                        LastLoginDate = DateTime.UtcNow
+                    };
+
+                    userService.AddUser(user);
+
+                    return Ok();
+                }
+                catch(AppException ex)
+                {
+                    return BadRequest(new { message = ex.Message });
+                }
+            }
+
+            return BadRequest(new { message = "User already exists" });
         }
     }
 }

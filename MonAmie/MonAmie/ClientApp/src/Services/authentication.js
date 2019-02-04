@@ -2,7 +2,8 @@
 
 export const authService = {
     login,
-    logout
+    logout,
+    register
 };
 
 function login(email, password) {
@@ -12,7 +13,7 @@ function login(email, password) {
         body: JSON.stringify({ email, password })
     };
 
-    return fetch('api/Auth/authenticate', requestOptions)
+    return fetch('api/Auth/login', requestOptions)
         .then(handleResponse)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -24,6 +25,16 @@ function login(email, password) {
 
 function logout() {
     localStorage.removeItem('user');
+}
+
+function register(user) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user)
+    };
+
+    return fetch(`api/Auth/register`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
