@@ -30,7 +30,7 @@ namespace MonAmie.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("api/Auth/login")]
+        [Route("api/Auth/Login")]
         public IActionResult Login([FromBody]UserDto userDto)
         {
             var user = userService.GetByEmail(userDto.Email);
@@ -72,7 +72,7 @@ namespace MonAmie.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("api/Auth/register")]
+        [Route("api/Auth/Register")]
         public IActionResult Register([FromBody]UserDto userDto)
         {
             var emailInput = userDto.Email.ToLower();

@@ -13,7 +13,7 @@ function login(email, password) {
         body: JSON.stringify({ email, password })
     };
 
-    return fetch('api/Auth/login', requestOptions)
+    return fetch('api/Auth/Login', requestOptions)
         .then(handleResponse)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -34,7 +34,7 @@ function register(user) {
         body: JSON.stringify(user)
     };
 
-    return fetch(`api/Auth/register`, requestOptions).then(handleResponse);
+    return fetch(`api/Auth/Register`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
