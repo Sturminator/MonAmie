@@ -1,7 +1,8 @@
 ﻿import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authActions } from '../../Actions';
+import { Form, Button, Divider, Header, Icon, Container } from 'semantic-ui-react'
 
 class RegistrationPage extends Component {
     constructor(props) {
@@ -15,11 +16,13 @@ class RegistrationPage extends Component {
                 firstName: "",
                 lastName: "",
             },
-            submitted: false
+            submitted: false,
+            redirectToLogin: false
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleRedirect = this.handleRedirect.bind(this);
     }
 
     handleChange(event) {
@@ -31,6 +34,12 @@ class RegistrationPage extends Component {
                 [name]: value
             }
         });
+    }
+
+    handleRedirect(e) {
+        e.preventDefault();
+
+        this.setState({ redirectToLogin: true });
     }
 
     handleSubmit(event) {
@@ -46,56 +55,44 @@ class RegistrationPage extends Component {
 
     render() {
         const { registering } = this.props;
-        const { user, submitted } = this.state;
+        const { user, submitted, redirectToLogin } = this.state;
+
+        if (redirectToLogin)
+            return (<Redirect to="/login" />);
 
         return (
-            <div className="col-md-6 col-md-offset-3">
-                <h2>Registration</h2>
-                <form name="form" onSubmit={this.handleSubmit}>
-                    <div className={'form-group' + (submitted && !user.firstName ? ' has-error' : '')}>
-                        <label htmlFor="firstName">First Name</label>
-                        <input type="text" className="form-control" name="firstName" value={user.firstName} onChange={this.handleChange} />
-                        {submitted && !user.firstName &&
-                            <div className="help-block">First Name is required</div>
-                        }
-                    </div>
-                    <div className={'form-group' + (submitted && !user.lastName ? ' has-error' : '')}>
-                        <label htmlFor="lastName">Last Name</label>
-                        <input type="text" className="form-control" name="lastName" value={user.lastName} onChange={this.handleChange} />
-                        {submitted && !user.lastName &&
-                            <div className="help-block">Last Name is required</div>
-                        }
-                    </div>
-                    <div className={'form-group' + (submitted && !user.email ? ' has-error' : '')}>
-                        <label htmlFor="email">Email</label>
-                        <input type="email" className="form-control" name="email" value={user.email} onChange={this.handleChange} />
-                        {submitted && !user.email &&
-                            <div className="help-block">Email is required</div>
-                        }
-                    </div>
-                    <div className={'form-group' + (submitted && !user.password ? ' has-error' : '')}>
-                        <label htmlFor="password">Password</label>
-                        <input type="password" className="form-control" name="password" value={user.password} onChange={this.handleChange} />
-                        {submitted && !user.password &&
-                            <div className="help-block">Password is required</div>
-                        }
-                    </div>
-                    <div className={'form-group' + (submitted && !user.birthdate ? ' has-error' : '')}>
-                        <label htmlFor="birthdate">Date of Birth</label>
-                        <input type="date" className="form-control" name="birthdate" value={user.birthdate} onChange={this.handleChange} />
-                        {submitted && !user.birthdate &&
-                            <div className="help-block">Date of Birth is required</div>
-                        }
-                    </div>
-                    <div className="form-group">
-                        <button className="btn btn-primary">Register</button>
-                        {registering &&
-                            <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                        }
-                        <Link to="/login" className="btn btn-link">Login</Link>
-                    </div>
-                </form>
-            </div>
+            <Container textAlign='center'>
+                <Header as='h2' icon textAlign='center'>
+                    <Icon name='handshake' circular />
+                    <Header.Content>Mon Amie</Header.Content>
+                </Header>
+                <Form>
+                    <Form.Field>
+                        <label>First Name</label>
+                        <input type='text' value={user.firstName} name='firstName' onChange={this.handleChange} placeholder='First Name' />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Last Name</label>
+                        <input type='text' value={user.lastName} name='lastName' onChange={this.handleChange} placeholder='Last Name' />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Email</label>
+                        <input type='email' value={user.email} name='email' onChange={this.handleChange} placeholder='Email' />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Password</label>
+                        <input type='password' value={user.password} name='password' onChange={this.handleChange} placeholder='Password' />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Date of Birth</label>
+                        <input type='date' value={user.birthdate} name='birthdate' onChange={this.handleChange}  />
+                    </Form.Field>
+                    <Button fluid color='green' onClick={this.handleSubmit}>Register</Button>
+                </Form>
+                <Divider horizontal>Already have an account?</Divider>
+
+                <Button fluid color='teal' onClick={this.handleRedirect}>Login</Button>
+            </Container>
         );
     }
 }

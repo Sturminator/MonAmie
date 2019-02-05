@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom'
-import { Menu, Icon, Dropdown } from 'semantic-ui-react'
+import { Redirect } from 'react-router-dom';
+import { Menu, Icon, Dropdown, Image } from 'semantic-ui-react';
 
 class NavigationBar extends Component {
     constructor(props) {
@@ -33,17 +33,49 @@ class NavigationBar extends Component {
                     <Icon name='handshake' />
                     Mon Amie
                     </Menu.Item>
+                <Menu.Item
+                    name='home'
+                    active={activeItem === 'home'}
+                    onClick={this.handleItemClick}
+                >
+                    <Icon name='home' />
+                    Home
+                    </Menu.Item>
+                <Menu.Item
+                    name='friends'
+                    active={activeItem === 'friends'}
+                    onClick={this.handleItemClick}
+                >
+                    <Icon name='user' />
+                    Friends
+                    </Menu.Item>
+                <Menu.Item
+                    name='groups'
+                    active={activeItem === 'groups'}
+                    onClick={this.handleItemClick}
+                >
+                    <Icon name='group' />
+                    Groups
+                    </Menu.Item>
+                <Menu.Item
+                    name='events'
+                    active={activeItem === 'events'}
+                    onClick={this.handleItemClick}
+                >
+                    <Icon name='calendar alternate' />
+                    Events
+                    </Menu.Item>
                 <Menu.Menu position='right'>
                     <Menu.Item
-                        name='home'
-                        active={activeItem === 'home'}
+                        name='messages'
+                        active={activeItem === 'messages'}
+                        onClick={this.handleItemClick}
                     >
-                        <Icon name='home' />
-                        Home
+                        <Icon name='chat' />
                     </Menu.Item>
                     <Dropdown item text={user.firstName}>
                         <Dropdown.Menu>
-                            <Dropdown.Item><Icon name='user' />My Profile</Dropdown.Item>
+                            <Dropdown.Item><Icon name='user circle' />Profile</Dropdown.Item>
                             <Dropdown.Item><Icon name='settings' />Settings</Dropdown.Item>
                             <Dropdown.Item name='logout'
                                 active={activeItem === 'logout'}
