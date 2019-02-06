@@ -36,6 +36,25 @@ namespace MonAmie.Controllers
             });
 
             return results.ToList();
-            }
+        }
+
+        [HttpGet]
+        [Route("api/Interest/GetAllForUser{id}")]
+        public IEnumerable<InterestViewModel> GetAllForUser(int id)
+        {
+            var interests = interestService.GetAllInterests();
+            var userInterests = interestService.GetAllInterestsForUser(id);
+            var categories = categoryService.GetAllCategories();
+
+            var results = userInterests.Select(result => new InterestViewModel
+            {
+                InterestId = result.InterestId,
+                CategoryId = interests.SingleOrDefault(i => i.InterestId == result.InterestId).CategoryId,
+                InterestName = interests.SingleOrDefault(i => i.InterestId == result.InterestId).InterestName,
+                CategoryName = categories.SingleOrDefault(c => c.CategoryId == interests.SingleOrDefault(i => i.InterestId == result.InterestId).CategoryId).CategoryName
+            });
+
+            return results.ToList();
+        }
     }
 }

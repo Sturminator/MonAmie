@@ -2,11 +2,13 @@
 import { authentication } from './authentication';
 import { registration } from './registration';
 import { alert } from './alerts';
+import { userInterests } from './userInterest';
 
 const rootReducer = combineReducers({
     authentication,
     registration,
-    alert
+    alert,
+    userInterests
 });
 
 export default rootReducer;

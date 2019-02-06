@@ -7,22 +7,23 @@ class NavigationBar extends Component {
     constructor(props) {
         super(props)
 
-        this.state = { activeItem: 'home', logout: false }
+        this.state = { activeItem: 'home', redirectTo: '' }
+
+        this.handleRedirect = this.handleRedirect.bind(this);
     }
 
+    handleRedirect(e) {
+        const { nodeValue } = e.currentTarget.attributes.name;
 
-    handleItemClick = event => {
-        this.setState({
-            logout: true
-        });
+        this.setState({ redirectTo: '/' + nodeValue });
     }
 
     render() {
         const { user } = this.props;
-        const { activeItem, logout } = this.state;
+        const { activeItem, redirectTo } = this.state;
 
-        if (logout)
-            return <Redirect to="/login" />
+        if (redirectTo != '')
+            return <Redirect to={redirectTo} />
 
         return (
             <Menu inverted>
@@ -34,9 +35,9 @@ class NavigationBar extends Component {
                     Mon Amie
                     </Menu.Item>
                 <Menu.Item
-                    name='home'
+                    name='/'
                     active={activeItem === 'home'}
-                    onClick={this.handleItemClick}
+                    onClick={this.handleRedirect}
                 >
                     <Icon name='home' />
                     Home
@@ -44,7 +45,7 @@ class NavigationBar extends Component {
                 <Menu.Item
                     name='friends'
                     active={activeItem === 'friends'}
-                    onClick={this.handleItemClick}
+                    onClick={this.handleRedirect}
                 >
                     <Icon name='user' />
                     Friends
@@ -52,7 +53,7 @@ class NavigationBar extends Component {
                 <Menu.Item
                     name='groups'
                     active={activeItem === 'groups'}
-                    onClick={this.handleItemClick}
+                    onClick={this.handleRedirect}
                 >
                     <Icon name='group' />
                     Groups
@@ -60,7 +61,7 @@ class NavigationBar extends Component {
                 <Menu.Item
                     name='events'
                     active={activeItem === 'events'}
-                    onClick={this.handleItemClick}
+                    onClick={this.handleRedirect}
                 >
                     <Icon name='calendar alternate' />
                     Events
@@ -69,17 +70,20 @@ class NavigationBar extends Component {
                     <Menu.Item
                         name='messages'
                         active={activeItem === 'messages'}
-                        onClick={this.handleItemClick}
+                        onClick={this.handleRedirect}
                     >
                         <Icon name='chat' />
                     </Menu.Item>
                     <Dropdown item text={user.firstName}>
                         <Dropdown.Menu>
-                            <Dropdown.Item><Icon name='user circle' />Profile</Dropdown.Item>
+                            <Dropdown.Item name='profile'
+                                active={activeItem === 'profile'}
+                                onClick={this.handleRedirect}><Icon name='user circle' />
+                                Profile</Dropdown.Item>
                             <Dropdown.Item><Icon name='settings' />Settings</Dropdown.Item>
-                            <Dropdown.Item name='logout'
+                            <Dropdown.Item name='login'
                                 active={activeItem === 'logout'}
-                                onClick={this.handleItemClick}><Icon name='power' />
+                                onClick={this.handleRedirect}><Icon name='power' />
                                 Logout</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
