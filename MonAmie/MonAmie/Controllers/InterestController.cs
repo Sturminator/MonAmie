@@ -39,7 +39,7 @@ namespace MonAmie.Controllers
         }
 
         [HttpGet]
-        [Route("api/Interest/GetAllForUser{id}")]
+        [Route("api/Interest/GetAllForUser/{id}")]
         public IEnumerable<InterestViewModel> GetAllForUser(int id)
         {
             var interests = interestService.GetAllInterests();

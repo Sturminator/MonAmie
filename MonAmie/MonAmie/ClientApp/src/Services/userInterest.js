@@ -11,7 +11,7 @@ function getAll(id) {
         headers: authHeader()
     };
 
-    return fetch(`api/Interest/GetAllForUser/${id}`, requestOptions).then(handleResponse);
+    return fetch(`api/Interest/GetAllForUser/` + id, requestOptions).then(handleResponse);
 }
 
 function logout() {

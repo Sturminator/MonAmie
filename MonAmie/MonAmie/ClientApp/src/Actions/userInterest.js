@@ -8,8 +8,20 @@ export const userInterestActions = {
     logout
 };
 
-function getAll() {
+function getAll(id) {
+    return dispatch => {
+        dispatch(request(id));
 
+        userInterestService.getAll(id)
+            .then(
+                userInterests => dispatch(success(userInterests)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request(id) { return { type: userInterestConstants.GETALL_REQUEST, id } }
+    function success(id) { return { type: userInterestConstants.GETALL_SUCCESS, id } }
+    function failure(id) { return { type: userInterestConstants.GETALL_FAILURE, id } }
 }
 
 function logout() {
