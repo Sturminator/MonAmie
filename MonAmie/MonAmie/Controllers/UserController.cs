@@ -28,7 +28,7 @@ namespace MonAmie.Controllers
 
             var results = users.Select(result => new UserViewModel
             {
-                UserId = result.UserId,
+                Id = result.UserId,
                 FirstName = result.FirstName,
                 LastName = result.LastName,
                 Age = _users.CalculateUserAge(result.BirthDate)
@@ -47,12 +47,10 @@ namespace MonAmie.Controllers
 
             return new UserViewModel
             {
-                UserId = user.UserId,
+                Id = user.UserId,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Age = _users.CalculateUserAge(user.BirthDate),
-                City = userAddress.City,
-                State = userAddress.State
             };
         }
     }

@@ -1,7 +1,12 @@
 ﻿import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Card, Grid, Image, Button } from 'semantic-ui-react';
 import { NavigationBar } from '../../Components';
+import art from '../../Images/Categories/art.jpeg';
+import automotive from '../../Images/Categories/automotive.jpeg';
+import boardgames from '../../Images/Categories/boardgames.jpeg';
+
 
 class HomePage extends Component {
     render() {
@@ -11,10 +16,41 @@ class HomePage extends Component {
             <div>
                 <NavigationBar>
                 </NavigationBar>
-                <div>
-                    <h1>Welcome to Mon Amie, {user.firstName}!</h1>
-                    <p>This is the Home page.</p>
-                </div>
+                <Grid columns={5} stackable>
+                    <Grid.Row stretched>
+                        <Grid.Column>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Card href='#card-example-link-card'>
+                                <Image src={art} />
+                                <Card.Content textAlign='center'>
+                                    <Card.Header >Art</Card.Header>
+                                    <Card.Description>Everything artistic, from painting to photography</Card.Description>
+                                </Card.Content>
+                            </Card>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Card href='#card-example-link-card'>
+                                <Image src={automotive} />
+                                <Card.Content textAlign='center'>
+                                    <Card.Header >Automotive</Card.Header>
+                                    <Card.Description>For those who are mechanically inclined</Card.Description>
+                                </Card.Content>
+                            </Card>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Card href='#card-example-link-card'>
+                                <Image src={boardgames} />
+                                <Card.Content textAlign='center'>
+                                    <Card.Header >Board Games</Card.Header>
+                                    <Card.Description>From Monopoly to Chess to D&D, the only requirement is a board</Card.Description>
+                                </Card.Content>
+                            </Card>
+                        </Grid.Column>
+                        <Grid.Column>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
             </div>
         );
     }

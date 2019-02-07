@@ -17,5 +17,6 @@ namespace MonAmieData
         public DbSet<GroupHasUser> GroupHasUser { get; set; }
         public DbSet<GroupHasTag> GroupHasTag { get; set; }
         public DbSet<UserHasInterest> UserHasInterest { get; set; }
+        public DbSet<UserImage> UserImage { get; set; }
     }
 }

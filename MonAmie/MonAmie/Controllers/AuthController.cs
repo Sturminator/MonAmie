@@ -66,6 +66,7 @@ namespace MonAmie.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Birthdate = user.BirthDate,
+                Age = userService.CalculateUserAge(user.BirthDate),
                 Token = tokenString
             });
         }
