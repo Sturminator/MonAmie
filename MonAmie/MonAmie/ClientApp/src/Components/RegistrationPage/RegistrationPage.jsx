@@ -2,8 +2,8 @@
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authActions } from '../../Actions';
-import { Dropdown, Form, Button, Divider, Header, Icon, Container } from 'semantic-ui-react';
-import { states } from '../../Enums';
+import { Form, Button, Divider, Header, Icon, Container } from 'semantic-ui-react';
+import { states, genders } from '../../Enums';
 
 class RegistrationPage extends Component {
     constructor(props) {
@@ -16,6 +16,7 @@ class RegistrationPage extends Component {
                 birthdate: "",
                 firstName: "",
                 lastName: "",
+                gender: "",
                 state: "",
             },
             submitted: false,
@@ -25,7 +26,8 @@ class RegistrationPage extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleRedirect = this.handleRedirect.bind(this);
-        this.handleDropdownChange = this.handleDropdownChange.bind(this);
+        this.handleStateChange = this.handleStateChange.bind(this);
+        this.handleGenderChange = this.handleGenderChange.bind(this);
     }
 
     handleChange(event) {
@@ -39,12 +41,22 @@ class RegistrationPage extends Component {
         });
     }
 
-    handleDropdownChange(event, value) {
+    handleStateChange(event, value) {
         const { user } = this.state;
         this.setState({
             user: {
                 ...user,
                 state: value.value
+            }
+        });
+    }
+
+    handleGenderChange(event, value) {
+        const { user } = this.state;
+        this.setState({
+            user: {
+                ...user,
+                gender: value.value
             }
         });
     }
@@ -61,7 +73,7 @@ class RegistrationPage extends Component {
         this.setState({ submitted: true });
         const { user } = this.state;
         const { dispatch } = this.props;
-        if (user.firstName && user.lastName && user.email && user.password && user.birthdate && user.state) {
+        if (user.firstName && user.lastName && user.email && user.password && user.birthdate && user.state && user.gender) {
             dispatch(authActions.register(user));
         }
     }
@@ -74,7 +86,7 @@ class RegistrationPage extends Component {
             return (<Redirect to="/login" />);
 
         return (
-            <Container textAlign='center'>
+            <Container>
                 <Header as='h2' icon textAlign='center'>
                     <Icon name='handshake' circular />
                     <Header.Content>Mon Amie</Header.Content>
@@ -96,14 +108,11 @@ class RegistrationPage extends Component {
                         <label>Password</label>
                         <input type='password' value={user.password} name='password' onChange={this.handleChange} placeholder='Password' />
                     </Form.Field>
-                    <Form.Field>
-                        <label>Date of Birth</label>
-                        <input type='date' value={user.birthdate} name='birthdate' onChange={this.handleChange}  />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>State</label>
-                        <Dropdown placeholder='Choose an option' value={user.state} name="state" search options={states} onChange={this.handleDropdownChange} />
-                    </Form.Field>
+                    <Form.Group widths="equal">
+                        <Form.Input type='date' fluid label="Date of Birth" placeholder="Date of Birth" value={user.birthdate} name='birthdate' onChange={this.handleChange} />
+                        <Form.Select clearable fluid label="Gender" placeholder="Gender" options={genders} value={user.gender} name='gender' onChange={this.handleGenderChange} />
+                        <Form.Select clearable search fluid label="State" options={states} placeholder="Choose an option" value={user.state} onChange={this.handleStateChange} />
+                    </Form.Group>
                     <Button fluid color='green' onClick={this.handleSubmit}>Register</Button>
                 </Form>
                 <Divider horizontal>Already have an account?</Divider>

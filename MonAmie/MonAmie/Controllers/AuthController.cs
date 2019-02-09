@@ -83,34 +83,38 @@ namespace MonAmie.Controllers
 
             if (DateTime.TryParse(userDto.Birthdate, out DateTime dobInput))
             {
-                try
+                if(userService.IsEmailAvailable(emailInput))
                 {
-                    var salt = passwordService.CreateSalt(16);
-                    var hash = passwordService.GenerateSHA256Hash(passwordInput, salt);
-
-                    User user = new User
+                    try
                     {
-                        FirstName = firstName,
-                        LastName = lastName,
-                        Email = emailInput,
-                        BirthDate = dobInput,
-                        PasswordSalt = salt,
-                        PasswordHash = hash,
-                        CreationDate = DateTime.UtcNow,
-                        LastLoginDate = DateTime.UtcNow
-                    };
+                        var salt = passwordService.CreateSalt(16);
+                        var hash = passwordService.GenerateSHA256Hash(passwordInput, salt);
 
-                    userService.AddUser(user);
+                        User user = new User
+                        {
+                            FirstName = firstName,
+                            LastName = lastName,
+                            Email = emailInput,
+                            BirthDate = dobInput,
+                            PasswordSalt = salt,
+                            PasswordHash = hash,
+                            CreationDate = DateTime.UtcNow,
+                            LastLoginDate = DateTime.UtcNow
+                        };
 
-                    return Ok();
+                        userService.AddUser(user);
+
+                        return Ok();
+                    }
+                    catch (AppException ex)
+                    {
+                        return BadRequest(new { message = ex.Message });
+                    }
                 }
-                catch(AppException ex)
-                {
-                    return BadRequest(new { message = ex.Message });
-                }
+                return BadRequest(new { message = "User already exists" });
             }
 
-            return BadRequest(new { message = "User already exists" });
+            return BadRequest(new { message = "Birthdate entered is not correctly formatted" });
         }
     }
 }
