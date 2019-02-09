@@ -2,7 +2,8 @@
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authActions } from '../../Actions';
-import { Form, Button, Divider, Header, Icon, Container } from 'semantic-ui-react'
+import { Dropdown, Form, Button, Divider, Header, Icon, Container } from 'semantic-ui-react';
+import { states } from '../../Enums';
 
 class RegistrationPage extends Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class RegistrationPage extends Component {
                 birthdate: "",
                 firstName: "",
                 lastName: "",
+                state: "",
             },
             submitted: false,
             redirectToLogin: false
@@ -23,6 +25,7 @@ class RegistrationPage extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleRedirect = this.handleRedirect.bind(this);
+        this.handleDropdownChange = this.handleDropdownChange.bind(this);
     }
 
     handleChange(event) {
@@ -32,6 +35,16 @@ class RegistrationPage extends Component {
             user: {
                 ...user,
                 [name]: value
+            }
+        });
+    }
+
+    handleDropdownChange(event, value) {
+        const { user } = this.state;
+        this.setState({
+            user: {
+                ...user,
+                state: value.value
             }
         });
     }
@@ -48,7 +61,7 @@ class RegistrationPage extends Component {
         this.setState({ submitted: true });
         const { user } = this.state;
         const { dispatch } = this.props;
-        if (user.firstName && user.lastName && user.email && user.password && user.birthdate) {
+        if (user.firstName && user.lastName && user.email && user.password && user.birthdate && user.state) {
             dispatch(authActions.register(user));
         }
     }
@@ -86,6 +99,10 @@ class RegistrationPage extends Component {
                     <Form.Field>
                         <label>Date of Birth</label>
                         <input type='date' value={user.birthdate} name='birthdate' onChange={this.handleChange}  />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>State</label>
+                        <Dropdown placeholder='Choose an option' value={user.state} name="state" search options={states} onChange={this.handleDropdownChange} />
                     </Form.Field>
                     <Button fluid color='green' onClick={this.handleSubmit}>Register</Button>
                 </Form>

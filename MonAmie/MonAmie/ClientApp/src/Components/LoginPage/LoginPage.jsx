@@ -2,7 +2,7 @@
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authActions } from '../../Actions';
-import { Form, Button, Divider, Header, Icon, Container } from 'semantic-ui-react'
+import { Form, Button, Divider, Header, Icon, Container } from 'semantic-ui-react';
 
 class LoginPage extends Component {
     constructor(props) {
