@@ -17,10 +17,7 @@ namespace MonAmieData
         public DbSet<GroupHasTag> GroupHasTag { get; set; }
         public DbSet<UserHasInterest> UserHasInterest { get; set; }
         public DbSet<UserHasCategory> UserHasCategory { get; set; }
-        public DbSet<UserImage> UserImage { get; set; }
-        
-        public DbSet<MessageRecipient> MessageRecipient { get; set; }
-        public DbSet<MessageSender> MessageSender { get; set; }
+        public DbSet<UserImage> UserImage { get; set; }      
         public DbSet<UserMessage> UserMessage { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

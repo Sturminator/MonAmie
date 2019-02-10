@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MonAmieData;
 
 namespace MonAmieData.Migrations
 {
     [DbContext(typeof(MonAmieContext))]
-    partial class MonAmieContextModelSnapshot : ModelSnapshot
+    [Migration("20190210025615_UserMessage tweaks")]
+    partial class UserMessagetweaks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,6 +141,36 @@ namespace MonAmieData.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Interest");
+                });
+
+            modelBuilder.Entity("MonAmieData.Models.MessageRecipient", b =>
+                {
+                    b.Property<int>("MessageRecipientId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("MessageRecipientId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("MessageRecipient");
+                });
+
+            modelBuilder.Entity("MonAmieData.Models.MessageSender", b =>
+                {
+                    b.Property<int>("MessageSenderId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("MessageSenderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("MessageSender");
                 });
 
             modelBuilder.Entity("MonAmieData.Models.Tag", b =>
@@ -344,6 +376,22 @@ namespace MonAmieData.Migrations
                     b.HasOne("MonAmieData.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MonAmieData.Models.MessageRecipient", b =>
+                {
+                    b.HasOne("MonAmieData.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MonAmieData.Models.MessageSender", b =>
+                {
+                    b.HasOne("MonAmieData.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

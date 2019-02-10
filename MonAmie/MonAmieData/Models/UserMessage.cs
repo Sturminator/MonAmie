@@ -23,7 +23,7 @@ namespace MonAmieData.Models
         [Column(TypeName = "smalldatetime")]
         public DateTime SentDate { get; set; }
 
-        public virtual MessageRecipient MessageRecipient { get; set; }
-        public virtual MessageSender MessageSender { get; set; }
+        public virtual User MessageRecipient { get; set; }
+        public virtual User MessageSender { get; set; }
     }
 }
