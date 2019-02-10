@@ -18,5 +18,26 @@ namespace MonAmieData
         public DbSet<UserHasInterest> UserHasInterest { get; set; }
         public DbSet<UserHasCategory> UserHasCategory { get; set; }
         public DbSet<UserImage> UserImage { get; set; }
+        
+        public DbSet<MessageRecipient> MessageRecipient { get; set; }
+        public DbSet<MessageSender> MessageSender { get; set; }
+        public DbSet<UserMessage> UserMessage { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserMessage>().HasKey(um => new { um.MessageSenderId, um.MessageRecipientId });
+
+            modelBuilder.Entity<UserMessage>()
+                .HasOne(um => um.MessageSender)
+                .WithMany()
+                .HasForeignKey(um => um.MessageSenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserMessage>()
+                .HasOne(um => um.MessageRecipient)
+                .WithMany()
+                .HasForeignKey(um => um.MessageRecipientId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }
