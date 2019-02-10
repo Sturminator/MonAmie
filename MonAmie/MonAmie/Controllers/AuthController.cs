@@ -67,6 +67,8 @@ namespace MonAmie.Controllers
                 LastName = user.LastName,
                 Birthdate = user.BirthDate,
                 Age = userService.CalculateUserAge(user.BirthDate),
+                Gender =  user.Gender,
+                State = user.State,
                 Token = tokenString
             });
         }
@@ -80,6 +82,8 @@ namespace MonAmie.Controllers
             var passwordInput = userDto.Password;
             var firstName = userDto.FirstName;
             var lastName = userDto.LastName;
+            var state = userDto.State;
+            var gender = userDto.Gender;
 
             if (DateTime.TryParse(userDto.Birthdate, out DateTime dobInput))
             {
@@ -96,6 +100,8 @@ namespace MonAmie.Controllers
                             LastName = lastName,
                             Email = emailInput,
                             BirthDate = dobInput,
+                            Gender = gender,
+                            State = state,
                             PasswordSalt = salt,
                             PasswordHash = hash,
                             CreationDate = DateTime.UtcNow,

@@ -32,16 +32,7 @@ namespace MonAmieServices
         /// <param name="user"></param>
         public void AddUser(User user)
         {
-            _context.User.Add(new User {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                BirthDate = user.BirthDate,
-                PasswordHash = user.PasswordHash,
-                PasswordSalt = user.PasswordSalt,
-                CreationDate = user.CreationDate,
-                LastLoginDate = user.LastLoginDate
-            });
+            _context.User.Add(user);
             _context.SaveChanges();
         }
 
