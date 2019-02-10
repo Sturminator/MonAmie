@@ -1,2 +1,2 @@
 ﻿export * from './authentication';
-export * from './userInterest';
+export * from './category';

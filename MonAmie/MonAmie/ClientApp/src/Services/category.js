@@ -1,17 +1,20 @@
 ﻿import { authHeader } from '../Helpers';
 
-export const userInterestService = {
-    getAll,
+export const categoryService = {
+    getAllForUser,
     logout
 };
 
-function getAll(id) {
+function getAllForUser(id) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
 
-    return fetch(`api/Interest/GetAllForUser/` + id, requestOptions).then(handleResponse);
+    return fetch(`api/Category/GetAllForUser/` + id, requestOptions).then(handleResponse)
+        .then(categories => {
+            return categories;
+        });
 }
 
 function logout() {

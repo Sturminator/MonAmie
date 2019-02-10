@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { NavigationBar } from '../../Components';
-import { userInterestActions } from '../../Actions';
+import { categoryActions } from '../../Actions';
 
 class ProfilePage extends Component {
     constructor(props) {
@@ -11,11 +11,11 @@ class ProfilePage extends Component {
 
     componentDidMount() {
         const { user } = this.props;
-        this.props.dispatch(userInterestActions.getAll(user.id));
+        this.props.dispatch(categoryActions.getAllForUser(user.id));
     }
 
     render() {
-        const { user } = this.props;
+        const { user, categories } = this.props;
 
         return (
             <div>
@@ -31,11 +31,11 @@ class ProfilePage extends Component {
 }
 
 function mapStateToProps(state) {
-    const { userInterests, authentication } = state;
+    const { categories, authentication } = state;
     const { user } = authentication;
     return {
         user,
-        userInterests
+        categories
     };
 }
 

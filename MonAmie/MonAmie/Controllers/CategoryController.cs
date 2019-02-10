@@ -9,44 +9,57 @@ namespace MonAmie.Controllers
 {
     public class CategoryController : Controller
     {
-        private ICategoryService _categories;
+        private ICategoryService categoryService;
 
-        public CategoryController(ICategoryService categories)
+        public CategoryController(ICategoryService categoryService)
         {
-            _categories = categories;
+            this.categoryService = categoryService;
         }
 
         [HttpGet]
         [Route("api/Category/GetAll")]
         public IEnumerable<CategoryViewModel> GetAll()
         {
-            var categories = _categories.GetAllCategories();
+            var categories = categoryService.GetAllCategories();
 
             var results = categories.Select(result => new CategoryViewModel
             {
                 CategoryId = result.CategoryId,
-                CategoryName = result.CategoryName,
-                CanInterest = result.CanInterest,
-                CanGroup = result.CanGroup,
-                CanEvent = result.CanEvent
+                CategoryName = result.CategoryName
             });
 
             return results.ToList();
         }
 
         [HttpGet]
+        [Route("api/Category/GetAllForUser/{id}")]
+        public IActionResult GetAllForUser(int id)
+        {
+            var userCategories = categoryService.GetAllCategoriesForUser(id);
+            var categories = categoryService.GetAllCategories();
+
+            var results = userCategories.Select(result => new CategoryViewModel
+            {
+                CategoryId = result.CategoryId,
+                CategoryName = categories.SingleOrDefault(c => c.CategoryId == result.CategoryId).CategoryName
+            });
+
+            return Ok(new
+            {
+                Categories = results
+            });
+        }
+
+        [HttpGet]
         [Route("api/Category/Get/{id}")]
         public CategoryViewModel Get(int id)
         {
-            var category = _categories.GetById(id);
+            var category = categoryService.GetById(id);
 
             return new CategoryViewModel
             {
                 CategoryId = category.CategoryId,
-                CategoryName = category.CategoryName,
-                CanInterest = category.CanInterest,
-                CanGroup = category.CanGroup,
-                CanEvent = category.CanEvent
+                CategoryName = category.CategoryName
             };
         }
 
@@ -54,21 +67,21 @@ namespace MonAmie.Controllers
         [Route("api/Category/Add")]
         public void Add(Category category)
         {
-            _categories.AddCategory(category);
+            categoryService.AddCategory(category);
         }
 
         [HttpPut]
         [Route("api/Category/Edit")]
         public void Update(Category category)
         {
-            _categories.UpdateCategory(category);
+            categoryService.UpdateCategory(category);
         }
 
         [HttpDelete]
         [Route("api/Category/Delete")]
         public void Delete(Category category)
         {
-            _categories.DeleteCategory(category);
+            categoryService.DeleteCategory(category);
         }
     }
 }
