@@ -141,57 +141,13 @@ namespace MonAmieServices
         }
 
         /// <summary>
-        /// Add a user address to the database
-        /// </summary>
-        /// <param name="ua"></param>
-        public void AddUserAddress(UserAddress ua)
-        {
-            _context.UserAddress.Add(new UserAddress
-            {
-                UserId = ua.UserId,
-                State = ua.State,
-                City = ua.City
-            });
-            _context.SaveChanges();
-        }
-
-        /// <summary>
-        /// Get all user addresses in database
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<UserAddress> GetUserAddresses()
-        {
-            return _context.UserAddress;
-        }
-
-        /// <summary>
-        /// Get a user address by that user's id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public UserAddress GetUserAddressByUserId(int id)
-        {
-            return _context.UserAddress.FirstOrDefault(ua => ua.UserId == id);
-        }
-
-        /// <summary>
         /// Get a user's state
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         public string GetState(int id)
         {
-            return GetUserAddressByUserId(id).State;
-        }
-
-        /// <summary>
-        /// Get a user's city
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public string GetCity(int id)
-        {
-            return GetUserAddressByUserId(id).City;
+            return GetById(id).State;
         }
 
         /// <summary>

@@ -22,6 +22,14 @@ namespace MonAmieData.Models
         public DateTime BirthDate { get; set; }
 
         [Required]
+        [Column(TypeName = "varchar(25)")]
+        public string Gender { get; set; }
+
+        [Required]
+        [Column(TypeName = "varchar(50)")]
+        public string State { get; set; }
+
+        [Required]
         [Column(TypeName = "varchar(255)")]
         public string Email { get; set; }
 

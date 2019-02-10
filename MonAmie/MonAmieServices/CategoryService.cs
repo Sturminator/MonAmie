@@ -157,5 +157,36 @@ namespace MonAmieServices
         {
             return GetById(categoryId).CategoryName;
         }
+
+        public IEnumerable<UserHasCategory> GetAllCategoriesForUser(int userId)
+        {
+            return _context.UserHasCategory.Where(ui => ui.UserId == userId);
+        }
+
+        public void AddCategoryToUser(int userId, int categoryId)
+        {
+            var entity = _context.UserHasCategory.FirstOrDefault(ui => ui.UserId == userId && ui.CategoryId == categoryId);
+
+            if (entity == null)
+            {
+                _context.UserHasCategory.Add(new UserHasCategory
+                {
+                    UserId = userId,
+                    CategoryId = categoryId
+                });
+                _context.SaveChanges();
+            }
+        }
+
+        public void DeleteCategoryFromUser(int userId, int categoryId)
+        {
+            var entity = _context.UserHasCategory.FirstOrDefault(ui => ui.UserId == userId && ui.CategoryId == categoryId);
+
+            if (entity != null)
+            {
+                _context.UserHasCategory.Remove(entity);
+                _context.SaveChanges();
+            }
+        }
     }
 }

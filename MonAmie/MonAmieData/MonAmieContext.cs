@@ -8,7 +8,6 @@ namespace MonAmieData
         public MonAmieContext(DbContextOptions<MonAmieContext> options) : base(options) { }
 
         public DbSet<User> User { get; set; }
-        public DbSet<UserAddress> UserAddress { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Interest> Interest { get; set; }
         public DbSet<Group> Group { get; set; }
@@ -17,6 +16,7 @@ namespace MonAmieData
         public DbSet<GroupHasUser> GroupHasUser { get; set; }
         public DbSet<GroupHasTag> GroupHasTag { get; set; }
         public DbSet<UserHasInterest> UserHasInterest { get; set; }
+        public DbSet<UserHasCategory> UserHasCategory { get; set; }
         public DbSet<UserImage> UserImage { get; set; }
     }
 }

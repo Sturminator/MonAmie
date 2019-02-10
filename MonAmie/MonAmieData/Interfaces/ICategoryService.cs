@@ -84,5 +84,25 @@ namespace MonAmieData.Interfaces
         /// <returns></returns>
         bool GetCanEvent(int categoryId);
 
+        /// <summary>
+        /// Gets all categories assigned to a user
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<UserHasCategory> GetAllCategoriesForUser(int userId);
+
+        /// <summary>
+        /// Add a category to a user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="categoryId"></param>
+        void AddCategoryToUser(int userId, int categoryId);
+
+        /// <summary>
+        /// Delete a category from a user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="categoryId"></param>
+        void DeleteCategoryFromUser(int userId, int categoryId);
+
     }
 }

@@ -43,8 +43,6 @@ namespace MonAmie.Controllers
         {
             var user = _users.GetById(id);
 
-            var userAddress = _users.GetUserAddressByUserId(id); 
-
             return new UserViewModel
             {
                 Id = user.UserId,
