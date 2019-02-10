@@ -1,3 +1,3 @@
-﻿export * from './alerts';
-export * from './category';
-export * from './authentication';
+﻿export * from './alerts.actions';
+export * from './category.actions';
+export * from './authentication.actions';

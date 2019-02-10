@@ -1,2 +1,2 @@
-﻿export * from './authentication';
-export * from './category';
+﻿export * from './authentication.service';
+export * from './category.service';
