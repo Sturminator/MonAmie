@@ -11,6 +11,9 @@ namespace MonAmieData.Models
         public int State_Code { get; }
 
         [Required]
+        public int ZIPCode { get; }
+
+        [Required]
         [Column(TypeName = "varchar(50)")]
         public string City { get; }
     }
