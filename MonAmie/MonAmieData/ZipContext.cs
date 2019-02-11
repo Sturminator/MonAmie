@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MonAmieData.Models;
 
 namespace MonAmieData
 {
-    class ZipContext : DbContext
+    public class ZipContext : DbContext
     {
         public ZipContext(DbContextOptions<ZipContext> options) : base(options) { }
 

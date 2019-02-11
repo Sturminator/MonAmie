@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MonAmieData.Models
 {
-    class ZIP_Codes
+    public class ZIP_Codes
     {
         [Required]
         public int State_Code { get; }
