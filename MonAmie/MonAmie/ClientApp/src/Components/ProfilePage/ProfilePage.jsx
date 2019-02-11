@@ -3,13 +3,17 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { NavigationBar } from '../../Components';
 import { categoryActions } from '../../Actions';
-import { Table } from 'semantic-ui-react'
+import { Table, Form, Segment, TextArea, Divider, Header, Icon, Grid, Container } from 'semantic-ui-react';
 
 class ProfilePage extends Component {
+    state = { currentLength: 0 };
+
     componentDidMount() {
         const { user } = this.props;
         this.props.dispatch(categoryActions.getAllForUser(user.id));
     }
+
+    onBioChange = (e, { value }) => this.setState({ currentLength: value.length });
 
     createTable = () => {
         const { categories } = this.props;
@@ -33,14 +37,43 @@ class ProfilePage extends Component {
 
     render() {
         const { user, categories } = this.props;
+        const { currentLength } = this.state;
 
         return (
             <div>
                 <NavigationBar>
                 </NavigationBar>
-                <div>
-                    <p>This is your profile page.</p>
-                    <Table basic='very' celled collapsing>
+                <div style={{ marginLeft: '25em', marginRight: '25em' }}>
+                    <Container>
+                        <Header as='h2' icon textAlign='center'>
+                            <Icon name='user' circular />
+                            <Header.Content>{user.firstName} {user.lastName}</Header.Content>
+                            <Grid columns={3} stackable>
+                                <Grid.Column style={{ textAlign: "left" }}>
+                                    <Header sub>{user.gender}</Header>
+                                </Grid.Column>
+                                <Grid.Column style={{ textAlign: "center" }}>
+                                    <Header sub>{user.state}</Header>
+                                </Grid.Column>
+                                <Grid.Column style={{textAlign: "right"}}>
+                                    <Header sub>{user.age}</Header>
+                                </Grid.Column>
+                            </Grid>
+                        </Header>
+                    </Container>
+                    <Form>
+                        <Segment style={{ textAlign: "right" }}>
+                            <TextArea
+                                style={{ minHeight: 100 }}
+                                MaxLength="500"
+                                onChange={this.onBioChange}
+                                placeholder="Give a brief bio of yourself"
+                            />
+                            <Divider />
+                            Characters: {currentLength} / 500
+                        </Segment>
+                    </Form>
+                    <Table style={{ textAlign: 'center' }} basic='very' celled collapsing>
                         <Table.Header>
                             <Table.Row>
                                 <Table.HeaderCell>CategoryId</Table.HeaderCell>
