@@ -3,11 +3,18 @@
 export function userProfile(state = {}, action) {
     switch (action.type) {
         case userProfileConstants.GETBYID_REQUEST:
-            break;
+            return {
+                loading: true,
+                id: action.id
+            };
         case userProfileConstants.GETBYID_SUCCESS:
-            break;
+            return {
+                items: action.userProfile
+            };
         case userProfileConstants.GETBYID_FAILURE:
-            break;
+            return {
+                error: action.error
+            };
         case userProfileConstants.UPDATE_REQUEST:
             break;
         case userProfileConstants.UPDATE_SUCCESS:

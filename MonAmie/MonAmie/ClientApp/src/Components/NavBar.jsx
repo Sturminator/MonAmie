@@ -26,7 +26,7 @@ class NavigationBar extends Component {
             return <Redirect to={redirectTo} />
 
         return (
-            <Menu inverted>
+            <Menu color='teal' inverted stackable fluid>
                 <Menu.Item
                     name='logo'
                 >

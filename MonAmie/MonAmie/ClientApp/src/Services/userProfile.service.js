@@ -11,7 +11,7 @@ function getById(id) {
         headers: authHeader()
     };
 
-    return null;
+    return fetch(`api/UserProfile/GetById/` + id, requestOptions).then(handleResponse);
 }
 
 function logout() {

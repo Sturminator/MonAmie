@@ -2,31 +2,32 @@
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { NavigationBar } from '../../Components';
-import { categoryActions } from '../../Actions';
-import { Table, Form, Segment, TextArea, Divider, Header, Icon, Grid, Container } from 'semantic-ui-react';
+import { userProfileActions } from '../../Actions';
+import { Table, Form, Segment, TextArea, Divider, Header, Icon, Grid, Container, Loader, Dimmer } from 'semantic-ui-react';
 
 class ProfilePage extends Component {
     state = { currentLength: 0 };
 
     componentDidMount() {
         const { user } = this.props;
-        this.props.dispatch(categoryActions.getAllForUser(user.id));
+        this.props.dispatch(userProfileActions.getById(user.id));
     }
 
     onBioChange = (e, { value }) => this.setState({ currentLength: value.length });
 
     createTable = () => {
-        const { categories } = this.props;
+        const { userProfile } = this.props;
 
+        var categories = userProfile.items.categories;
         var table = []
 
-        if (categories.items) {
+        if (userProfile.items) {
             // Outer loop to create parent
-            for (let i = 0; i < categories.items.length; i++) {
+            for (let i = 0; i < categories.length; i++) {
                 var children = []
                 //Inner loop to create children
-                children.push(<Table.Cell>{categories.items[i].categoryId}</Table.Cell>)
-                children.push(<Table.Cell>{categories.items[i].categoryName}</Table.Cell>)
+                children.push(<Table.Cell>{categories[i].categoryId}</Table.Cell>)
+                children.push(<Table.Cell>{categories[i].categoryName}</Table.Cell>)
                 //Create the parent and add the children
                 table.push(<Table.Row children={children} />)
             }
@@ -36,9 +37,15 @@ class ProfilePage extends Component {
     }
 
     render() {
-        const { user, categories } = this.props;
+        const { user, userProfile } = this.props;
         const { currentLength } = this.state;
 
+        if (!userProfile.items)
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
         return (
             <div>
                 <NavigationBar>
@@ -47,7 +54,7 @@ class ProfilePage extends Component {
                     <Container>
                         <Header as='h2' icon textAlign='center'>
                             <Icon name='user' circular />
-                            <Header.Content>{user.firstName} {user.lastName}</Header.Content>
+                            <Header.Content>{userProfile.items.fullName}</Header.Content>
                             <Grid columns={3}>
                                 <Grid.Column style={{ textAlign: "left" }}>
                                     <Header sub>{user.gender}</Header>
@@ -55,7 +62,7 @@ class ProfilePage extends Component {
                                 <Grid.Column style={{ textAlign: "center" }}>
                                     <Header sub>{user.state}</Header>
                                 </Grid.Column>
-                                <Grid.Column style={{textAlign: "right"}}>
+                                <Grid.Column style={{ textAlign: "right" }}>
                                     <Header sub>{user.age}</Header>
                                 </Grid.Column>
                             </Grid>
@@ -64,6 +71,7 @@ class ProfilePage extends Component {
                     <Form fluid>
                         <Segment style={{ textAlign: "right" }}>
                             <TextArea
+                                value={userProfile.items.bio}
                                 style={{ minHeight: 100 }}
                                 MaxLength="500"
                                 onChange={this.onBioChange}
@@ -91,11 +99,11 @@ class ProfilePage extends Component {
 }
 
 function mapStateToProps(state) {
-    const { categories, authentication } = state;
+    const { userProfile, authentication } = state;
     const { user } = authentication;
     return {
         user,
-        categories
+        userProfile
     };
 }
 
