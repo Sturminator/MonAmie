@@ -7,6 +7,7 @@ using MonAmieData.Models;
 
 namespace MonAmie.Controllers
 {
+    [ApiController]
     public class UserProfileController : Controller
     {
         private IUserService userService;

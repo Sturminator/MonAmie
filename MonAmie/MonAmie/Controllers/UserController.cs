@@ -11,6 +11,7 @@ using MonAmieData.Models;
 
 namespace MonAmie.Controllers
 {
+    [ApiController]
     public class UserController : Controller
     {
         private IUserService _users;
@@ -22,34 +23,37 @@ namespace MonAmie.Controllers
 
         [HttpGet]
         [Route("api/User/GetAll")]
-        public IEnumerable<UserViewModel> GetAll()
+        public IActionResult GetAll()
         {
             var users = _users.GetAllUsers();
 
-            var results = users.Select(result => new UserViewModel
+            var results = users.Select(result => new
             {
                 Id = result.UserId,
                 FirstName = result.FirstName,
                 LastName = result.LastName,
+                Gender = result.Gender,
+                State = result.State,
                 Age = _users.CalculateUserAge(result.BirthDate)
-            });
+            }).ToList();
 
-            return results.ToList();
+            return Ok(results);
         }
 
         [HttpGet]
         [Route("api/User/Get/{id}")]
-        public UserViewModel Get(int id)
+        public IActionResult Get(int id)
         {
             var user = _users.GetById(id);
 
-            return new UserViewModel
-            {
+            return Ok(new {
                 Id = user.UserId,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Gender = user.Gender,
+                State = user.State,
                 Age = _users.CalculateUserAge(user.BirthDate),
-            };
+            });
         }
     }
 }
