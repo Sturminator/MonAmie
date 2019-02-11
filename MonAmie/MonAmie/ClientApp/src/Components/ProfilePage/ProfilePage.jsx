@@ -18,6 +18,8 @@ class ProfilePage extends Component {
 
     onBioChange = (e, { value }) => this.setState({ currentLength: value.length });
 
+    onEditButtonClick = (e) => this.setState({ editMode: this.state.editMode ? false : true });
+
     createTable = () => {
         const { userProfile } = this.props;
 
@@ -40,7 +42,7 @@ class ProfilePage extends Component {
 
     render() {
         const { user, userProfile } = this.props;
-        const { currentLength } = this.state;
+        const { currentLength, editMode } = this.state;
 
         if (!userProfile.items)
             return (<div style={{ paddingTop: '600px' }}>
@@ -48,13 +50,18 @@ class ProfilePage extends Component {
                     <Loader active size='massive' inline='centered' />
                 </Dimmer>
             </div>);
+        if (editMode) {
+
+        }
+
         return (
             <div>
                 <NavigationBar>
                 </NavigationBar>
                 <div style={{ padding: '25px' }}>
                     <Segment>
-                        <Popup trigger={<Button primary icon='edit' />} content='Edit Profile' />
+                        <Popup trigger={<Button onClick={this.onEditButtonClick} primary icon='edit' />} content='Edit Profile' />
+                        <Header sub>Edit Mode: {editMode ? 'Enabled' : 'Disabled'}</Header>
                         <Container>
                             <Header as='h2' icon textAlign='center'>
                                 <Icon name='user' circular />
