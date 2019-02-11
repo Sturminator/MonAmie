@@ -44,10 +44,7 @@ namespace MonAmie.Controllers
                 CategoryName = categories.SingleOrDefault(c => c.CategoryId == result.CategoryId).CategoryName
             });
 
-            return Ok(new
-            {
-                Categories = results
-            });
+            return Ok(results);
         }
 
         [HttpGet]

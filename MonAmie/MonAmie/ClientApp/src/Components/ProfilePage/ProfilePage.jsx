@@ -3,15 +3,32 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { NavigationBar } from '../../Components';
 import { categoryActions } from '../../Actions';
+import { Table } from 'semantic-ui-react'
 
 class ProfilePage extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         const { user } = this.props;
         this.props.dispatch(categoryActions.getAllForUser(user.id));
+    }
+
+    createTable = () => {
+        const { categories } = this.props;
+
+        var table = []
+
+        if (categories.items) {
+            // Outer loop to create parent
+            for (let i = 0; i < categories.items.length; i++) {
+                var children = []
+                //Inner loop to create children
+                children.push(<Table.Cell>{categories.items[i].categoryId}</Table.Cell>)
+                children.push(<Table.Cell>{categories.items[i].categoryName}</Table.Cell>)
+                //Create the parent and add the children
+                table.push(<Table.Row children={children} />)
+            }
+        }
+
+        return table
     }
 
     render() {
@@ -22,8 +39,18 @@ class ProfilePage extends Component {
                 <NavigationBar>
                 </NavigationBar>
                 <div>
-                    <h1>Welcome to Mon Amie, {user.firstName}!</h1>
                     <p>This is your profile page.</p>
+                    <Table basic='very' celled collapsing>
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell>CategoryId</Table.HeaderCell>
+                                <Table.HeaderCell>Category</Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                            {this.createTable()}
+                        </Table.Body>
+                    </Table>
                 </div>
             </div>
         );

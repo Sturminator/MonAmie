@@ -2,7 +2,7 @@
 import { authentication } from './authentication.reducer';
 import { registration } from './registration.reducer';
 import { alert } from './alerts.reducer';
-import { categories } from './category.reducer';
+import { categories } from './categories.reducer';
 
 const rootReducer = combineReducers({
     authentication,

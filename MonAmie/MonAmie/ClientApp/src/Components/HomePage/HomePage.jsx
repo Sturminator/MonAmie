@@ -1,11 +1,10 @@
 ﻿import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Card, Grid, Image, Button } from 'semantic-ui-react';
 import { NavigationBar } from '../../Components';
-import art from '../../Images/Categories/art.jpeg';
-import automotive from '../../Images/Categories/automotive.jpeg';
-import boardgames from '../../Images/Categories/boardgames.jpeg';
+import art from '../../Images/Categories/art.jpg';
+import automotive from '../../Images/Categories/automotive.jpg';
+import boardgames from '../../Images/Categories/boardgames.jpg';
 
 
 class HomePage extends Component {

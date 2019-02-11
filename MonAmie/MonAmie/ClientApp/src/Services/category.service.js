@@ -11,10 +11,7 @@ function getAllForUser(id) {
         headers: authHeader()
     };
 
-    return fetch(`api/Category/GetAllForUser/` + id, requestOptions).then(handleResponse)
-        .then(categories => {
-            return categories;
-        });
+    return fetch(`api/Category/GetAllForUser/` + id, requestOptions).then(handleResponse);
 }
 
 function logout() {

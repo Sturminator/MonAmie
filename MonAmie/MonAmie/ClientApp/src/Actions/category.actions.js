@@ -20,8 +20,8 @@ function getAllForUser(id) {
     };
 
     function request(id) { return { type: categoryConstants.GETALLFORUSER_REQUEST, id } }
-    function success(id) { return { type: categoryConstants.GETALLFORUSER_SUCCESS, id } }
-    function failure(id) { return { type: categoryConstants.GETALLFORUSER_FAILURE, id } }
+    function success(categories) { return { type: categoryConstants.GETALLFORUSER_SUCCESS, categories } }
+    function failure(error) { return { type: categoryConstants.GETALLFORUSER_FAILURE, error } }
 }
 
 function logout() {

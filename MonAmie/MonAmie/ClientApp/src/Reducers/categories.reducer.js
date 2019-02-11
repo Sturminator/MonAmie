@@ -5,17 +5,14 @@ export function categories(state = {}, action) {
         case categoryConstants.GETALLFORUSER_REQUEST:
             return {
                 loading: true,
-                items: action.id.categories
+                id: action.id
             };
         case categoryConstants.GETALLFORUSER_SUCCESS:
             return {
-                loading: false,
-                items: action.id.categories
+                items: action.categories
             };
         case categoryConstants.GETALLFORUSER_FAILURE:
             return {
-                items: {},
-                loading: false,
                 error: action.error
             };
         case categoryConstants.DELETE_REQUEST:
