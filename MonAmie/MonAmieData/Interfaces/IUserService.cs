@@ -83,6 +83,13 @@ namespace MonAmieData.Interfaces
         string GetState(int id);
 
         /// <summary>
+        /// Get a user's bio
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        string GetBio(int id);
+
+        /// <summary>
         /// Calculates the user's age as an int given a DateTime representing their birthdate
         /// </summary>
         /// <param name="birthDate"></param>

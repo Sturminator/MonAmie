@@ -156,5 +156,12 @@ namespace MonAmieServices
 
             return age;
         }
+
+        public string GetBio(int id)
+        {
+            var bio = GetById(id).Bio;
+
+            return string.IsNullOrEmpty(bio) ? bio : "";
+        }
     }
 }
