@@ -31,6 +31,8 @@ namespace MonAmie
             services.AddCors();
             services.AddDbContext<MonAmieContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("MonAmieConnection")));
+            services.AddDbContext<MonAmieContext>(options
+                => options.UseSqlServer(Configuration.GetConnectionString("ZipConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // configure strongly typed settings objects
