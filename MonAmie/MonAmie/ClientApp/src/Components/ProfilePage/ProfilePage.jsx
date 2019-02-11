@@ -43,12 +43,12 @@ class ProfilePage extends Component {
             <div>
                 <NavigationBar>
                 </NavigationBar>
-                <div style={{ marginLeft: '25em', marginRight: '25em' }}>
+                <div>
                     <Container>
                         <Header as='h2' icon textAlign='center'>
                             <Icon name='user' circular />
                             <Header.Content>{user.firstName} {user.lastName}</Header.Content>
-                            <Grid columns={3} stackable>
+                            <Grid columns={3}>
                                 <Grid.Column style={{ textAlign: "left" }}>
                                     <Header sub>{user.gender}</Header>
                                 </Grid.Column>
@@ -61,7 +61,7 @@ class ProfilePage extends Component {
                             </Grid>
                         </Header>
                     </Container>
-                    <Form>
+                    <Form fluid>
                         <Segment style={{ textAlign: "right" }}>
                             <TextArea
                                 style={{ minHeight: 100 }}
