@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace MonAmieServices
 {
-    public class ZipService
+    public class ZipService : IZipService
     {
         private ZipContext _context;
 
