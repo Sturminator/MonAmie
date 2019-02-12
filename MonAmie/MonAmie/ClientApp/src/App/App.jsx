@@ -36,7 +36,7 @@ class App extends Component {
                                 <PrivateRoute exact path="/" component={HomePage} />
                                 <Route path="/login" component={LoginPage} />
                                 <Route path="/registration" component={RegistrationPage} />
-                                <Route path="/profile" component={ProfilePage} />
+                                <Route path="/profile/:userId" component={ProfilePage} />
                             </div>
                         </Router>
                     </div>

@@ -2,7 +2,8 @@
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authActions } from '../../Actions';
-import { Form, Button, Divider, Header, Icon, Container } from 'semantic-ui-react';
+import { Form, Button, Divider, Image, Container, Segment } from 'semantic-ui-react';
+import logo from '../../Images/logo.png';
 
 class LoginPage extends Component {
     constructor(props) {
@@ -55,24 +56,21 @@ class LoginPage extends Component {
 
         return (
             <Container textAlign='center'>
-                <Header as='h2' icon textAlign='center'>
-                    <Icon name='handshake' circular />
-                    <Header.Content>Mon Amie</Header.Content>
-                </Header>
-                <Form>
-                    <Form.Field>
-                        <label>Email</label>
-                        <input type='email' value={email} name='email' onChange={this.handleChange} placeholder='Email' />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Password</label>
-                        <input type='password' value={password} name='password' onChange={this.handleChange} placeholder='Password' />
-                    </Form.Field>
-                    <Button type='login' fluid color='green' onClick={this.handleSubmit}>Login</Button>
-                </Form>
-                <Divider horizontal>Don't have an account?</Divider>
+                    <Image centered src={logo} size='medium' />
+                    <Form>
+                        <Form.Field>
+                            <label>Email</label>
+                            <input type='email' value={email} name='email' onChange={this.handleChange} placeholder='Email' />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Password</label>
+                            <input type='password' value={password} name='password' onChange={this.handleChange} placeholder='Password' />
+                        </Form.Field>
+                        <Button type='login' fluid color='green' onClick={this.handleSubmit}>Login</Button>
+                    </Form>
+                    <Divider horizontal>Don't have an account?</Divider>
 
-                <Button type='register' fluid color='teal' onClick={this.handleRedirect}>Register</Button>
+                    <Button type='register' fluid color='teal' onClick={this.handleRedirect}>Register</Button>
             </Container>
         );
     }

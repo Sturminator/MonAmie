@@ -20,7 +20,7 @@ namespace MonAmie.Controllers
         }
 
         [HttpGet]
-        [Route("api/UserProfile/GetById/{id}")]
+        [Route("profile/api/UserProfile/GetById/{id}")]
         public IActionResult GetById(int id)
         {
             var user = userService.GetById(id);

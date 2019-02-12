@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { Card, Grid, Image, Dimmer, Loader } from 'semantic-ui-react';
 import { NavigationBar } from '../../Components';
 import { userActions } from '../../Actions';
@@ -10,31 +11,38 @@ import boardgames from '../../Images/Categories/boardgames.jpg';
 
 
 class HomePage extends Component {
+    state = { userSelected: false, redirectTo: "" };
+
     componentDidMount() {
-        const { user } = this.props;
         this.props.dispatch(userActions.getAll());
     }
 
     onCardClick = (e, { value }) => {
-        var val = value;
+        this.setState({
+            userSelected: true,
+            redirectTo: '/profile/' +
+                value.firstName.toLowerCase() + '_' + value.id * 11
+        });
     };
 
     createCards = () => {
-        const { users } = this.props;
+        const { users, user } = this.props;
 
         var cards = []
 
         if (users.items) {
             // Outer loop to create parent
             for (let i = 0; i < users.items.length; i++) {
-                var children = []
-                //Inner loop to create children
-                children.push(<Card.Header>{users.items[i].firstName + ' ' + users.items[i].lastName}</Card.Header>)
-                children.push(<Card.Meta>{users.items[i].gender}</Card.Meta>)
-                children.push(<Card.Description>{users.items[i].firstName + ' lives in ' +
-                    users.items[i].state + ' and is ' + users.items[i].age + ' years old.'}</Card.Description>)
-                //Create the parent and add the children
-                cards.push(<Card onClick={this.onCardClick} value={users.items[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
+                if (user.id != users.items[i].id) {
+                    var children = []
+                    //Inner loop to create children
+                    children.push(<Card.Header>{users.items[i].firstName + ' ' + users.items[i].lastName}</Card.Header>)
+                    children.push(<Card.Meta>{users.items[i].gender}</Card.Meta>)
+                    children.push(<Card.Description>{users.items[i].firstName + ' lives in ' +
+                        users.items[i].state + ' and is ' + users.items[i].age + ' years old.'}</Card.Description>)
+                    //Create the parent and add the children
+                    cards.push(<Card onClick={this.onCardClick} value={users.items[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
+                }
             }
         }
 
@@ -43,6 +51,10 @@ class HomePage extends Component {
 
     render() {
         const { user, users } = this.props;
+        const { userSelected, redirectTo } = this.state;
+
+        if (userSelected)
+            return <Redirect to={redirectTo} /> 
 
         if (!users.items)
             return (<div style={{ paddingTop: '600px' }}>
