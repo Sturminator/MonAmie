@@ -2,8 +2,9 @@
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authActions } from '../../Actions';
-import { Form, Button, Divider, Header, Icon, Container } from 'semantic-ui-react';
+import { Form, Button, Divider, Image, Container } from 'semantic-ui-react';
 import { states, genders } from '../../Enums';
+import logo from '../../Images/logo.png';
 
 class RegistrationPage extends Component {
     constructor(props) {
@@ -87,10 +88,7 @@ class RegistrationPage extends Component {
 
         return (
             <Container>
-                <Header as='h2' icon textAlign='center'>
-                    <Icon name='handshake' circular />
-                    <Header.Content>Mon Amie</Header.Content>
-                </Header>
+                <Image centered src={logo} size='medium' />
                 <Form>
                     <Form.Field>
                         <label>First Name</label>

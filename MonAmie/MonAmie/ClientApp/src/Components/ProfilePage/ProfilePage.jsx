@@ -12,8 +12,10 @@ class ProfilePage extends Component {
     state = { currentLength: 0, editMode: false };
 
     componentDidMount() {
-        const { user } = this.props;
-        this.props.dispatch(userProfileActions.getById(user.id));
+        const { match: { params } } = this.props;
+        var idStr = params.userId.split("_")[1];
+        var id = parseInt(idStr) / 11;
+        this.props.dispatch(userProfileActions.getById(id));
     }
 
     onBioChange = (e, { value }) => this.setState({ currentLength: value.length });
@@ -69,13 +71,13 @@ class ProfilePage extends Component {
                             </Header>
                             <Grid fluid columns={3}>
                                 <Grid.Column fluid style={{ textAlign: "left" }}>
-                                    <Header sub>{user.gender}</Header>
+                                    <Header sub>{userProfile.items.gender}</Header>
                                 </Grid.Column>
                                 <Grid.Column fluid style={{ textAlign: "center" }}>
-                                    <Header sub>Spokane, {user.state}</Header>
+                                    <Header sub>{userProfile.items.state}</Header>
                                 </Grid.Column>
                                 <Grid.Column fluid style={{ textAlign: "right" }}>
-                                    <Header sub>{user.age}</Header>
+                                    <Header sub>{userProfile.items.age}</Header>
                                 </Grid.Column>
                             </Grid>
                         </Container>

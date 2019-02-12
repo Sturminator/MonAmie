@@ -13,9 +13,17 @@ class NavigationBar extends Component {
 
     handleRedirect(e) {
         const { to, activename } = e.currentTarget.attributes;
+        const { user } = this.props;
 
-        if (activename.nodeValue != this.state.activeItem)
-            this.setState({ activeItem: activename.nodeValue, redirectTo: to.nodeValue });
+        if (activename.nodeValue != this.state.activeItem) {
+            if (to.nodeValue == '/profile/')
+                this.setState({
+                    activeItem: activename.nodeValue, redirectTo: to.nodeValue +
+                        user.firstName.toLowerCase() + '_' + user.id * 11
+                });
+            else
+                this.setState({ activeItem: activename.nodeValue, redirectTo: to.nodeValue });
+        }
     }
 
     render() {
@@ -27,9 +35,7 @@ class NavigationBar extends Component {
 
         return (
             <Menu color='blue' inverted stackable fluid>
-                <Menu.Item
-                    name='logo'
-                >
+                <Menu.Item>
                     <Icon name='handshake' />
                     Mon Amie
                     </Menu.Item>
@@ -76,12 +82,12 @@ class NavigationBar extends Component {
                         active={activeItem === 'messages'}
                         onClick={this.handleRedirect}
                     >
-                        <Icon flipped='horizontally' name=' chat' />Messages
+                        <Icon flipped='horizontally' name='chat' />Messages
                     </Menu.Item>
                     <Dropdown item text={user.firstName}>
                         <Dropdown.Menu>
                             <Dropdown.Item activename='profile'
-                                to='/profile'
+                                to='/profile/'
                                 onClick={this.handleRedirect}><Icon name='user circle' />
                                 Profile</Dropdown.Item>
                             <Dropdown.Item><Icon name='settings' />Settings</Dropdown.Item>
