@@ -14,18 +14,18 @@ namespace MonAmie.Controllers
     [ApiController]
     public class UserController : Controller
     {
-        private IUserService _users;
+        private IUserService userService;
 
-        public UserController(IUserService users)
+        public UserController(IUserService userService)
         {
-            _users = users;
+            this.userService = userService;
         }
 
         [HttpGet]
         [Route("api/User/GetAll")]
         public IActionResult GetAll()
         {
-            var users = _users.GetAllUsers();
+            var users = userService.GetAllUsers();
 
             var results = users.Select(result => new
             {
@@ -34,7 +34,7 @@ namespace MonAmie.Controllers
                 LastName = result.LastName,
                 Gender = result.Gender,
                 State = result.State,
-                Age = _users.CalculateUserAge(result.BirthDate)
+                Age = userService.CalculateUserAge(result.BirthDate)
             }).ToList();
 
             return Ok(results);
@@ -44,7 +44,7 @@ namespace MonAmie.Controllers
         [Route("api/User/Get/{id}")]
         public IActionResult Get(int id)
         {
-            var user = _users.GetById(id);
+            var user = userService.GetById(id);
 
             return Ok(new {
                 Id = user.UserId,
@@ -52,7 +52,7 @@ namespace MonAmie.Controllers
                 LastName = user.LastName,
                 Gender = user.Gender,
                 State = user.State,
-                Age = _users.CalculateUserAge(user.BirthDate),
+                Age = userService.CalculateUserAge(user.BirthDate),
             });
         }
     }
