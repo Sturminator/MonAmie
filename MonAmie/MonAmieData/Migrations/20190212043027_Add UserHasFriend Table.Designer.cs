@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MonAmieData;
 
 namespace MonAmieData.Migrations
 {
     [DbContext(typeof(MonAmieContext))]
-    partial class MonAmieContextModelSnapshot : ModelSnapshot
+    [Migration("20190212043027_Add UserHasFriend Table")]
+    partial class AddUserHasFriendTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,21 +243,6 @@ namespace MonAmieData.Migrations
                     b.ToTable("UserHasFriend");
                 });
 
-            modelBuilder.Entity("MonAmieData.Models.UserHasFriendRequest", b =>
-                {
-                    b.Property<int>("UserId");
-
-                    b.Property<int>("PendingFriendId");
-
-                    b.Property<int>("UserHasFriendRequestId");
-
-                    b.HasKey("UserId", "PendingFriendId");
-
-                    b.HasIndex("PendingFriendId");
-
-                    b.ToTable("UserHasFriendRequest");
-                });
-
             modelBuilder.Entity("MonAmieData.Models.UserHasInterest", b =>
                 {
                     b.Property<int>("UserHasInterestId")
@@ -398,19 +385,6 @@ namespace MonAmieData.Migrations
                     b.HasOne("MonAmieData.Models.User", "Friend")
                         .WithMany()
                         .HasForeignKey("FriendId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("MonAmieData.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("MonAmieData.Models.UserHasFriendRequest", b =>
-                {
-                    b.HasOne("MonAmieData.Models.User", "PendingFriend")
-                        .WithMany()
-                        .HasForeignKey("PendingFriendId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MonAmieData.Models.User", "User")

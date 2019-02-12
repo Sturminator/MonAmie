@@ -19,6 +19,8 @@ namespace MonAmieData
         public DbSet<UserHasCategory> UserHasCategory { get; set; }
         public DbSet<UserImage> UserImage { get; set; }      
         public DbSet<UserMessage> UserMessage { get; set; }
+        public DbSet<UserHasFriend> UserHasFriend { get; set; }
+        public DbSet <UserHasFriendRequest> UserHasFriendRequest { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +36,34 @@ namespace MonAmieData
                 .HasOne(um => um.MessageRecipient)
                 .WithMany()
                 .HasForeignKey(um => um.MessageRecipientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserHasFriend>().HasKey(uhf => new { uhf.UserId, uhf.FriendId });
+
+            modelBuilder.Entity<UserHasFriend>()
+                .HasOne(uhf => uhf.User)
+                .WithMany()
+                .HasForeignKey(uhf => uhf.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserHasFriend>()
+                .HasOne(uhf => uhf.Friend)
+                .WithMany()
+                .HasForeignKey(uhf => uhf.FriendId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserHasFriendRequest>().HasKey(uhfr => new { uhfr.UserId, uhfr.PendingFriendId });
+
+            modelBuilder.Entity<UserHasFriendRequest>()
+                .HasOne(uhfr => uhfr.User)
+                .WithMany()
+                .HasForeignKey(uhfr => uhfr.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserHasFriendRequest>()
+                .HasOne(uhfr => uhfr.PendingFriend)
+                .WithMany()
+                .HasForeignKey(uhfr => uhfr.PendingFriendId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
