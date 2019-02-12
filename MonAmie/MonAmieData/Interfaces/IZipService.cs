@@ -9,16 +9,6 @@ namespace MonAmieData.Interfaces
 {
     public interface IZipService
     {
-        void ZipService();
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        void ZipService(ZipContext context);
-
-
         /// <summary>
         /// Get all zipcodes stored in the database
         /// </summary>
@@ -47,7 +37,7 @@ namespace MonAmieData.Interfaces
         /// </summary>
         /// <param name="zipCode"></param>
         /// <returns></returns>
-        string getCityandState(int zipCode);
+        string getCityAndState(int zipCode);
 
     }
 }

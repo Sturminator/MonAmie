@@ -62,7 +62,7 @@ namespace MonAmieServices
         /// </summary>
         /// <param name="zipCode"></param>
         /// <returns></returns>
-        public string getCityandState(int zipCode)
+        public string getCityAndState(int zipCode)
         {
             string city = GetByZip(zipCode).City;
 
