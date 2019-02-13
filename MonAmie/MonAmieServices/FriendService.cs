@@ -77,7 +77,7 @@ namespace MonAmieServices
         /// <returns></returns>
         public IEnumerable<UserHasFriendRequest> GetAllFriendRequestsForUser(int id)
         {
-            return _context.UserHasFriendRequest.Where(uhfr => uhfr.UserId == id && !uhfr.IsOutgoing);
+            return _context.UserHasFriendRequest.Where(uhfr => uhfr.PendingFriendId == id);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace MonAmieServices
         /// <returns></returns>
         public IEnumerable<UserHasFriendRequest> GetAllSentFriendRequestsForUser(int id)
         {
-            return _context.UserHasFriendRequest.Where(uhfr => uhfr.UserId == id && uhfr.IsOutgoing);
+            return _context.UserHasFriendRequest.Where(uhfr => uhfr.UserId == id);
         }
 
         /// <summary>

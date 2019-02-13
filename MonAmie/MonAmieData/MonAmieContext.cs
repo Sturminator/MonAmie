@@ -24,8 +24,6 @@ namespace MonAmieData
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserMessage>().HasKey(um => new { um.MessageSenderId, um.MessageRecipientId });
-
             modelBuilder.Entity<UserMessage>()
                 .HasOne(um => um.MessageSender)
                 .WithMany()
@@ -38,8 +36,6 @@ namespace MonAmieData
                 .HasForeignKey(um => um.MessageRecipientId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<UserHasFriend>().HasKey(uhf => new { uhf.UserId, uhf.FriendId });
-
             modelBuilder.Entity<UserHasFriend>()
                 .HasOne(uhf => uhf.User)
                 .WithMany()
@@ -51,8 +47,6 @@ namespace MonAmieData
                 .WithMany()
                 .HasForeignKey(uhf => uhf.FriendId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<UserHasFriendRequest>().HasKey(uhfr => new { uhfr.UserId, uhfr.PendingFriendId });
 
             modelBuilder.Entity<UserHasFriendRequest>()
                 .HasOne(uhfr => uhfr.User)
