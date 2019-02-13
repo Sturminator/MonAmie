@@ -60,10 +60,18 @@ class ProfilePage extends Component {
             <div>
                 <NavigationBar>
                 </NavigationBar>
-                <div style={{ padding: '25px' }}>
-                    <Segment>
-                        <Popup trigger={<Button onClick={this.onEditButtonClick} primary icon='edit' />} content='Edit Profile' />
-                        <Header sub>Edit Mode: {editMode ? 'Enabled' : 'Disabled'}</Header>
+                <Container>
+                    <Segment fluid secondary>
+                        <Grid fluid columns='equal'>
+                            <Grid.Column fluid>
+                                <Header sub>Edit Mode: {editMode ? 'Enabled' : 'Disabled'}</Header>
+                            </Grid.Column>
+                            <Grid.Column fluid>
+                            </Grid.Column>
+                            <Grid.Column fluid>
+                                <Popup trigger={<Button floated='right' onClick={this.onEditButtonClick} primary icon=' edit' />} content='Edit Profile' />
+                            </Grid.Column>
+                        </Grid>
                         <Container>
                             <Header as='h2' icon textAlign='center'>
                                 <Icon name='user' circular />
@@ -91,16 +99,31 @@ class ProfilePage extends Component {
                                     placeholder="Give a brief bio of yourself"
                                 />
                                 <Divider />
-                                Characters: {currentLength} / 500
+                                <Header sub>Characters: {currentLength} / 500</Header>
                         </Segment>
                         </Form>
-                        <Grid columns={2} style={{ paddingTop: '10px' }}>
-                            <Grid.Column>
+                        <Grid fluid stackable columns={2} style={{ paddingTop: '10px' }}>
+                            <Grid.Column fluid>
                                 <Segment>
                                     <Table style={{ textAlign: 'center' }} basic='very'>
                                         <Table.Header>
                                             <Table.Row>
-                                                <Table.HeaderCell>Interests</Table.HeaderCell>
+                                                <Table.HeaderCell>
+                                                    <Grid stackable fluid columns='equal'>
+                                                        <Grid.Column fluid>
+                                                        </Grid.Column>
+                                                        <Grid.Column fluid>
+                                                            <Header size='large'>Interests</Header>
+                                                        </Grid.Column>
+                                                        <Grid.Column fluid>
+                                                            <Button
+                                                                floated='right'
+                                                                size='tiny' primary icon>
+                                                                <Icon name='edit' />
+                                                            </Button>
+                                                        </Grid.Column>
+                                                    </Grid>
+                                                </Table.HeaderCell>
                                             </Table.Row>
                                         </Table.Header>
                                         <Table.Body>
@@ -109,12 +132,27 @@ class ProfilePage extends Component {
                                     </Table>
                                 </Segment>
                             </Grid.Column>
-                            <Grid.Column>
+                            <Grid.Column fluid>
                                 <Segment>
                                     <Table style={{ textAlign: 'center' }} basic='very'>
                                         <Table.Header>
                                             <Table.Row>
-                                                <Table.HeaderCell>Groups</Table.HeaderCell>
+                                                <Table.HeaderCell>
+                                                    <Grid stackable fluid columns='equal'>
+                                                        <Grid.Column fluid>
+                                                        </Grid.Column>
+                                                        <Grid.Column fluid>
+                                                            <Header size='large'>Groups</Header>
+                                                        </Grid.Column>
+                                                        <Grid.Column fluid>
+                                                            <Button
+                                                                floated='right'
+                                                                size='tiny' primary icon>
+                                                                <Icon name='edit' />
+                                                            </Button>
+                                                        </Grid.Column>
+                                                    </Grid>
+                                                </Table.HeaderCell>
                                             </Table.Row>
                                         </Table.Header>
                                         <Table.Body>
@@ -125,7 +163,7 @@ class ProfilePage extends Component {
                             </Grid.Column>
                         </Grid>
                     </Segment>
-                </div>
+                </Container>
             </div>
         );
     }

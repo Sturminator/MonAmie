@@ -19,7 +19,7 @@ namespace MonAmie.Controllers
 
         [HttpGet]
         [Route("api/Category/GetAll")]
-        public IEnumerable<CategoryViewModel> GetAll()
+        public IActionResult GetAll()
         {
             var categories = categoryService.GetAllCategories();
 
@@ -27,9 +27,9 @@ namespace MonAmie.Controllers
             {
                 CategoryId = result.CategoryId,
                 CategoryName = result.CategoryName
-            });
+            }).ToList();
 
-            return results.ToList();
+            return Ok(results);
         }
 
         [HttpGet]
@@ -43,7 +43,7 @@ namespace MonAmie.Controllers
             {
                 CategoryId = result.CategoryId,
                 CategoryName = categories.SingleOrDefault(c => c.CategoryId == result.CategoryId).CategoryName
-            });
+            }).ToList();
 
             return Ok(results);
         }
