@@ -2,8 +2,9 @@
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authActions } from '../../Actions';
-import { Form, Button, Divider, Image, Container, Segment } from 'semantic-ui-react';
+import { Form, Button, Divider, Image, Container, Segment, Grid } from 'semantic-ui-react';
 import logo from '../../Images/logo.png';
+import Background0 from '../../Images/login.jpg'
 
 class LoginPage extends Component {
     constructor(props) {
@@ -55,6 +56,9 @@ class LoginPage extends Component {
             return (<Redirect to="/registration" />);
 
         return (
+            <div>
+                <Image src={Background0} large />
+                <Divider/>
             <Container textAlign='center'>
                     <Image centered src={logo} size='medium' />
                     <Form>
@@ -70,8 +74,10 @@ class LoginPage extends Component {
                     </Form>
                     <Divider horizontal>Don't have an account?</Divider>
 
-                    <Button type='register' fluid color='teal' onClick={this.handleRedirect}>Register</Button>
-            </Container>
+                    <Button type='register' fluid color='blue' onClick={this.handleRedirect}>Register</Button>
+                </Container>
+
+                </div>
         );
     }
 }
