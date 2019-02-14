@@ -89,6 +89,7 @@ class RegistrationPage extends Component {
 
         return (
             <div>
+                <style>{`html, body {background-color: #468499 !important;}`}</style>
                 <Image src={Background0} fluid style={{ maxHeight: '450px' }} />
                 <Grid textAlign='center' verticalAlign=' middle' style={{marginTop: '10px'}}>
                     <Grid.Column style={{ maxWidth: 600 }}>
