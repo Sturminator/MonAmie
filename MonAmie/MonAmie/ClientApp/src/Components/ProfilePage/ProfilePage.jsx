@@ -62,7 +62,7 @@ class ProfilePage extends Component {
             <div>
                 <NavigationBar>
                 </NavigationBar>
-                <style>{`html, body {background-color: #41b3a3 !important; } `}</style>
+                <style>{`html, body {background-color: #374785 !important; } `}</style>
                 <Modal style={profileStyles.MiniCenteredModal} size=' tiny' open={editMode} onClose={this.close}>
                     <Modal.Header>Edit Profile</Modal.Header>
                     <Modal.Content>
@@ -74,36 +74,36 @@ class ProfilePage extends Component {
                     </Modal.Actions>
                 </Modal>
                 <Container>
-                    <Segment fluid secondary>
+                    <Segment fluid style={{ backgroundColor: '#a8d0e6' }}>
                         <Grid fluid columns='equal'>
                             <Grid.Column fluid>
-                                <Header sub>Edit Mode: {editMode ? 'Enabled' : 'Disabled'}</Header>
+                                <Header sub style={{ color: 'white' }}>Edit Mode: {editMode ? 'Enabled' : 'Disabled'}</Header>
                             </Grid.Column>
                             <Grid.Column fluid>
                             </Grid.Column>
                             <Grid.Column fluid>
-                                <Popup trigger={<Button floated='right' onClick={this.onEditButtonClick} primary icon=' edit' />} content='Edit Profile' />
+                                <Popup trigger={<Button floated='right' onClick={this.onEditButtonClick} style={{ backgroundColor: '#24305e' }} inverted icon=' edit' />} content='Edit Profile' />
                             </Grid.Column>
                         </Grid>
                         <Container>
                             <Header as='h2' icon textAlign='center'>
                                 <Icon name='user' circular />
-                                <Header.Content>{userProfile.items.fullName}</Header.Content>
+                                <Header.Content style={{ color: 'white' }}>{userProfile.items.fullName}</Header.Content>
                             </Header>
                             <Grid fluid columns={3}>
                                 <Grid.Column fluid style={{ textAlign: "left" }}>
-                                    <Header sub>{userProfile.items.gender}</Header>
+                                    <Header sub style={{ color: 'white' }}>{userProfile.items.gender}</Header>
                                 </Grid.Column>
                                 <Grid.Column fluid style={{ textAlign: "center" }}>
-                                    <Header sub>{userProfile.items.state}</Header>
+                                    <Header sub style={{ color: 'white' }}>{userProfile.items.state}</Header>
                                 </Grid.Column>
                                 <Grid.Column fluid style={{ textAlign: "right" }}>
-                                    <Header sub>{userProfile.items.age}</Header>
+                                    <Header sub style={{ color: 'white' }}>{userProfile.items.age}</Header>
                                 </Grid.Column>
                             </Grid>
                         </Container>
                         <Form fluid>
-                            <Segment style={{ textAlign: "right" }}>
+                            <Segment style={{ textAlign: "right", backgroundColor: '#374785'}}>
                                 <TextArea
                                     value={userProfile.items.bio}
                                     style={{ minHeight: 100 }}
@@ -111,14 +111,13 @@ class ProfilePage extends Component {
                                     onChange={this.onBioChange}
                                     placeholder="Give a brief bio of yourself"
                                 />
-                                <Divider />
-                                <Header sub>Characters: {currentLength} / 500</Header>
+                                <Header sub style={{ color: 'white' }}>Characters: {currentLength} / 500</Header>
                         </Segment>
                         </Form>
                         <Grid fluid stackable columns={2} style={{ paddingTop: '10px' }}>
                             <Grid.Column fluid>
-                                <Segment>
-                                    <Table style={{ textAlign: 'center' }} basic='very'>
+                                <Segment style={{ backgroundColor: '#374785' }}>
+                                    <Table style={{ textAlign: 'center', color: 'white' }} basic='very'>
                                         <Table.Header>
                                             <Table.Row>
                                                 <Table.HeaderCell>
@@ -126,12 +125,13 @@ class ProfilePage extends Component {
                                                         <Grid.Column fluid>
                                                         </Grid.Column>
                                                         <Grid.Column fluid>
-                                                            <Header size='large'>Interests</Header>
+                                                            <Header size='large' style={{ color: 'white' }}>Interests</Header>
                                                         </Grid.Column>
                                                         <Grid.Column fluid>
                                                             <Button
                                                                 floated='right'
-                                                                size='tiny' primary icon>
+                                                                style={{ backgroundColor: '#24305e' }} inverted
+                                                                size='tiny' icon>
                                                                 <Icon name='edit' />
                                                             </Button>
                                                         </Grid.Column>
@@ -146,8 +146,8 @@ class ProfilePage extends Component {
                                 </Segment>
                             </Grid.Column>
                             <Grid.Column fluid>
-                                <Segment>
-                                    <Table style={{ textAlign: 'center' }} basic='very'>
+                                <Segment style={{ backgroundColor: '#374785' }}>
+                                    <Table style={{ textAlign: 'center', color: 'white' }} basic='very'>
                                         <Table.Header>
                                             <Table.Row>
                                                 <Table.HeaderCell>
@@ -155,12 +155,14 @@ class ProfilePage extends Component {
                                                         <Grid.Column fluid>
                                                         </Grid.Column>
                                                         <Grid.Column fluid>
-                                                            <Header size='large'>Groups</Header>
+                                                            <Header size='large' style={{ color: 'white' }}>Groups</Header>
                                                         </Grid.Column>
                                                         <Grid.Column fluid>
                                                             <Button
                                                                 floated='right'
-                                                                size='tiny' primary icon>
+                                                                style={{ backgroundColor: '#24305e' }} 
+                                                                inverted
+                                                                size='tiny' icon>
                                                                 <Icon name='edit' />
                                                             </Button>
                                                         </Grid.Column>

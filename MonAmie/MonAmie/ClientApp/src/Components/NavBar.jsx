@@ -34,7 +34,7 @@ class NavigationBar extends Component {
             return <Redirect to={redirectTo} />
 
         return (
-            <Menu color='blue' inverted stackable fluid>
+            <Menu style={{ backgroundColor: '#24305e' }} inverted stackable fluid>
                 <Menu.Item>
                     <Icon name='handshake' />
                     Mon Amie
