@@ -2,9 +2,10 @@
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authActions } from '../../Actions';
-import { Form, Button, Divider, Image, Container } from 'semantic-ui-react';
+import { Form, Button, Divider, Image, Container, Segment, Grid, Loader } from 'semantic-ui-react';
 import { states, genders } from '../../Enums';
 import logo from '../../Images/logo.png';
+import Background0 from '../../Images/login.jpg';
 
 class RegistrationPage extends Component {
     constructor(props) {
@@ -71,10 +72,10 @@ class RegistrationPage extends Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        this.setState({ submitted: true });
         const { user } = this.state;
         const { dispatch } = this.props;
         if (user.firstName && user.lastName && user.email && user.password && user.birthdate && user.state && user.gender) {
+            this.setState({ submitted: true });
             dispatch(authActions.register(user));
         }
     }
@@ -87,36 +88,43 @@ class RegistrationPage extends Component {
             return (<Redirect to="/login" />);
 
         return (
-            <Container>
-                <Image centered src={logo} size='medium' />
-                <Form>
-                    <Form.Field>
-                        <label>First Name</label>
-                        <input type='text' value={user.firstName} name='firstName' onChange={this.handleChange} placeholder='First Name' />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Last Name</label>
-                        <input type='text' value={user.lastName} name='lastName' onChange={this.handleChange} placeholder='Last Name' />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Email</label>
-                        <input type='email' value={user.email} name='email' onChange={this.handleChange} placeholder='Email' />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Password</label>
-                        <input type='password' value={user.password} name='password' onChange={this.handleChange} placeholder='Password' />
-                    </Form.Field>
-                    <Form.Group widths="equal">
-                        <Form.Input type='date' fluid label="Date of Birth" placeholder="Date of Birth" value={user.birthdate} name='birthdate' onChange={this.handleChange} />
-                        <Form.Select clearable fluid label="Gender" placeholder="Gender" options={genders} value={user.gender} name='gender' onChange={this.handleGenderChange} />
-                        <Form.Select clearable search fluid label="State" options={states} placeholder="Choose an option" value={user.state} onChange={this.handleStateChange} />
-                    </Form.Group>
-                    <Button fluid color='green' onClick={this.handleSubmit}>Register</Button>
-                </Form>
-                <Divider horizontal>Already have an account?</Divider>
-
-                <Button fluid color='teal' onClick={this.handleRedirect}>Login</Button>
-            </Container>
+            <div>
+                <Image src={Background0} fluid style={{ maxHeight: '450px' }} />
+                <Grid textAlign='center' verticalAlign=' middle' style={{marginTop: '10px'}}>
+                    <Grid.Column style={{ maxWidth: 600 }}>
+                        <Segment secondary>
+                            <Image centered src={logo} size='medium' />
+                            <Loader active={submitted} />
+                            <Form>
+                                <Form.Field>
+                                    <label>First Name</label>
+                                    <input type='text' value={user.firstName} name='firstName' onChange={this.handleChange} placeholder='First Name' />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Last Name</label>
+                                    <input type='text' value={user.lastName} name='lastName' onChange={this.handleChange} placeholder='Last Name' />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Email</label>
+                                    <input type='email' value={user.email} name='email' onChange={this.handleChange} placeholder='Email' />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Password</label>
+                                    <input type='password' value={user.password} name='password' onChange={this.handleChange} placeholder='Password' />
+                                </Form.Field>
+                                <Form.Group widths="equal">
+                                    <Form.Input type='date' fluid label="Date of Birth" placeholder="Date of Birth" value={user.birthdate} name='birthdate' onChange={this.handleChange} />
+                                    <Form.Select clearable fluid label="Gender" placeholder="Gender" options={genders} value={user.gender} name='gender' onChange={this.handleGenderChange} />
+                                    <Form.Select clearable search fluid label="State" options={states} placeholder="Choose an option" value={user.state} onChange={this.handleStateChange} />
+                                </Form.Group>
+                            </Form>
+                            <Button fluid color='green' onClick={this.handleSubmit}>Register</Button>
+                            <Divider fluid horizontal>Already have an account?</Divider>
+                            <Button fluid color='blue' onClick={this.handleRedirect}>Login</Button>
+                        </Segment>
+                    </Grid.Column>
+                </Grid>
+            </div>
         );
     }
 }

@@ -2,9 +2,9 @@
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authActions } from '../../Actions';
-import { Form, Button, Divider, Image, Container, Segment, Grid } from 'semantic-ui-react';
+import { Form, Button, Divider, Image, Container, Segment, Grid, Loader } from 'semantic-ui-react';
 import logo from '../../Images/logo.png';
-import Background0 from '../../Images/login.jpg'
+import Background0 from '../../Images/login.jpg';
 
 class LoginPage extends Component {
     constructor(props) {
@@ -38,12 +38,12 @@ class LoginPage extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-
-        this.setState({ submitted: true });
+        
         const { email, password } = this.state;
         const { dispatch } = this.props;
 
         if (email && password) {
+            this.setState({ submitted: true });
             dispatch(authActions.login(email, password));
         }
     }
@@ -57,27 +57,30 @@ class LoginPage extends Component {
 
         return (
             <div>
-                <Image src={Background0} large />
-                <Divider/>
-            <Container textAlign='center'>
-                    <Image centered src={logo} size='medium' />
-                    <Form>
-                        <Form.Field>
-                            <label>Email</label>
-                            <input type='email' value={email} name='email' onChange={this.handleChange} placeholder='Email' />
-                        </Form.Field>
-                        <Form.Field>
-                            <label>Password</label>
-                            <input type='password' value={password} name='password' onChange={this.handleChange} placeholder='Password' />
-                        </Form.Field>
-                        <Button type='login' fluid color='green' onClick={this.handleSubmit}>Login</Button>
-                    </Form>
-                    <Divider horizontal>Don't have an account?</Divider>
+                <Image src={Background0} fluid style={{ maxHeight: '500px' }} />
+                <Grid textAlign='center' verticalAlign=' middle' style={{ marginTop: '10px' }}>
+                    <Grid.Column style={{ maxWidth: 600 }}>
+                        <Segment secondary>
+                            <Image centered src={logo} size='medium' />
+                            <Loader active={submitted} />
+                            <Form>
+                                <Form.Field>
+                                    <label>Email</label>
+                                    <input type='email' value={email} name='email' onChange={this.handleChange} placeholder='Email' />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Password</label>
+                                    <input type='password' value={password} name='password' onChange={this.handleChange} placeholder='Password' />
+                                </Form.Field>
+                                <Button type='login' fluid color='green' onClick={this.handleSubmit}>Login</Button>
+                            </Form>
+                            <Divider horizontal>Don't have an account?</Divider>
 
-                    <Button type='register' fluid color='blue' onClick={this.handleRedirect}>Register</Button>
-                </Container>
-
-                </div>
+                            <Button type='register' fluid color='blue' onClick={this.handleRedirect}>Register</Button>
+                        </Segment>
+                    </Grid.Column>
+                </Grid>
+            </div>
         );
     }
 }
