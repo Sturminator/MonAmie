@@ -8,6 +8,8 @@ import {
     Icon, Grid, Container, Loader, Dimmer, Button, Popup, Modal
 } from 'semantic-ui-react';
 
+import profileStyles from '../../Styles/profile.styles';
+
 class ProfilePage extends Component {
     state = { currentLength: 0, editMode: false };
 
@@ -60,8 +62,8 @@ class ProfilePage extends Component {
             <div>
                 <NavigationBar>
                 </NavigationBar>
-                <style>{`html, body {background-color: #468499 !important; } `}</style>
-                <Modal style={{ maxHeight: 180, marginLeft: 'auto', marginRight: 'auto', marginTop: 'auto', marginBottom: 'auto' }} size=' tiny' open={editMode} onClose={this.close}>
+                <style>{`html, body {background-color: #41b3a3 !important; } `}</style>
+                <Modal style={profileStyles.MiniCenteredModal} size=' tiny' open={editMode} onClose={this.close}>
                     <Modal.Header>Edit Profile</Modal.Header>
                     <Modal.Content>
                         <p>Are you sure you want to edit your profile?</p>
