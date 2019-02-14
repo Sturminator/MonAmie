@@ -5,7 +5,7 @@ import { NavigationBar } from '../../Components';
 import { userProfileActions } from '../../Actions';
 import {
     Table, Form, Segment, TextArea, Divider, Header,
-    Icon, Grid, Container, Loader, Dimmer, Button, Popup
+    Icon, Grid, Container, Loader, Dimmer, Button, Popup, Modal
 } from 'semantic-ui-react';
 
 class ProfilePage extends Component {
@@ -60,6 +60,17 @@ class ProfilePage extends Component {
             <div>
                 <NavigationBar>
                 </NavigationBar>
+                <style>{`html, body {background-color: #468499 !important; } `}</style>
+                <Modal style={{ maxHeight: 180, marginLeft: 'auto', marginRight: 'auto', marginTop: 'auto', marginBottom: 'auto' }} size=' tiny' open={editMode} onClose={this.close}>
+                    <Modal.Header>Edit Profile</Modal.Header>
+                    <Modal.Content>
+                        <p>Are you sure you want to edit your profile?</p>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button onClick={this.onEditButtonClick} negative>No</Button>
+                        <Button onClick={this.onEditButtonClick} positive icon='checkmark' labelPosition='right' content='Yes' />
+                    </Modal.Actions>
+                </Modal>
                 <Container>
                     <Segment fluid secondary>
                         <Grid fluid columns='equal'>
