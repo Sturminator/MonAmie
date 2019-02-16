@@ -73,7 +73,7 @@ class ProfilePage extends Component {
                         <Button onClick={this.onEditButtonClick} positive icon='checkmark' labelPosition='right' content='Yes' />
                     </Modal.Actions>
                 </Modal>
-                <Container>
+                <Container style={{marginTop: '50px'}}>
                     <Segment fluid style={{ backgroundColor: '#a8d0e6' }}>
                         <Grid fluid columns='equal'>
                             <Grid.Column fluid>
@@ -87,7 +87,7 @@ class ProfilePage extends Component {
                         </Grid>
                         <Container>
                             <Header as='h2' icon textAlign='center'>
-                                <Icon name='user' circular />
+                                <Icon name='user' />
                                 <Header.Content style={{ color: 'white' }}>{userProfile.items.fullName}</Header.Content>
                             </Header>
                             <Grid fluid columns={3}>
