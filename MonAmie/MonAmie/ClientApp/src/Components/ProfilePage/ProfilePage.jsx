@@ -62,7 +62,7 @@ class ProfilePage extends Component {
             <div>
                 <NavigationBar>
                 </NavigationBar>
-                <style>{`html, body {background-color: #374785 !important; } `}</style>
+                <style>{`html, body {background-color: #24305E !important; } `}</style>
                 <Modal style={profileStyles.MiniCenteredModal} size=' tiny' open={editMode} onClose={this.close}>
                     <Modal.Header>Edit Profile</Modal.Header>
                     <Modal.Content>
