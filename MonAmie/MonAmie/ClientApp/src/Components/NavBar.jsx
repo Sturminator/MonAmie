@@ -34,12 +34,12 @@ class NavigationBar extends Component {
             return <Redirect to={redirectTo} />
 
         return (
-            <Menu style={{ backgroundColor: '#24305e' }} inverted stackable fluid>
-                <Menu.Item>
+            <Menu style={{ backgroundColor: '#FFFFFF' }}  stackable fluid>
+                <Menu.Item style={{ color: '#24305E' }}>
                     <Icon name='handshake' />
                     Mon Amie
                     </Menu.Item>
-                <Menu.Item
+                <Menu.Item style={{ color: '#24305E' }}
                     activename='home'
                     to='/'
                     active={activeItem === 'home'}
@@ -48,7 +48,7 @@ class NavigationBar extends Component {
                     <Icon name='home' />
                     Home
                     </Menu.Item>
-                <Menu.Item
+                <Menu.Item style={{ color: '#24305E' }}
                     activename='friends'
                     to='/'
                     active={activeItem === 'friends'}
@@ -57,7 +57,7 @@ class NavigationBar extends Component {
                     <Icon name='user' />
                     Friends
                     </Menu.Item>
-                <Menu.Item
+                <Menu.Item style={{ color: '#24305E' }}
                     activename='groups'
                     to='/'
                     active={activeItem === 'groups'}
@@ -66,7 +66,7 @@ class NavigationBar extends Component {
                     <Icon name='group' />
                     Groups
                     </Menu.Item>
-                <Menu.Item
+                <Menu.Item style={{ color: '#24305E' }}
                     activename='events'
                     to='/'
                     active={activeItem === 'events'}
@@ -76,7 +76,7 @@ class NavigationBar extends Component {
                     Events
                     </Menu.Item>
                 <Menu.Menu position='right'>
-                    <Menu.Item
+                    <Menu.Item style={{ color: '#24305E' }}
                         activename='messages'
                         to='/'
                         active={activeItem === 'messages'}
@@ -84,7 +84,7 @@ class NavigationBar extends Component {
                     >
                         <Icon flipped='horizontally' name='chat' />Messages
                     </Menu.Item>
-                    <Dropdown item text={user.firstName}>
+                    <Dropdown style={{ color: '#24305E' }} item text={user.firstName}>
                         <Dropdown.Menu>
                             <Dropdown.Item activename='profile'
                                 to='/profile/'

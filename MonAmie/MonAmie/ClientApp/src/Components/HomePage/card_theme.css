@@ -1,0 +1,22 @@
+﻿body {
+}
+
+.ui.card,
+.ui.cards>.card {
+    background-color: #A8D0E6;
+    color: #FFFFFF;
+}
+
+    .ui.card > .content > .header,
+    .ui.cards > .card > .content > .header {
+        color: #FFFFFF
+    }
+    .ui.card > .content > .description,
+    .ui.cards > .card > .content > .description {
+        color: #FFFFFF;
+    }
+
+    .ui.card > .content > .meta,
+    .ui.cards > .card > .content > .meta {
+        color: #FFFFFF
+    }

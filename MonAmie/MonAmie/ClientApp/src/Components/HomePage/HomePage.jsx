@@ -5,6 +5,8 @@ import { Card, Grid, Image, Dimmer, Loader } from 'semantic-ui-react';
 import { NavigationBar } from '../../Components';
 import { userActions } from '../../Actions';
 
+import './card_theme.css';
+
 import art from '../../Images/Categories/art.jpg';
 import automotive from '../../Images/Categories/automotive.jpg';
 import boardgames from '../../Images/Categories/boardgames.jpg';
@@ -49,12 +51,14 @@ class HomePage extends Component {
         return cards
     }
 
+
+
     render() {
         const { user, users } = this.props;
         const { userSelected, redirectTo } = this.state;
 
         if (userSelected)
-            return <Redirect to={redirectTo} /> 
+            return <Redirect to={redirectTo} />
 
         if (!users.items)
             return (<div style={{ paddingTop: '600px' }}>
@@ -67,6 +71,7 @@ class HomePage extends Component {
             <div>
                 <NavigationBar>
                 </NavigationBar>
+                <style>{`html, body {background-color: #24305E !important; } `}</style>
                 <div style={{ padding: '25px' }}>
                     <Grid columns={5} stackable>
                         <Grid.Row stretched>
@@ -74,9 +79,9 @@ class HomePage extends Component {
                             </Grid.Column>
                             <Grid.Column>
                                 <Card href='#card-example-link-card'>
-                                    <Image src={art} />
+                                    <Image src={art}/>
                                     <Card.Content textAlign='center'>
-                                        <Card.Header >Art</Card.Header>
+                                        <Card.Header>Art</Card.Header>
                                         <Card.Description>Everything artistic, from painting to photography</Card.Description>
                                     </Card.Content>
                                 </Card>
@@ -109,6 +114,7 @@ class HomePage extends Component {
         );
     }
 }
+
 
 function mapStateToProps(state) {
     const { users, authentication } = state;
