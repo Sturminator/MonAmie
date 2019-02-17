@@ -91,27 +91,6 @@ class ProfilePage extends Component {
                     <NavigationBar>
                     </NavigationBar>
                     <style>{`html, body {background-color: #24305E !important; } `}</style>
-                    <Modal style={profileStyles.MiniCenteredModal} size='tiny' open={editMode} onClose={this.close}>
-                        <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Profile</Modal.Header>
-                        <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
-                            <Form fluid='true'>
-                                <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
-                                    <TextArea
-                                        value={bio}
-                                        style={{ minHeight: 100 }}
-                                        maxLength="500"
-                                        onChange={this.onBioChange}
-                                        placeholder="Give a brief bio of yourself"
-                                    />
-                                    <Header sub style={{ color: 'white' }}>Characters: {bio.length} / 500</Header>
-                                </Segment>
-                            </Form>
-                        </Modal.Content>
-                        <Modal.Actions style={{ backgroundColor: '#374785' }}>
-                            <Button onClick={this.onCancelEditClick} negative>Cancel</Button>
-                            <Button onClick={this.onSaveEditClick} positive icon='checkmark' labelPosition='right' content='Save' />
-                        </Modal.Actions>
-                    </Modal>
                     <Container style={{ marginTop: '50px' }}>
                         <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
                             <Grid fluid='true' columns='equal'>
