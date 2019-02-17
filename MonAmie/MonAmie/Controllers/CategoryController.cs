@@ -18,7 +18,7 @@ namespace MonAmie.Controllers
         }
 
         [HttpGet]
-        [Route("api/Category/GetAll")]
+        [Route("profile/api/Category/GetAll")]
         public IActionResult GetAll()
         {
             var categories = categoryService.GetAllCategories();
@@ -27,7 +27,7 @@ namespace MonAmie.Controllers
             {
                 CategoryId = result.CategoryId,
                 CategoryName = result.CategoryName
-            }).ToList();
+            }).ToList().OrderBy(c => c.CategoryName);
 
             return Ok(results);
         }

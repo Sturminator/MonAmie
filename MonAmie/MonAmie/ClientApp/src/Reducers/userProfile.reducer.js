@@ -26,6 +26,21 @@ export function userProfile(state = {}, action) {
             };
         case userProfileConstants.UPDATE_FAILURE:
             return {
+                loading: false,
+                error: action.error
+            };
+        case userProfileConstants.UPDATECATEGORIES_REQUEST:
+            return {
+                loading: true
+            };
+        case userProfileConstants.UPDATECATEGORIES_SUCCESS:
+            return {
+                loading: false,
+                items: action.userProfile
+            };
+        case userProfileConstants.UPDATECATEGORIES_FAILURE:
+            return {
+                loading: false,
                 error: action.error
             };
         default:

@@ -1,9 +1,19 @@
 ﻿import { authHeader } from '../Helpers';
 
 export const categoryService = {
+    getAll,
     getAllForUser,
     logout
 };
+
+function getAll() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`api/Category/GetAll/`, requestOptions).then(handleResponse);
+}
 
 function getAllForUser(id) {
     const requestOptions = {

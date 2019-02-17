@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { NavigationBar } from '../../Components';
-import { userProfileActions } from '../../Actions';
+import { userProfileActions, categoryActions } from '../../Actions';
 import {
     Table, Form, Segment, TextArea, Divider, Header,
     Icon, Grid, Container, Loader, Dimmer, Button, Popup, Modal
@@ -11,49 +11,125 @@ import {
 import profileStyles from '../../Styles/profile.styles';
 
 class ProfilePage extends Component {
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            bio: "",
-            editMode: false
-        };
-    }
+    state = {
+        originalCategories: [],
+        newCategories: [],
+        bio: "",
+        editProfile: false,
+        editCategories: false
+    };
 
     componentDidMount() {
         const { match: { params } } = this.props;
         var idStr = params.userId.split("_")[1];
         var id = parseInt(idStr) / 11;
         this.props.dispatch(userProfileActions.getById(id));
+        this.props.dispatch(categoryActions.getAll());
     }
 
     onBioChange = (e, { value }) => this.setState({
         bio: value
     });
 
-    onEditButtonClick = (e) => this.setState({
-        editMode: this.state.editMode ? false : true,
+    onEditCategoriesButtonClick = (e) => {
+        const { originalCategories, newCategories } = this.state;
+        const { userProfile } = this.props;
+
+        var currentCategories = userProfile.items.categories;
+
+        for (let i = 0; i < currentCategories.length; i++) {
+            originalCategories.push(currentCategories[i]);
+            newCategories.push(currentCategories[i]);
+        }
+
+        this.setState({
+            originalCategories: originalCategories,
+            newCategories: newCategories,
+            editCategories: this.state.editCategories ? false : true,
+        })
+    };
+
+    onCancelCategoriesEditClick = (e) => this.setState({
+        originalCategories: [],
+        newCategories: [],
+        editCategories: this.state.editCategories ? false : true
+    });
+
+    onSaveCategoriesEditClick = (e) => {
+        var categories = [...this.state.newCategories];
+        const { userProfile } = this.props;
+
+        userProfile.items.categories = categories;
+
+        this.setState({
+            originalCategories: [],
+            newCategories: [],
+            editCategories: this.state.editCategories ? false : true
+        })
+
+        this.props.dispatch(userProfileActions.updateCategories(userProfile));  
+    };
+
+    onEditProfileButtonClick = (e) => this.setState({
+        editProfile: this.state.editProfile ? false : true,
         bio: this.props.userProfile.items.bio
     });
 
-    onCancelEditClick = (e) => this.setState({
-        editMode: this.state.editMode ? false : true
+    onCancelProfileEditClick = (e) => this.setState({
+        editProfile: this.state.editProfile ? false : true
     });
 
-    onSaveEditClick = (e) => {
+    onAddInterestToUser = (e, { value }) => {
+        var array = [...this.state.newCategories];
+
+        array.push(value);
+
+        array.sort(function (a, b) {
+            var nameA = a.categoryName.toLowerCase(); // ignore upper and lowercase
+            var nameB = b.categoryName.toLowerCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+
+            // names must be equal
+            return 0;
+        });
+
+        this.setState({
+            newCategories: array
+        });
+    };
+
+    onRemoveInterestFromUser = (e, { value }) => {
+        var array = [...this.state.newCategories];
+
+        var index = array.indexOf(value)
+        if (index !== -1) {
+            array.splice(index, 1);
+        }
+
+        this.setState({
+            newCategories: array
+        });
+    };
+
+    onSaveProfileEditClick = (e) => {
         const { userProfile } = this.props;
         const { bio } = this.state;
 
         userProfile.items.bio = bio;
 
         this.setState({
-            editMode: this.state.editMode ? false : true
+            editProfile: this.state.editProfile ? false : true
         });
 
-        this.props.dispatch(userProfileActions.update(userProfile))       
+        this.props.dispatch(userProfileActions.update(userProfile));     
     };
 
-    createTable = () => {
+    createUserCategoriesTable = () => {
         const { userProfile } = this.props;
 
         var categories = userProfile.items.categories;
@@ -73,9 +149,44 @@ class ProfilePage extends Component {
         return table
     }
 
+    createCategoriesTable = (userHas) => {
+        const { categories } = this.props;
+        const { newCategories } = this.state;
+
+        var table = []
+
+        if (categories.items) {
+            if (userHas) {
+                for (let i = 0; i < newCategories.length; i++) {
+                    var children = []
+                    //Inner loop to create children
+                    children.push(<Table.Cell key={i + 1}>{newCategories[i].categoryName}</Table.Cell>)
+                    children.push(<Table.Cell key={i + 1}><Button onClick={this.onRemoveInterestFromUser} value={newCategories[i]} size='tiny' icon color='red'><Icon name='minus' /></Button></Table.Cell>)
+                    //Create the parent and add the children
+                    table.push(<Table.Row key={i + 1} children={children} />)
+                }
+            }
+            else {
+                // Outer loop to create parent
+                for (let i = 0; i < categories.items.length; i++) {
+                    if (!newCategories.some(uc => uc.categoryId === categories.items[i].categoryId)) {
+                        var children = []
+                        //Inner loop to create children
+                        children.push(<Table.Cell key={i + 1}>{categories.items[i].categoryName}</Table.Cell>)
+                        children.push(<Table.Cell key={i + 1}><Button onClick={this.onAddInterestToUser} value={categories.items[i]} size='tiny' icon color='green'><Icon name='plus' /></Button></Table.Cell>)
+                        //Create the parent and add the children
+                        table.push(<Table.Row key={i + 1} children={children} />)
+                    }                    
+                }
+            }    
+        }
+
+        return table
+    }
+
     render() {
         const { user, userProfile } = this.props;
-        const { bio, editMode } = this.state;
+        const { bio, editProfile, editCategories } = this.state;
 
         if (!userProfile.items) {
             return (<div style={{ paddingTop: '600px' }}>
@@ -143,7 +254,7 @@ class ProfilePage extends Component {
                                                 </Table.Row>
                                             </Table.Header>
                                             <Table.Body>
-                                                {this.createTable()}
+                                                {this.createUserCategoriesTable()}
                                             </Table.Body>
                                         </Table>
                                     </Segment>
@@ -167,7 +278,7 @@ class ProfilePage extends Component {
                                                 </Table.Row>
                                             </Table.Header>
                                             <Table.Body>
-                                                {this.createTable()}
+                                                {this.createUserCategoriesTable()}
                                             </Table.Body>
                                         </Table>
                                     </Segment>
@@ -184,7 +295,38 @@ class ProfilePage extends Component {
                 <NavigationBar>
                 </NavigationBar>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
-                <Modal style={profileStyles.MiniCenteredModal} size='tiny' open={editMode} onClose={this.close}>
+                <Modal style={profileStyles.EditCategoriesModal} size='tiny' open={editCategories} onClose={this.close}>
+                    <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Interests</Modal.Header>
+                    <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
+                        <Grid fluid='true' stackable columns={2} style={{ paddingTop: '10px' }}>
+                            <Grid.Column>
+                                <Segment style={{ backgroundColor: '#374785', minHeight: '250px' }}>
+                                    <Header size='large' style={{ textAlign: 'center', color: 'white' }}>Interests</Header>
+                                    <Table style={{ textAlign: 'center', color: 'white' }} basic='very' celled>
+                                        <Table.Body>
+                                            {this.createCategoriesTable(false)}
+                                        </Table.Body>
+                                    </Table>
+                                </Segment>
+                            </Grid.Column>
+                            <Grid.Column>
+                                <Segment style={{ backgroundColor: '#374785', minHeight: '250px' }}>
+                                    <Header size='large' style={{ textAlign: 'center', color: 'white' }}>My Interests</Header>
+                                    <Table style={{ textAlign: 'center', color: 'white' }} basic='very' celled>
+                                        <Table.Body>
+                                            {this.createCategoriesTable(true)}
+                                        </Table.Body>
+                                    </Table>
+                                </Segment>
+                            </Grid.Column>
+                        </Grid>
+                    </Modal.Content>
+                    <Modal.Actions style={{ backgroundColor: '#374785' }}>
+                        <Button onClick={this.onCancelCategoriesEditClick} negative>Cancel</Button>
+                        <Button onClick={this.onSaveCategoriesEditClick} positive icon='checkmark' labelPosition='right' content='Save' />
+                    </Modal.Actions>
+                </Modal>
+                <Modal style={profileStyles.EditProfileModal} size='tiny' open={editProfile} onClose={this.close}>
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Profile</Modal.Header>
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
                         <Form fluid='true'>
@@ -201,8 +343,8 @@ class ProfilePage extends Component {
                         </Form>
                     </Modal.Content>
                     <Modal.Actions style={{ backgroundColor: '#374785'}}>
-                        <Button onClick={this.onCancelEditClick} negative>Cancel</Button>
-                        <Button onClick={this.onSaveEditClick} positive icon='checkmark' labelPosition='right' content='Save' />
+                        <Button onClick={this.onCancelProfileEditClick} negative>Cancel</Button>
+                        <Button onClick={this.onSaveProfileEditClick} positive icon='checkmark' labelPosition='right' content='Save' />
                     </Modal.Actions>
                 </Modal>
                 <Container style={{ marginTop: '50px' }}>
@@ -213,7 +355,7 @@ class ProfilePage extends Component {
                             <Grid.Column>
                             </Grid.Column>
                             <Grid.Column>
-                                <Popup trigger={<Button floated='right' onClick={this.onEditButtonClick} style={{ backgroundColor: '#24305e' }} inverted icon='edit' />} content='Edit Profile' />
+                                <Popup trigger={<Button floated='right' onClick={this.onEditProfileButtonClick} style={{ backgroundColor: '#24305e' }} inverted icon='edit' />} content='Edit Profile' />
                             </Grid.Column>
                         </Grid>
                         <Container>
@@ -252,19 +394,14 @@ class ProfilePage extends Component {
                                                             <Header size='large' style={{ color: 'white' }}>Interests</Header>
                                                         </Grid.Column>
                                                         <Grid.Column>
-                                                            <Button
-                                                                floated='right'
-                                                                style={{ backgroundColor: '#24305e' }} inverted
-                                                                size='tiny' icon>
-                                                                <Icon name='edit' />
-                                                            </Button>
+                                                            <Popup trigger={<Button floated='right' onClick={this.onEditCategoriesButtonClick} style={{ backgroundColor: '#24305e' }} inverted icon='edit' size='tiny' />} content='Edit Interests' />
                                                         </Grid.Column>
                                                     </Grid>
                                                 </Table.HeaderCell>
                                             </Table.Row>
                                         </Table.Header>
                                         <Table.Body>
-                                            {this.createTable()}
+                                            {this.createUserCategoriesTable()}
                                         </Table.Body>
                                     </Table>
                                 </Segment>
@@ -282,20 +419,13 @@ class ProfilePage extends Component {
                                                             <Header size='large' style={{ color: 'white' }}>Groups</Header>
                                                         </Grid.Column>
                                                         <Grid.Column>
-                                                            <Button
-                                                                floated='right'
-                                                                style={{ backgroundColor: '#24305e' }}
-                                                                inverted
-                                                                size='tiny' icon>
-                                                                <Icon name='edit' />
-                                                            </Button>
                                                         </Grid.Column>
                                                     </Grid>
                                                 </Table.HeaderCell>
                                             </Table.Row>
                                         </Table.Header>
                                         <Table.Body>
-                                            {this.createTable()}
+                                            {this.createUserCategoriesTable()}
                                         </Table.Body>
                                     </Table>
                                 </Segment>
@@ -309,11 +439,12 @@ class ProfilePage extends Component {
 }
 
 function mapStateToProps(state) {
-    const { userProfile, authentication } = state;
+    const { userProfile, authentication, categories } = state;
     const { user } = authentication;
     return {
         user,
-        userProfile
+        userProfile,
+        categories
     };
 }
 
