@@ -2,10 +2,12 @@
 
 export default {
     MiniCenteredModal: {
-        maxHeight: '180px',
+        maxHeight: '340px',
         marginBottom: 'auto',
         marginTop: 'auto',
         marginLeft: 'auto',
-        marginRight: 'auto'
+        marginRight: 'auto',
+        backgroundColor: '#374785',
+        color: 'white'
     }
 }

@@ -2,6 +2,5 @@
 import { Card } from 'semantic-ui-react';
 
 export const CategoryCard = () => (
-    <Card>
-    </Card>
+
     )

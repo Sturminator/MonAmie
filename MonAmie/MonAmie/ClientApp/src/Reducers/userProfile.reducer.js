@@ -16,11 +16,18 @@ export function userProfile(state = {}, action) {
                 error: action.error
             };
         case userProfileConstants.UPDATE_REQUEST:
-            break;
+            return {
+                loading: true
+            };
         case userProfileConstants.UPDATE_SUCCESS:
-            break;
+            return {
+                loading: false,
+                items: action.userProfile
+            };
         case userProfileConstants.UPDATE_FAILURE:
-            break;
+            return {
+                error: action.error
+            };
         default:
             return state;
     }

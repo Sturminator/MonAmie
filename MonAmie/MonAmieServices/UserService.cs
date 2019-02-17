@@ -157,11 +157,34 @@ namespace MonAmieServices
             return age;
         }
 
+        /// <summary>
+        /// Get a user's bio
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string GetBio(int id)
         {
             var bio = GetById(id).Bio;
 
             return string.IsNullOrEmpty(bio) ? bio : "";
+        }
+
+        /// <summary>
+        /// update a user's bio
+        /// </summary>
+        /// <param name="user"></param>
+        public User UpdateUserBio(int id, string updatedBio)
+        {
+            var entity = _context.User.FirstOrDefault(u => u.UserId == id);
+
+            if (entity != null)
+            {
+                entity.Bio = updatedBio;
+                _context.User.Update(entity);
+                _context.SaveChanges();
+            }
+
+            return entity;
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace MonAmie.Dtos
+﻿using MonAmieData.Models;
+using System.Collections.Generic;
+
+namespace MonAmie.Dtos
 {
     public class UserDto
     {
@@ -10,5 +13,7 @@
         public string Birthdate { get; set; }
         public string Gender { get; set; }
         public string State { get; set; }
+        public string Bio { get; set; }
+        public List<Category> Categories { get; set; }
     }
 }

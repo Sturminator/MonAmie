@@ -2,6 +2,7 @@
 
 export const userProfileService = {
     getById,
+    update,
     logout
 };
 
@@ -12,6 +13,16 @@ function getById(id) {
     };
 
     return fetch(`api/UserProfile/GetById/` + id, requestOptions).then(handleResponse);
+}
+
+function update(userProfile) {
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userProfile.items)
+    };
+
+    return fetch(`api/UserProfile/Update`, requestOptions).then(handleResponse);
 }
 
 function logout() {

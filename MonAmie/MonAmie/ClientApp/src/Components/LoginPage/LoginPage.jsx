@@ -63,7 +63,7 @@ class LoginPage extends Component {
                     <Grid.Column style={{ maxWidth: 600 }}>
                         <Segment secondary>
                             <Image centered src={logo} size='medium' />
-                            <Loader active={submitted} />
+                            <Loader active={loggingIn} />
                             <Form>
                                 <Form.Field>
                                     <label>Email</label>

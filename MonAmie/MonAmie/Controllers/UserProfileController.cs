@@ -4,6 +4,7 @@ using MonAmieData.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using MonAmieData.Models;
+using MonAmie.Dtos;
 
 namespace MonAmie.Controllers
 {
@@ -47,6 +48,34 @@ namespace MonAmie.Controllers
                 State = user.State,
                 Bio = user.Bio,
                 Categories = userCategoryModels.ToList()
+            });
+        }
+
+        [HttpPut]
+        [Route("profile/api/UserProfile/Update")]
+        public IActionResult Update([FromBody]UserDto userDto)
+        {
+            var bio = userDto.Bio;
+            var id = userDto.Id;
+
+            if(bio == null)
+            {
+                return BadRequest(new { message = "Bio cannot be null." });
+            }
+
+            var updatedUser = userService.UpdateUserBio(id, bio);
+
+            return Ok(new
+            {
+                Id = updatedUser.UserId,
+                FirstName = updatedUser.FirstName,
+                LastName = updatedUser.LastName,
+                FullName = updatedUser.FirstName + " " + updatedUser.LastName,
+                Gender = updatedUser.Gender,
+                Age = userService.CalculateUserAge(updatedUser.BirthDate),
+                State = updatedUser.State,
+                Bio = updatedUser.Bio,
+                Categories = userDto.Categories
             });
         }
     }

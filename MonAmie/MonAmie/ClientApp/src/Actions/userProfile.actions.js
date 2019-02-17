@@ -5,6 +5,7 @@ import { history } from '../Helpers';
 
 export const userProfileActions = {
     getById,
+    update,
     logout
 };
 
@@ -24,6 +25,21 @@ function getById(id) {
     function failure(error) { return { type: userProfileConstants.GETBYID_FAILURE, error } }
 }
 
+function update(userProfile) {
+    return dispatch => {
+        dispatch(request(userProfile));
+
+        userProfileService.update(userProfile)
+            .then(
+                userProfile => dispatch(success(userProfile)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request(userProfile) { return { type: userProfileConstants.UPDATE_REQUEST, userProfile } }
+    function success(userProfile) { return { type: userProfileConstants.UPDATE_SUCCESS, userProfile } }
+    function failure(error) { return { type: userProfileConstants.UPDATE_FAILURE, error } }
+}
 function logout() {
     authService.logout();
     return { type: authConstants.LOGOUT };

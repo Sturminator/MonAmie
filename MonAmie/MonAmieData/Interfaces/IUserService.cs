@@ -90,6 +90,12 @@ namespace MonAmieData.Interfaces
         string GetBio(int id);
 
         /// <summary>
+        /// Update a user's bio
+        /// </summary>
+        /// <param name="user"></param>
+        User UpdateUserBio(int id, string updatedBio);
+
+        /// <summary>
         /// Calculates the user's age as an int given a DateTime representing their birthdate
         /// </summary>
         /// <param name="birthDate"></param>
