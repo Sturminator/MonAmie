@@ -47,12 +47,13 @@ namespace MonAmie.Controllers
 
                     UserImage imageEntity = new UserImage()
                     {
-                        UserId = 1,
+                        UserImageId = 1,
                         FileName = uploadedImage.Name,
                         Data = ms.ToArray(),
                         Width = image.Width,
                         Height = image.Height,
-                        ContentType = uploadedImage.ContentType
+                        ContentType = uploadedImage.ContentType,
+                        UserId = 1
                     };
 
                     dbContext.UserImage.Add(imageEntity);
