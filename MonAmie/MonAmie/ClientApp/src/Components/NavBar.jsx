@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import { Menu, Icon, Dropdown, Image } from 'semantic-ui-react';
 import { history } from '../Helpers';
 
@@ -21,14 +21,19 @@ class NavigationBar extends Component {
             history.push(path);
         }
 
-        if (activename.nodeValue != this.state.activeItem) {
+        if (to.nodeValue != path) {
             if (to.nodeValue === '/profile/')
-                this.setState({
-                    activeItem: activename.nodeValue, redirectTo: to.nodeValue +
-                        user.firstName.toLowerCase() + '_' + user.id * 11
-                });
+            {
+                var profilePath = to.nodeValue + user.firstName.toLowerCase() + '_' + user.id * 11;
+
+                if (profilePath != path) {
+                    this.setState({
+                        redirectTo: profilePath
+                    });
+                }
+            }
             else
-                this.setState({ activeItem: activename.nodeValue, redirectTo: to.nodeValue });
+                this.setState({ redirectTo: to.nodeValue });
         }
     }
 
@@ -36,8 +41,19 @@ class NavigationBar extends Component {
         const { user } = this.props;
         const { activeItem, redirectTo } = this.state;
 
-        if (redirectTo != '')
-            return <Redirect to={redirectTo} />
+        var path = window.location.pathname;
+
+        if (redirectTo != '') {
+            if (redirectTo.includes('profile') && path != redirectTo) {
+                var redirect = redirectTo;
+                this.setState({ redirectTo: '' });
+                return <Redirect to={redirect} />
+            }
+            else {
+                return <Redirect to={redirectTo} />
+            }
+
+        }
 
         return (
             <Menu style={{ backgroundColor: '#FFFFFF' }}  stackable fluid>
@@ -46,25 +62,23 @@ class NavigationBar extends Component {
                     Mon Amie
                     </Menu.Item>
                 <Menu.Item style={{ color: '#24305E' }}
-                    activename='home'
                     to='/'
-                    active={activeItem === 'home'}
+                    active={path === '/'}
                     onClick={this.handleRedirect}
                 >
                     <Icon name='home' />
                     Home
                     </Menu.Item>
                 <Menu.Item style={{ color: '#24305E' }}
-                    activename='friends'
                     to='/friends'
-                    active={activeItem === 'friends'}
+                    active={path === '/friends'}
                     onClick={this.handleRedirect}
                 >
                     <Icon name='user' />
                     Friends
                     </Menu.Item>
                 <Menu.Item style={{ color: '#24305E' }}
-                    activename='groups'
+                    activename='/'
                     to='/'
                     active={activeItem === 'groups'}
                     onClick={this.handleRedirect}
@@ -91,9 +105,10 @@ class NavigationBar extends Component {
                         <Icon flipped='horizontally' name='chat' />Messages
                     </Menu.Item>
                     <Dropdown style={{ color: '#24305E' }} item text={user.firstName}>
-                        <Dropdown.Menu>
+                        <Dropdown.Menu style={{ color: '#24305E' }}>
                             <Dropdown.Item activename='profile'
                                 to='/profile/'
+                                active={path.includes('profile') && path.includes(user.firstName.toLowerCase())}
                                 onClick={this.handleRedirect}><Icon name='user circle' />
                                 Profile</Dropdown.Item>
                             <Dropdown.Item><Icon name='settings' />Settings</Dropdown.Item>
@@ -118,5 +133,5 @@ function mapStateToProps(state) {
     };
 }
 
-const connectedNavBar = connect(mapStateToProps)(NavigationBar);
+const connectedNavBar = withRouter(connect(mapStateToProps)(NavigationBar));
 export { connectedNavBar as NavigationBar };
