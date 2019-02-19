@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Menu, Icon, Dropdown, Image } from 'semantic-ui-react';
+import { history } from '../Helpers';
 
 class NavigationBar extends Component {
     constructor(props) {
@@ -14,9 +15,14 @@ class NavigationBar extends Component {
     handleRedirect(e) {
         const { to, activename } = e.currentTarget.attributes;
         const { user } = this.props;
+        var path = window.location.pathname;
+
+        if (to.nodeValue != '/login') {
+            history.push(path);
+        }
 
         if (activename.nodeValue != this.state.activeItem) {
-            if (to.nodeValue == '/profile/')
+            if (to.nodeValue === '/profile/')
                 this.setState({
                     activeItem: activename.nodeValue, redirectTo: to.nodeValue +
                         user.firstName.toLowerCase() + '_' + user.id * 11
@@ -50,7 +56,7 @@ class NavigationBar extends Component {
                     </Menu.Item>
                 <Menu.Item style={{ color: '#24305E' }}
                     activename='friends'
-                    to='/'
+                    to='/friends'
                     active={activeItem === 'friends'}
                     onClick={this.handleRedirect}
                 >

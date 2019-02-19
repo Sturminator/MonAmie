@@ -57,6 +57,10 @@ class HomePage extends Component {
         const { user, users } = this.props;
         const { userSelected, redirectTo } = this.state;
 
+        if (!user) {
+            return <Redirect to='/login' />
+        }
+
         if (userSelected)
             return <Redirect to={redirectTo} />
 

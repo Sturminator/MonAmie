@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { userProfileActions, categoryActions } from '../../Actions';
 import {
@@ -187,6 +187,10 @@ class ProfilePage extends Component {
     render() {
         const { user, userProfile } = this.props;
         const { bio, editProfile, editCategories } = this.state;
+
+        if (!user) {
+            return <Redirect to='/login' />
+        }
 
         if (!userProfile.items) {
             return (<div style={{ paddingTop: '600px' }}>

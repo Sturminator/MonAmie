@@ -2,6 +2,7 @@
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authActions } from '../../Actions';
+import { history } from '../../Helpers';
 import { Form, Button, Divider, Image, Container, Segment, Grid, Loader } from 'semantic-ui-react';
 import logo from '../../Images/logo.png';
 import Background0 from '../../Images/login.jpg';
@@ -33,6 +34,8 @@ class LoginPage extends Component {
     handleRedirect(e) {
         e.preventDefault();
 
+        history.push('/login');
+
         this.setState({ redirectToRegister: true });
     }
 
@@ -57,11 +60,11 @@ class LoginPage extends Component {
 
         return (
             <div>
-                <style>{`html, body {background-color: #24305E !important;}`}</style>
+                <style>{`html, body {background-color: #24305E !important; } `}</style>
                 <Image src={Background0} fluid style={{ maxHeight: '450px' }} />
                 <Grid textAlign='center' verticalAlign=' middle' style={{ marginTop: '10px' }}>
                     <Grid.Column style={{ maxWidth: 600 }}>
-                        <Segment secondary>
+                        <Segment style={{ backgroundColor: '#a8d0e6'}}>
                             <Image centered src={logo} size='medium' />
                             <Loader active={loggingIn} />
                             <Form>
@@ -75,9 +78,9 @@ class LoginPage extends Component {
                                 </Form.Field>
                                 <Button type='login' fluid color='green' onClick={this.handleSubmit}>Login</Button>
                             </Form>
-                            <Divider horizontal>Don't have an account?</Divider>
+                            <Divider fluid horizontal>Don't have an account?</Divider>
 
-                            <Button type='register' fluid color='blue' onClick={this.handleRedirect}>Register</Button>
+                            <Button color='violet' type='register' fluid onClick={this.handleRedirect}>Register</Button>
                         </Segment>
                     </Grid.Column>
                 </Grid>

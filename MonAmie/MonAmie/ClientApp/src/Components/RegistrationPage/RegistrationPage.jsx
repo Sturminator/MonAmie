@@ -2,6 +2,7 @@
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { authActions } from '../../Actions';
+import { history } from '../../Helpers';
 import { Form, Button, Divider, Image, Container, Segment, Grid, Loader } from 'semantic-ui-react';
 import { states, genders } from '../../Enums';
 import logo from '../../Images/logo.png';
@@ -66,6 +67,8 @@ class RegistrationPage extends Component {
     handleRedirect(e) {
         e.preventDefault();
 
+        history.push('/registration');
+
         this.setState({ redirectToLogin: true });
     }
 
@@ -89,11 +92,11 @@ class RegistrationPage extends Component {
 
         return (
             <div>
-                <style>{`html, body {background-color: #468499 !important;}`}</style>
+                <style>{`html, body {background-color: #24305E !important; } `}</style>
                 <Image src={Background0} fluid style={{ maxHeight: '450px' }} />
                 <Grid textAlign='center' verticalAlign=' middle' style={{marginTop: '10px'}}>
                     <Grid.Column style={{ maxWidth: 600 }}>
-                        <Segment secondary>
+                        <Segment style={{ backgroundColor: '#a8d0e6' }}>
                             <Image centered src={logo} size='medium' />
                             <Loader active={submitted} />
                             <Form>
@@ -121,7 +124,7 @@ class RegistrationPage extends Component {
                             </Form>
                             <Button fluid color='green' onClick={this.handleSubmit}>Register</Button>
                             <Divider fluid horizontal>Already have an account?</Divider>
-                            <Button fluid color='blue' onClick={this.handleRedirect}>Login</Button>
+                            <Button fluid color='violet' onClick={this.handleRedirect}>Login</Button>
                         </Segment>
                     </Grid.Column>
                 </Grid>
