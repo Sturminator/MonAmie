@@ -27,6 +27,16 @@ class ProfilePage extends Component {
         this.props.dispatch(categoryActions.getAll());
     }
 
+    componentWillReceiveProps(props) {
+        const { location } = this.props;
+
+        if (location.pathname != props.location.pathname) {
+            var idStr = props.location.pathname.split("_")[1];
+            var id = parseInt(idStr) / 11;
+            this.props.dispatch(userProfileActions.getById(id));
+        }
+    }
+
     onBioChange = (e, { value }) => this.setState({
         bio: value
     });

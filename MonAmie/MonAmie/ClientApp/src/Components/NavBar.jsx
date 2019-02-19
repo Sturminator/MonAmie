@@ -43,6 +43,8 @@ class NavigationBar extends Component {
 
         var path = window.location.pathname;
 
+        var userPath = '/profile/' + user.firstName.toLowerCase() + '_' + user.id * 11;
+
         if (redirectTo != '') {
             if (redirectTo.includes('profile') && path != redirectTo) {
                 var redirect = redirectTo;
@@ -108,7 +110,7 @@ class NavigationBar extends Component {
                         <Dropdown.Menu style={{ color: '#24305E' }}>
                             <Dropdown.Item activename='profile'
                                 to='/profile/'
-                                active={path.includes('profile') && path.includes(user.firstName.toLowerCase())}
+                                active={path === userPath}
                                 onClick={this.handleRedirect}><Icon name='user circle' />
                                 Profile</Dropdown.Item>
                             <Dropdown.Item><Icon name='settings' />Settings</Dropdown.Item>
