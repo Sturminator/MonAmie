@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { userProfileActions, categoryActions } from '../../Actions';
 import {
@@ -25,6 +25,16 @@ class ProfilePage extends Component {
         var id = parseInt(idStr) / 11;
         this.props.dispatch(userProfileActions.getById(id));
         this.props.dispatch(categoryActions.getAll());
+    }
+
+    componentWillReceiveProps(props) {
+        const { location } = this.props;
+
+        if (location.pathname != props.location.pathname) {
+            var idStr = props.location.pathname.split("_")[1];
+            var id = parseInt(idStr) / 11;
+            this.props.dispatch(userProfileActions.getById(id));
+        }
     }
 
     onBioChange = (e, { value }) => this.setState({
@@ -187,6 +197,10 @@ class ProfilePage extends Component {
     render() {
         const { user, userProfile } = this.props;
         const { bio, editProfile, editCategories } = this.state;
+
+        if (!user) {
+            return <Redirect to='/login' />
+        }
 
         if (!userProfile.items) {
             return (<div style={{ paddingTop: '600px' }}>

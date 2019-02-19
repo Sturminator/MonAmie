@@ -9,6 +9,7 @@ import { HomePage } from '../Components/HomePage';
 import { LoginPage } from '../Components/LoginPage';
 import { RegistrationPage } from '../Components/RegistrationPage';
 import { ProfilePage } from '../Components/ProfilePage';
+import { FriendsPage } from '../Components/FriendsPage';
 
 class App extends Component {
     constructor(props) {
@@ -37,6 +38,7 @@ class App extends Component {
                                 <Route path="/login" component={LoginPage} />
                                 <Route path="/registration" component={RegistrationPage} />
                                 <Route path="/profile/:userId" component={ProfilePage} />
+                                <Route path="/friends" component={FriendsPage} />
                             </div>
                         </Router>
                     </div>
