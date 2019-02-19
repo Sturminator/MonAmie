@@ -11,7 +11,7 @@ namespace MonAmieData.Models
 
         [Required]
         [Column(TypeName = "varbinary(200)")]
-        public byte[] FileName { get; set; }
+        public String FileName { get; set; }
 
         [Required]
         [Column(TypeName = "varbinary(MAX)")]
