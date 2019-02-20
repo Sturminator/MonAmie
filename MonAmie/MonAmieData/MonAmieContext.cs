@@ -1,5 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MonAmieData.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MonAmieData
 {
@@ -60,5 +64,11 @@ namespace MonAmieData
                 .HasForeignKey(uhfr => uhfr.PendingFriendId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
+
+        public MonAmieContext()
+        {
+
+        }
     }
 }
+
