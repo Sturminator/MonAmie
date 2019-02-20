@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MonAmie.ViewModels;
 using MonAmieData.Interfaces;
-using System;
+using System.Drawing;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -43,7 +43,7 @@ namespace MonAmie.Controllers
                     MemoryStream ms = new MemoryStream();
                     uploadedImage.OpenReadStream().CopyTo(ms);
 
-                    System.Drawing.Image image = System.Drawing.Image.FromStream(ms);
+                    Image image = Image.FromStream(ms);
 
                     UserImage imageEntity = new UserImage()
                     {

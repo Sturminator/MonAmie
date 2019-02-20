@@ -369,7 +369,7 @@ class ProfilePage extends Component {
                             <Grid.Column>
                             </Grid.Column>
                             <Grid.Column>
-                                <Popup trigger={<Button floated='right' onClick={this.onEditProfileButtonClick} style={{ backgroundColor: '#24305e' }} inverted icon='edit' />} content='Edit Profile' />
+                                <Popup trigger={<Button floated='right' onClick={this.onEditProfileButtonClick} color='blue' icon='edit' />} content='Edit Profile' />
                             </Grid.Column>
                         </Grid>
                         <Container>
@@ -408,7 +408,7 @@ class ProfilePage extends Component {
                                                             <Header size='large' style={{ color: 'white' }}>Interests</Header>
                                                         </Grid.Column>
                                                         <Grid.Column>
-                                                            <Popup trigger={<Button floated='right' onClick={this.onEditCategoriesButtonClick} style={{ backgroundColor: '#24305e' }} inverted icon='edit' size='tiny' />} content='Edit Interests' />
+                                                            <Popup trigger={<Button floated='right' onClick={this.onEditCategoriesButtonClick} color='blue' icon='edit' size='tiny' />} content='Edit Interests' />
                                                         </Grid.Column>
                                                     </Grid>
                                                 </Table.HeaderCell>
