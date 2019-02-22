@@ -5,6 +5,7 @@ import { alert } from './alerts.reducer';
 import { categories } from './categories.reducer';
 import { userProfile } from './userProfile.reducer';
 import { users } from './user.reducer';
+import { friends, requests } from './friend.reducer';
 
 const rootReducer = combineReducers({
     authentication,
@@ -12,7 +13,9 @@ const rootReducer = combineReducers({
     alert,
     categories,
     userProfile,
-    users
+    users,
+    friends,
+    requests
 });
 
 export default rootReducer;

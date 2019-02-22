@@ -77,7 +77,7 @@ class HomePage extends Component {
                 </NavigationBar>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
                 <div style={{ padding: '25px' }}>
-                    <Grid columns={5} stackable>
+                    <Grid columns='equal' stackable>
                         <Grid.Row stretched>
                             <Grid.Column>
                             </Grid.Column>

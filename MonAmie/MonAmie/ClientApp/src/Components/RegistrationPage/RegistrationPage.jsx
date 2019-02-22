@@ -124,7 +124,7 @@ class RegistrationPage extends Component {
                             </Form>
                             <Button fluid color='green' onClick={this.handleSubmit}>Register</Button>
                             <Divider fluid horizontal>Already have an account?</Divider>
-                            <Button fluid color='violet' onClick={this.handleRedirect}>Login</Button>
+                            <Button fluid color='blue' onClick={this.handleRedirect}>Login</Button>
                         </Segment>
                     </Grid.Column>
                 </Grid>

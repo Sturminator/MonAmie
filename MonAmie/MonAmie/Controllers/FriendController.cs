@@ -24,39 +24,71 @@ namespace MonAmie.Controllers
         }
 
         [HttpGet]
-        [Route("api/Friend/GetAllFriends")]
+        [Route("api/Friend/GetAllFriends/{id}")]
         public IActionResult GetAllFriends(int id)
         {
             var friendships = friendService.GetAllFriendshipsForUser(id);
+            List<Object> results = new List<Object>();
 
-            var results = friendships.Select(friendship => new
+            foreach (var friendship in friendships)
             {
-                Id = friendship.FriendId,
-                FirstName = friendship.Friend.FirstName,
-                LastName = friendship.Friend.LastName,
-                Gender = friendship.Friend.Gender,
-                State = friendship.Friend.State,
-                Age = userService.CalculateUserAge(friendship.Friend.BirthDate)
-            }).ToList();
+                var friend = userService.GetById(friendship.FriendId);              
+
+                results.Add(new
+                {
+                    Id = friendship.FriendId,
+                    FirstName = friend.FirstName,
+                    LastName = friend.LastName,
+                    Gender = friend.Gender,
+                    State = friend.State,
+                    Age = userService.CalculateUserAge(friend.BirthDate)
+                });
+            }
 
             return Ok(results);
+
         }
 
         [HttpGet]
-        [Route("api/Friend/GetAllFriendRequests")]
+        [Route("api/Friend/GetAllFriendRequests/{id}")]
         public IActionResult GetAllFriendRequests(int id)
         {
             var friendRequests = friendService.GetAllFriendRequestsForUser(id);
+            var sentRequests = friendService.GetAllSentFriendRequestsForUser(id);
 
-            var results = friendRequests.Select(friendRequest => new
+            List<Object> results = new List<Object>();
+
+            foreach(var request in friendRequests)
             {
-                Id = friendRequest.PendingFriendId,
-                FirstName = friendRequest.PendingFriend.FirstName,
-                LastName = friendRequest.PendingFriend.LastName,
-                Gender = friendRequest.PendingFriend.Gender,
-                State = friendRequest.PendingFriend.State,
-                Age = userService.CalculateUserAge(friendRequest.PendingFriend.BirthDate)
-            }).ToList();
+                var friend = userService.GetById(request.UserId);
+
+                results.Add(new
+                {
+                    Id = friend.UserId,
+                    FirstName = friend.FirstName,
+                    LastName = friend.LastName,
+                    Gender = friend.Gender,
+                    State = friend.State,
+                    Age = userService.CalculateUserAge(friend.BirthDate),
+                    incoming = true
+                });
+            }
+
+            foreach (var request in sentRequests)
+            {
+                var friend = userService.GetById(request.PendingFriendId);
+
+                results.Add(new
+                {
+                    Id = friend.UserId,
+                    FirstName = friend.FirstName,
+                    LastName = friend.LastName,
+                    Gender = friend.Gender,
+                    State = friend.State,
+                    Age = userService.CalculateUserAge(friend.BirthDate),
+                    incoming = false
+                });
+            }
 
             return Ok(results);
         }

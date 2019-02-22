@@ -80,7 +80,7 @@ class LoginPage extends Component {
                             </Form>
                             <Divider fluid horizontal>Don't have an account?</Divider>
 
-                            <Button color='violet' type='register' fluid onClick={this.handleRedirect}>Register</Button>
+                            <Button color='blue' type='register' fluid onClick={this.handleRedirect}>Register</Button>
                         </Segment>
                     </Grid.Column>
                 </Grid>

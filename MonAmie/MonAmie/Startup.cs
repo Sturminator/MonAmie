@@ -78,6 +78,7 @@ namespace MonAmie
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IInterestService, InterestService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IFriendService, FriendService>();
 
             services.AddSpaStaticFiles(configuration =>
             {
