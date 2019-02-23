@@ -31,6 +31,22 @@ namespace MonAmie.Controllers
             return Ok(userImageIds);
         }
 
+        
+        [HttpGet]
+        [Route("api/UserImage/ViewImage")]
+        public FileStreamResult ViewImage(int id)
+        {
+
+            using (MonAmieContext dbContext = new MonAmieContext())
+            {
+                UserImage image = dbContext.UserImage.FirstOrDefault(m => m.UserImageId == id);
+
+                MemoryStream ms = new MemoryStream(image.Data);
+
+                return new FileStreamResult(ms, image.ContentType);
+            }
+        }
+
         [HttpPost]
         [Route("api/UserImage/UploadImage")]
         public IActionResult UploadImage(IList <IFormFile> files)
@@ -63,25 +79,6 @@ namespace MonAmie.Controllers
             }
 
             return RedirectToAction("Index");
-        }
-
-        /*
-        [HttpGet]
-        public FileStreamResult ViewImage(int id)
-        {
-
-            using (MonAmieContext dbContext = new MonAmieContext())
-            {
-                UserImage image = dbContext.UserImage.FirstOrDefault(m => m.UserImageId == id);
-
-                MemoryStream ms = new MemoryStream(image.Data);
-
-                return new FileStreamResult(ms, image.ContentType);
-            }
-
-            return null;
-        }
-        */
-
+        }     
     }
 }
