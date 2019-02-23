@@ -203,7 +203,7 @@ class FriendsPage extends Component {
                                 <Grid.Column>
                                     <Segment fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
                                         <Header as='h1' textAlign='center'>
-                                            <Header.Content style={{ color: 'white' }}>Sent Requests</Header.Content>
+                                            <Header.Content style={{ color: 'white' }}>Outgoing Requests</Header.Content>
                                         </Header>
                                         <Divider style={{ backgroundColor: 'white' }} />
                                         <Card.Group fluid itemsPerRow={1} children={this.createRequestCards(false)} />
