@@ -8,7 +8,16 @@ import { history } from '../../Helpers';
 import modalStyles from '../../Styles/modal.styles';
 
 class FriendsPage extends Component {
-    state = { userSelected: false, redirectTo: "", confirmDelete: false, targetedFriendName: "", targetedFriendId: -1, updateUserList: false, acceptedRequest: false };
+    state = {
+        userSelected: false,
+        redirectTo: "",
+        confirmDelete: false,
+        targetedFriendName: "",
+        targetedFriendId: -1,
+        updateUserList: false,
+        acceptedRequest: false,
+        currentUsers: []
+    };
 
     componentDidMount() {
         const { user } = this.props;

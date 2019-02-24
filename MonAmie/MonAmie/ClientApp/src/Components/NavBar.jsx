@@ -80,18 +80,18 @@ class NavigationBar extends Component {
                     Friends
                     </Menu.Item>
                 <Menu.Item style={{ color: '#24305E' }}
-                    activename='/'
-                    to='/'
-                    active={activeItem === 'groups'}
+                    activename='/groups'
+                    to='/groups'
+                    active={path === '/groups'}
                     onClick={this.handleRedirect}
                 >
                     <Icon name='group' />
                     Groups
                     </Menu.Item>
                 <Menu.Item style={{ color: '#24305E' }}
-                    activename='events'
-                    to='/'
-                    active={activeItem === 'events'}
+                    activename='/events'
+                    to='/events'
+                    active={path === '/events'}
                     onClick={this.handleRedirect}
                 >
                     <Icon name='calendar alternate' />
@@ -99,9 +99,9 @@ class NavigationBar extends Component {
                     </Menu.Item>
                 <Menu.Menu position='right'>
                     <Menu.Item style={{ color: '#24305E' }}
-                        activename='messages'
-                        to='/'
-                        active={activeItem === 'messages'}
+                        activename='/messages'
+                        to='/messages'
+                        active={path === '/messages'}
                         onClick={this.handleRedirect}
                     >
                         <Icon flipped='horizontally' name='chat' />Messages
@@ -113,7 +113,6 @@ class NavigationBar extends Component {
                                 active={path === userPath}
                                 onClick={this.handleRedirect}><Icon name='user circle' />
                                 Profile</Dropdown.Item>
-                            <Dropdown.Item><Icon name='settings' />Settings</Dropdown.Item>
                             <Dropdown.Item activename='logout'
                                 to='/login'
                                 active={activeItem === 'logout'}
