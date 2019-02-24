@@ -8,7 +8,7 @@ import {
     Icon, Grid, Container, Loader, Dimmer, Button, Popup, Modal
 } from 'semantic-ui-react';
 
-import profileStyles from '../../Styles/profile.styles';
+import modalStyles from '../../Styles/modal.styles';
 
 class ProfilePage extends Component {
     state = {
@@ -309,7 +309,7 @@ class ProfilePage extends Component {
                 <NavigationBar>
                 </NavigationBar>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
-                <Modal style={profileStyles.EditCategoriesModal} size='tiny' open={editCategories} onClose={this.close}>
+                <Modal style={modalStyles.EditCategoriesModal} size='tiny' open={editCategories} onClose={this.close}>
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Interests</Modal.Header>
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
                         <Grid fluid='true' stackable columns={2} style={{ paddingTop: '10px' }}>
@@ -340,7 +340,7 @@ class ProfilePage extends Component {
                         <Button onClick={this.onSaveCategoriesEditClick} positive icon='checkmark' labelPosition='right' content='Save' />
                     </Modal.Actions>
                 </Modal>
-                <Modal style={profileStyles.EditProfileModal} size='tiny' open={editProfile} onClose={this.close}>
+                <Modal style={modalStyles.EditProfileModal} size='tiny' open={editProfile} onClose={this.close}>
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Profile</Modal.Header>
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
                         <Form fluid='true'>

@@ -2,6 +2,7 @@
 
 export const userService = {
     getAll,
+    getAllForUser,
     getById,
     logout
 };
@@ -13,6 +14,15 @@ function getAll() {
     };
 
     return fetch(`api/User/GetAll`, requestOptions).then(handleResponse);
+}
+
+function getAllForUser(id) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`api/User/GetAllForUser/` + id, requestOptions).then(handleResponse);
 }
 
 function getById(id) {

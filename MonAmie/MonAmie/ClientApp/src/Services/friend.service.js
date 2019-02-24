@@ -29,24 +29,54 @@ function getAllRequests(id) {
     return fetch(`api/Friend/GetAllFriendRequests/` + id, requestOptions).then(handleResponse);
 }
 
-function addFriend() {
+function addFriend(id, pendingId) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pendingId)
+    };
 
+    return fetch(`api/Friend/AddFriend/` + id, requestOptions).then(handleResponse);
 }
 
-function removeFriend() {
+function removeFriend(id, friendId) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(friendId)
+    };
 
+    return fetch(`api/Friend/DeleteFriend/` + id, requestOptions).then(handleResponse);
 }
 
-function acceptRequest() {
+function acceptRequest(id, pendingId) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pendingId)
+    };
 
+    return fetch(`api/Friend/AcceptFriendRequest/` + id, requestOptions).then(handleResponse);
 }
 
-function denyRequest() {
+function denyRequest(id, pendingId) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pendingId)
+    };
 
+    return fetch(`api/Friend/DenyFriendRequest/` + id, requestOptions).then(handleResponse);
 }
 
-function cancelRequest() {
+function cancelRequest(id, pendingId) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pendingId)
+    };
 
+    return fetch(`api/Friend/CancelFriendRequest/` + id, requestOptions).then(handleResponse);
 }
 
 function logout() {

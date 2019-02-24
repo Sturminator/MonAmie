@@ -16,37 +16,39 @@ export function friends(state = {}, action) {
             return {
                 loading: false,
                 error: action.error
-            };        
-        case friendConstants.ADDFRIEND_REQUEST:
-            break;
-        case friendConstants.ADDFRIEND_SUCCESS:
-            break;
-        case friendConstants.ADDFRIEND_FAILURE:
-            break;
+            };                        
         case friendConstants.REMOVEFRIEND_REQUEST:
-            break;
+            return {
+                loading: true,
+                id: action.id,
+                friendId: action.friendId
+            };
         case friendConstants.REMOVEFRIEND_SUCCESS:
-            break;
+            return {
+                loading: false,
+                items: action.friends
+            };
         case friendConstants.REMOVEFRIEND_FAILURE:
-            break;
+            return {
+                loading: false,
+                error: action.error
+            };   
         case friendConstants.ACCEPTREQUEST_REQUEST:
-            break;
+            return {
+                loading: true,
+                id: action.id,
+                friendId: action.pendingId
+            };
         case friendConstants.ACCEPTREQUEST_SUCCESS:
-            break;
+            return {
+                loading: false,
+                items: action.friends
+            };
         case friendConstants.ACCEPTREQUEST_FAILURE:
-            break;
-        case friendConstants.DENYREQUEST_REQUEST:
-            break;
-        case friendConstants.DENYREQUEST_SUCCESS:
-            break;
-        case friendConstants.DENYREQUEST_FAILURE:
-            break;
-        case friendConstants.CANCELREQUEST_REQUEST:
-            break;
-        case friendConstants.CANCELREQUEST_SUCCESS:
-            break;
-        case friendConstants.CANCELREQUEST_FAILURE:
-            break;
+            return {
+                loading: false,
+                error: action.error
+            };                
         default:
             return state;
     }
@@ -69,6 +71,54 @@ export function requests(state = {}, action) {
                 loading: false,
                 error: action.error
             };
+        case friendConstants.ADDFRIEND_REQUEST:
+            return {
+                loading: true,
+                id: action.id,
+                pendingId: action.pendingId
+            };
+        case friendConstants.ADDFRIEND_SUCCESS:
+            return {
+                loading: false,
+                items: action.requests
+            };
+        case friendConstants.ADDFRIEND_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
+        case friendConstants.CANCELREQUEST_REQUEST:
+            return {
+                loading: true,
+                id: action.id,
+                pendingId: action.pendingId
+            };
+        case friendConstants.CANCELREQUEST_SUCCESS:
+            return {
+                loading: false,
+                items: action.requests
+            };
+        case friendConstants.CANCELREQUEST_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
+        case friendConstants.DENYREQUEST_REQUEST:
+            return {
+                loading: true,
+                id: action.id,
+                pendingId: action.pendingId
+            };
+        case friendConstants.DENYREQUEST_SUCCESS:
+            return {
+                loading: false,
+                items: action.requests
+            };
+        case friendConstants.DENYREQUEST_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            }; 
         default:
             return state;
     }

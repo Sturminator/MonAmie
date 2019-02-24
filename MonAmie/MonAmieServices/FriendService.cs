@@ -29,45 +29,82 @@ namespace MonAmieServices
         /// <summary>
         /// Adds a friend request to the database
         /// </summary>
-        /// <param name="friendRequest"></param>
-        public void AddFriendRequest(UserHasFriendRequest friendRequest)
+        /// <param name="userId"></param>
+        /// <param name="pendingId"></param>
+        public void AddFriendRequest(int userId, int pendingId)
         {
-            _context.UserHasFriendRequest.Add(friendRequest);
-            _context.SaveChanges();
+            var entity = _context.UserHasFriendRequest.FirstOrDefault(uhfr => (uhfr.UserId == userId && uhfr.PendingFriendId == pendingId) || (uhfr.PendingFriendId == userId && uhfr.UserId == pendingId));
+
+            if(entity == null)
+            {
+                _context.UserHasFriendRequest.Add(new UserHasFriendRequest
+                {
+                    UserId = userId,
+                    PendingFriendId = pendingId
+                });
+
+                _context.SaveChanges();
+            }
         }
 
         /// <summary>
         /// Adds a friendship between 2 users
         /// </summary>
-        /// <param name="user"></param>
-        /// <param name="friend"></param>
-        public void AddFriendship(UserHasFriend user, UserHasFriend friend)
+        /// <param name="userId"></param>
+        /// <param name="friendId"></param>
+        public void AddFriendship(int userId, int friendId)
         {
-            _context.UserHasFriend.Add(user);
-            _context.UserHasFriend.Add(friend);
-            _context.SaveChanges();
+            var user = _context.UserHasFriend.FirstOrDefault(uhf => (uhf.UserId == userId && uhf.FriendId == friendId));
+            var friend = _context.UserHasFriend.FirstOrDefault(uhf => (uhf.UserId == friendId && uhf.FriendId == userId));
+
+            if (user == null && friend == null)
+            {
+                _context.UserHasFriend.Add(new UserHasFriend
+                {
+                    UserId = userId,
+                    FriendId = friendId
+                });
+                _context.UserHasFriend.Add(new UserHasFriend
+                {
+                    UserId = friendId,
+                    FriendId = userId
+                });
+                _context.SaveChanges();
+            }
         }
 
         /// <summary>
         /// Deletes a friend request from the database
         /// </summary>
-        /// <param name="friendRequest"></param>
-        public void DeleteFriendRequest(UserHasFriendRequest friendRequest)
+        /// <param name="userId"></param>
+        /// <param name="pendingId"></param>
+        public void DeleteFriendRequest(int userId, int pendingId)
         {
-            _context.UserHasFriendRequest.Remove(friendRequest);
-            _context.SaveChanges();
+            var entity = _context.UserHasFriendRequest.FirstOrDefault(uhfr => (uhfr.UserId == userId && uhfr.PendingFriendId == pendingId));
+
+            if (entity != null)
+            {
+                _context.UserHasFriendRequest.Remove(entity);
+                _context.SaveChanges();
+            }
         }
 
         /// <summary>
         /// Deletes a friendship between 2 users
         /// </summary>
-        /// <param name="user"></param>
-        /// <param name="friend"></param>
-        public void DeleteFriendship(UserHasFriend user, UserHasFriend friend)
+        /// <param name="userId"></param>
+        /// <param name="friendId"></param>
+        public void DeleteFriendship(int userId, int friendId)
         {
-            _context.UserHasFriend.Remove(user);
-            _context.UserHasFriend.Remove(friend);
-            _context.SaveChanges();
+            var user = _context.UserHasFriend.FirstOrDefault(uhf => (uhf.UserId == userId && uhf.FriendId == friendId));
+            var friend = _context.UserHasFriend.FirstOrDefault(uhf => (uhf.UserId == friendId && uhf.FriendId == userId));
+
+            if(user != null && friend != null)
+            {
+                _context.UserHasFriend.Remove(user);
+                _context.UserHasFriend.Remove(friend);
+                _context.SaveChanges();
+            }
         }
 
         /// <summary>

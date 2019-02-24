@@ -24,28 +24,30 @@ namespace MonAmieData.Interfaces
         /// <summary>
         /// Adds a friendship between 2 users
         /// </summary>
-        /// <param name="user"></param>
-        /// <param name="friend"></param>
-        void AddFriendship(UserHasFriend user, UserHasFriend friend);
+        /// <param name="userId"></param>
+        /// <param name="friendId"></param>
+        void AddFriendship(int userId, int friendId);
 
         /// <summary>
         /// Deletes a friendship between 2 users
         /// </summary>
-        /// <param name="user"></param>
-        /// <param name="friend"></param>
-        void DeleteFriendship(UserHasFriend user, UserHasFriend friend);
+        /// <param name="userId"></param>
+        /// <param name="friendId"></param>
+        void DeleteFriendship(int userId, int friendId);
 
         /// <summary>
         /// Adds a friend request to the database
         /// </summary>
-        /// <param name="friendRequest"></param>
-        void AddFriendRequest(UserHasFriendRequest friendRequest);
+        /// <param name="userId"></param>
+        /// <param name="pendingId"></param>
+        void AddFriendRequest(int userId, int pendingId);
 
         /// <summary>
         /// Deletes a friend request from the database
         /// </summary>
-        /// <param name="friendRequest"></param>
-        void DeleteFriendRequest(UserHasFriendRequest friendRequest);
+        /// <param name="userId"></param>
+        /// <param name="pendingId"></param>
+        void DeleteFriendRequest(int userId, int pendingId);
 
         /// <summary>
         /// Gets all pending friend requests for a user

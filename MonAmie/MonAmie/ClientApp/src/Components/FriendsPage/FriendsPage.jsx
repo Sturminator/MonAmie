@@ -3,19 +3,65 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { userActions, friendActions } from '../../Actions';
-import { Segment, Container, Grid, Header, Divider, Card, Dimmer, Loader, Button, Popup } from 'semantic-ui-react';
+import { Segment, Container, Grid, Header, Divider, Card, Dimmer, Loader, Button, Popup, Modal } from 'semantic-ui-react';
 import { history } from '../../Helpers';
+import modalStyles from '../../Styles/modal.styles';
 
 class FriendsPage extends Component {
-    state = { userSelected: false, redirectTo: "" };
+    state = { userSelected: false, redirectTo: "", confirmDelete: false, targetedFriendName: "", targetedFriendId: -1, updateUserList: false, acceptedRequest: false };
 
     componentDidMount() {
         const { user } = this.props;
 
         this.props.dispatch(friendActions.getAllFriends(user.id));
         this.props.dispatch(friendActions.getAllRequests(user.id));
-        this.props.dispatch(userActions.getAll());
+        this.props.dispatch(userActions.getAllForUser(user.id));
     }
+
+    componentDidUpdate() {
+        const { user } = this.props;
+        const { acceptedRequest, updateUserList } = this.state;
+
+        if (updateUserList) {
+            if (acceptedRequest) {
+                this.props.dispatch(friendActions.getAllRequests(user.id));
+            }
+            this.props.dispatch(userActions.getAllForUser(user.id));
+
+            this.setState({
+                updateUserList: false,
+                acceptedRequest: false
+            });
+        }
+    }
+
+    onDeleteFriendClick = (e, { value }) => this.setState({
+        confirmDelete: this.state.confirmDelete ? false : true,
+        targetedFriendName: value.firstName + " " + value.lastName,
+        targetedFriendId: value.id
+    });
+
+    onCancelDeleteFriendClick = (e) => this.setState({
+        confirmDelete: false,
+        targetedFriendName: "",
+        targetedFriendId: -1
+    });
+
+    onConfirmDeleteFriendClick = (e) => {
+        const { user } = this.props;
+        const { targetedFriendId } = this.state;
+
+        if (targetedFriendId != -1) {
+            this.props.dispatch(friendActions.removeFriend(user.id, targetedFriendId));
+        }
+
+        this.setState({
+            confirmDelete: false,
+            updateUserList: true,
+            targetedFriendName: "",
+            targetedFriendId: -1
+        });
+    };
 
     goToProfile = (e, { value }) => {
         history.push('/friends');
@@ -28,7 +74,52 @@ class FriendsPage extends Component {
     };
 
     addFriend = (e, { value }) => {
-        var val = value;
+        const { user } = this.props;       
+
+        if (value) {
+            this.props.dispatch(friendActions.addFriend(user.id, value.id));
+
+            this.setState({
+                updateUserList: true
+            });
+        }
+    };
+
+    acceptRequest = (e, { value }) => {
+        const { user } = this.props;
+
+        if (value) {
+            this.props.dispatch(friendActions.acceptRequest(user.id, value.id));
+
+            this.setState({
+                updateUserList: true,
+                acceptedRequest: true
+            });
+        }
+    };
+
+    denyRequest = (e, { value }) => {
+        const { user } = this.props;
+
+        if (value) {
+            this.props.dispatch(friendActions.denyRequest(user.id, value.id));
+
+            this.setState({
+                updateUserList: true
+            });
+        }
+    };
+
+    cancelRequest = (e, { value }) => {
+        const { user } = this.props;
+
+        if (value) {
+            this.props.dispatch(friendActions.cancelRequest(user.id, value.id));
+
+            this.setState({
+                updateUserList: true
+            });
+        }
     };
 
     createFriendCards = () => {
@@ -45,6 +136,7 @@ class FriendsPage extends Component {
                     children.push(<Card.Header>
                         <Grid fluid='true' columns='equal'>
                             <Grid.Column>
+                                <Popup trigger={<Button value={friends.items[i]} floated='left' onClick={this.onDeleteFriendClick} color='red' icon='remove user' />} content='Remove Friend' />
                             </Grid.Column>
                             <Grid.Column>
                                 {friends.items[i].firstName + ' ' + friends.items[i].lastName}
@@ -96,17 +188,17 @@ class FriendsPage extends Component {
                         children.push(<Card.Content extra><Divider style={{ backgroundColor: 'white' }} />
                             <Grid stackable columns='equal'>
                                 <Grid.Column>
-                                    <Button onClick={this.addFriend} fluid color='green'>Accept Request</Button>
+                                    <Button onClick={this.acceptRequest} value={requests.items[i]} fluid color='green'>Accept Request</Button>
                                 </Grid.Column>
                                 <Grid.Column>
-                                    <Button onClick={this.addFriend} fluid color='red'>Deny Request</Button>
+                                    <Button onClick={this.denyRequest} value={requests.items[i]} fluid color='red'>Deny Request</Button>
                                 </Grid.Column>
                             </Grid>
                         </Card.Content>)
                     }
                     else {
                         children.push(<Card.Content extra><Divider style={{ backgroundColor: 'white' }} />
-                            <Button value={false} onClick={this.addFriend} fluid color='red'>Cancel Request</Button>
+                            <Button value={false} onClick={this.cancelRequest} value={requests.items[i]} fluid color='red'>Cancel Request</Button>
                         </Card.Content>)
                     }
                     //Create the parent and add the children
@@ -144,7 +236,7 @@ class FriendsPage extends Component {
                     children.push(<Card.Meta key={i + 1}>{users.items[i].gender}</Card.Meta>)
                     children.push(<Card.Description key={i + 2}></Card.Description>)
                     children.push(<Card.Content extra><Divider style={{ backgroundColor: 'white' }} />
-                        <Button onClick={this.addFriend} fluid color='green'>Send Friend Request</Button>
+                        <Button onClick={this.addFriend} value={users.items[i]} fluid color='green'>Send Friend Request</Button>
                             </Card.Content>)
                     //Create the parent and add the children
                     cards.push(<Card style={{ backgroundColor: '#374785' }} key={i + 1} value={users.items[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
@@ -157,7 +249,7 @@ class FriendsPage extends Component {
 
     render() {
         const { user, users, friends, requests } = this.props;
-        const { userSelected, redirectTo } = this.state;
+        const { userSelected, redirectTo, confirmDelete, targetedFriendName } = this.state;
 
         if (!user) {
             return <Redirect to='/login' />
@@ -178,6 +270,16 @@ class FriendsPage extends Component {
                 <NavigationBar>
                 </NavigationBar>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
+                <Modal style={modalStyles.confirmDeleteModal} size='tiny' open={confirmDelete} onClose={this.close}>
+                    <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Remove Friend</Modal.Header>
+                    <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
+                        <Header as='h2' style={{ color: 'white' }}>Are you sure you want to remove {targetedFriendName} from your friends?</Header>
+                    </Modal.Content>
+                    <Modal.Actions style={{ backgroundColor: '#374785' }}>
+                        <Button negative onClick={this.onCancelDeleteFriendClick}>No</Button>
+                        <Button positive onClick={this.onConfirmDeleteFriendClick} icon='checkmark' labelPosition='right' content='Yes' />
+                    </Modal.Actions>
+                </Modal>
                 <Container fluid style={{ margin: '5px' }}>
                     <Grid stackable columns='equal'>
                         <Grid.Column>

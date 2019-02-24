@@ -92,5 +92,82 @@ namespace MonAmie.Controllers
 
             return Ok(results);
         }
+
+        [HttpPost]
+        [Route("api/Friend/AddFriend/{id}")]
+        public IActionResult AddFriend(int id, [FromBody]int pendingId)
+        {
+            if(id == pendingId)
+            {
+                return BadRequest("Can't add yourself.");
+            }
+
+            if(id < 1 || pendingId < 1)
+            {
+                return BadRequest("Bad ID request.");
+            }
+
+            friendService.AddFriendRequest(id, pendingId);
+
+            return GetAllFriendRequests(id);
+        }
+
+        [HttpDelete]
+        [Route("api/Friend/DeleteFriend/{id}")]
+        public IActionResult DeleteFriend(int id, [FromBody]int friendId)
+        {
+            if (id < 1 || friendId < 1)
+            {
+                return BadRequest("Bad ID request.");
+            }
+
+            friendService.DeleteFriendship(id, friendId);
+
+            return GetAllFriends(id);
+        }
+
+        [HttpDelete]
+        [Route("api/Friend/CancelFriendRequest/{id}")]
+        public IActionResult CancelFriendRequest(int id, [FromBody]int pendingId)
+        {
+            if (id < 1 || pendingId < 1)
+            {
+                return BadRequest("Bad ID request.");
+            }
+
+            friendService.DeleteFriendRequest(id, pendingId);
+
+            return GetAllFriendRequests(id);
+        }
+
+        [HttpDelete]
+        [Route("api/Friend/DenyFriendRequest/{id}")]
+        public IActionResult DenyFriendRequest(int id, [FromBody]int pendingId)
+        {
+            if (id < 1 || pendingId < 1)
+            {
+                return BadRequest("Bad ID request.");
+            }
+
+            friendService.DeleteFriendRequest(pendingId, id);
+
+            return GetAllFriendRequests(id);
+        }
+
+        [HttpPost]
+        [Route("api/Friend/AcceptFriendRequest/{id}")]
+        public IActionResult AcceptFriendRequest(int id, [FromBody]int pendingId)
+        {
+            if (id < 1 || pendingId < 1)
+            {
+                return BadRequest("Bad ID request.");
+            }
+
+            friendService.DeleteFriendRequest(pendingId, id);
+
+            friendService.AddFriendship(id, pendingId);
+
+            return GetAllFriends(id);
+        }
     }
 }

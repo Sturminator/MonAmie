@@ -15,6 +15,19 @@ export function users(state = {}, action) {
             return {
                 error: action.error
             };
+        case userConstants.GETALLFORUSER_REQUEST:
+            return {
+                loading: true,
+                id: action.id
+            };
+        case userConstants.GETALLFORUSER_SUCCESS:
+            return {
+                items: action.users
+            };
+        case userConstants.GETALLFORUSER_FAILURE:
+            return {
+                error: action.error
+            };
         case userConstants.GETBYID_REQUEST:
             return {
                 loading: true,
