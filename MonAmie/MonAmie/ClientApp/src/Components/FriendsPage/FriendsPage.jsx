@@ -16,7 +16,8 @@ class FriendsPage extends Component {
         targetedFriendId: -1,
         updateUserList: false,
         acceptedRequest: false,
-        refreshUsers: false
+        refreshUsers: false,
+        removeFromUsers: false
     };
 
     componentDidMount() {
@@ -30,8 +31,17 @@ class FriendsPage extends Component {
     }
 
     componentDidUpdate() {
-        const { user } = this.props;
-        const { acceptedRequest, updateUserList, refreshUsers } = this.state;
+        const { user, users } = this.props;
+        const { acceptedRequest, updateUserList, refreshUsers, removeFromUsers, targetedFriendId } = this.state;
+
+        if (removeFromUsers) {
+            this.props.dispatch(userActions.removeFromCurrentUsers(targetedFriendId, users.items));
+
+            this.setState({
+                removeFromUsers: false,
+                targetedFriendId: -1
+            });
+        }
 
         if (acceptedRequest) {
             this.props.dispatch(friendActions.getAllFriends(user.id));
@@ -115,7 +125,8 @@ class FriendsPage extends Component {
             this.props.dispatch(friendActions.addFriend(user.id, value.id));
 
             this.setState({
-                updateUserList: true
+                removeFromUsers: true,
+                targetedFriendId: value.id
             });
         }
     };

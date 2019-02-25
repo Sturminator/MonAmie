@@ -6,6 +6,8 @@ import { history } from '../Helpers';
 export const userActions = {
     getAll,
     getAllForUser,
+    addToCurrentUsers,
+    removeFromCurrentUsers,
     getById,
     logout
 };
@@ -40,6 +42,38 @@ function getAllForUser(id) {
     function request(id) { return { type: userConstants.GETALLFORUSER_REQUEST, id } }
     function success(users) { return { type: userConstants.GETALLFORUSER_SUCCESS, users } }
     function failure(error) { return { type: userConstants.GETALLFORUSER_FAILURE, error } }
+}
+
+function addToCurrentUsers(id) {
+    return dispatch => {
+        dispatch(request(id));
+
+        userService.addToCurrentUsers(id)
+            .then(
+                users => dispatch(success(users)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request(id) { return { type: userConstants.ADDTOCURRENTUSERS_REQUEST, id } }
+    function success(users) { return { type: userConstants.ADDTOCURRENTUSERS_SUCCESS, users } }
+    function failure(error) { return { type: userConstants.ADDTOCURRENTUSERS_FAILURE, error } }
+}
+
+function removeFromCurrentUsers(id, currentUsers) {
+    return dispatch => {
+        dispatch(request(id));
+
+        userService.removeFromCurrentUsers(id, currentUsers)
+            .then(
+                users => dispatch(success(users)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request(id) { return { type: userConstants.REMOVEFROMCURRENTUSERS_REQUEST, id } }
+    function success(users) { return { type: userConstants.REMOVEFROMCURRENTUSERS_SUCCESS, users } }
+    function failure(error) { return { type: userConstants.REMOVEFROMCURRENTUSERS_FAILURE, error } }
 }
 
 function getById(id) {

@@ -145,6 +145,83 @@ namespace MonAmie.Controllers
             return Ok(results);
         }
 
+        [HttpPut]
+        [Route("api/User/AddToCurrentUserList/{id}")]
+        public IActionResult AddToCurrentUserList(int id, int toAddId, List<UserDisplay> currentUsers)
+        {
+            var user = userService.GetById(toAddId);
+            var interests = categoryService.GetAllCategoriesForUser(id);
+            var toAddInterests = categoryService.GetAllCategoriesForUser(toAddId);
+            var categories = categoryService.GetAllCategories();
+
+            var sharedInterests = toAddInterests.Where(ui => interests.Any(lii => lii.CategoryId == ui.CategoryId));
+
+            var interestsInfo = user.FirstName + " has no interests currently";
+            int count = 0;
+
+            if(sharedInterests.Count() > 0)
+            {
+                foreach (var i in sharedInterests)
+                {
+                    if (count == 3)
+                    {
+                        break;
+                    }
+                    else if (count == 0)
+                    {
+                        interestsInfo = user.FirstName + " is into " + categories.SingleOrDefault(c => c.CategoryId == i.CategoryId).CategoryName;
+                    }
+                    else
+                    {
+                        interestsInfo += ", " + categories.SingleOrDefault(c => c.CategoryId == i.CategoryId).CategoryName;
+                    }
+                    count++;
+                }
+            }
+            else
+            {
+                foreach (var i in toAddInterests)
+                {
+                    if (count == 3)
+                    {
+                        break;
+                    }
+                    else if (count == 0)
+                    {
+                        interestsInfo = user.FirstName + " is into " + categories.SingleOrDefault(c => c.CategoryId == i.CategoryId).CategoryName;
+                    }
+                    else
+                    {
+                        interestsInfo += ", " + categories.SingleOrDefault(c => c.CategoryId == i.CategoryId).CategoryName;
+                    }
+                    count++;
+                }
+            }
+
+            currentUsers.Add(new UserDisplay
+            {
+                Id = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Gender = user.Gender,
+                State = user.State,
+                Age = userService.CalculateUserAge(user.BirthDate),
+                InterestsInfo = interestsInfo,
+                SharedCount = sharedInterests.Count()
+            });
+
+            return Ok(currentUsers);
+        }
+
+        [HttpPut]
+        [Route("api/User/RemoveFromCurrentUserList/{id}")]
+        public IActionResult RemoveFromCurrentUserList(int id, [FromBody]List<UserDisplay> currentUsers)
+        {
+            currentUsers = currentUsers.Where(cu => cu.Id != id).ToList();
+            
+            return Ok(currentUsers);
+        }
+
         [HttpGet]
         [Route("api/User/Get/{id}")]
         public IActionResult Get(int id)

@@ -3,6 +3,8 @@
 export const userService = {
     getAll,
     getAllForUser,
+    addToCurrentUsers,
+    removeFromCurrentUsers,
     getById,
     logout
 };
@@ -32,6 +34,25 @@ function getById(id) {
     };
 
     return fetch(`api/User/Get/` + id, requestOptions).then(handleResponse);
+}
+
+function addToCurrentUsers(id) {
+    const requestOptions = {
+        method: 'PUT',
+        headers: authHeader()
+    };
+
+    return fetch(`api/User/AddToCurrentUserList/` + id, requestOptions).then(handleResponse);
+}
+
+function removeFromCurrentUsers(id, currentUsers) {
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentUsers)
+    };
+
+    return fetch(`api/User/RemoveFromCurrentUserList/` + id, requestOptions).then(handleResponse);
 }
 
 function logout() {

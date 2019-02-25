@@ -45,6 +45,36 @@ export function users(state = {}, action) {
                 id: action.id,
                 error: action.error
             };
+        case userConstants.ADDTOCURRENTUSERS_REQUEST:
+            return {
+                loading: true,
+                id: action.id
+            };
+        case userConstants.ADDTOCURRENTUSERS_SUCCESS:
+            return {
+                loading: false,
+                items: action.users
+            };
+        case userConstants.ADDTOCURRENTUSERS_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
+        case userConstants.REMOVEFROMCURRENTUSERS_REQUEST:
+            return {
+                loading: true,
+                id: action.id
+            };
+        case userConstants.REMOVEFROMCURRENTUSERS_SUCCESS:
+            return {
+                loading: false,
+                items: action.users
+            };
+        case userConstants.REMOVEFROMCURRENTUSERS_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
         case authConstants.LOGOUT:
             return {}
         default:
