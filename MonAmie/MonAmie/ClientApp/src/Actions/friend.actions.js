@@ -69,7 +69,7 @@ function removeFriend(id, friendId) {
 
         friendService.removeFriend(id, friendId)
             .then(
-            friends => dispatch(success(friends)),
+                friends => dispatch(success(friends)),
                 error => dispatch(failure(error))
             );
     };
@@ -86,14 +86,14 @@ function acceptRequest(id, pendingId) {
 
         friendService.acceptRequest(id, pendingId)
             .then(
-                friends => dispatch(success(friends)),
+                requests => dispatch(success(requests)),
                 error => dispatch(failure(error))
             );
     };
 
     function request(id) { return { type: friendConstants.ACCEPTREQUEST_REQUEST, id, pendingId } }
     function secondRequest(id) { return { type: friendConstants.GETALLREQUESTS_REQUEST, id } }
-    function success(friends) { return { type: friendConstants.ACCEPTREQUEST_SUCCESS, friends } }
+    function success(requests) { return { type: friendConstants.ACCEPTREQUEST_SUCCESS, requests } }
     function failure(error) { return { type: friendConstants.ACCEPTREQUEST_FAILURE, error } }
 }
 

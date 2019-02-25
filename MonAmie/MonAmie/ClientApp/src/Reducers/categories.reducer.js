@@ -1,4 +1,5 @@
 ﻿import { categoryConstants } from '../Constants';
+import { authConstants } from '../Constants';
 
 export function categories(state = {}, action) {
     switch (action.type) {
@@ -53,6 +54,8 @@ export function categories(state = {}, action) {
                     return category;
                 })
             };
+        case authConstants.LOGOUT:
+            return {}
         default:
             return state
     }

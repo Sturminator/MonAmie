@@ -20,11 +20,18 @@ class ProfilePage extends Component {
     };
 
     componentDidMount() {
-        const { match: { params } } = this.props;
+        const { match: { params }, userProfile } = this.props;
         var idStr = params.userId.split("_")[1];
         var id = parseInt(idStr) / 11;
-        this.props.dispatch(userProfileActions.getById(id));
-        this.props.dispatch(categoryActions.getAll());
+
+        if (!userProfile.items) {
+            this.props.dispatch(userProfileActions.getById(id));
+            this.props.dispatch(categoryActions.getAll());
+        }
+        else if (userProfile.items.id != id) {
+            this.props.dispatch(userProfileActions.getById(id));
+            this.props.dispatch(categoryActions.getAll());
+        }
     }
 
     componentWillReceiveProps(props) {

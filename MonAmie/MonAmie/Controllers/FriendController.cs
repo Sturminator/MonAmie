@@ -167,7 +167,7 @@ namespace MonAmie.Controllers
 
             friendService.AddFriendship(id, pendingId);
 
-            return GetAllFriends(id);
+            return GetAllFriendRequests(id);
         }
     }
 }

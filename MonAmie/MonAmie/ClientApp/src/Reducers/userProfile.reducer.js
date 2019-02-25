@@ -1,4 +1,5 @@
 ﻿import { userProfileConstants } from '../Constants';
+import { authConstants } from '../Constants';
 
 export function userProfile(state = {}, action) {
     switch (action.type) {
@@ -43,6 +44,8 @@ export function userProfile(state = {}, action) {
                 loading: false,
                 error: action.error
             };
+        case authConstants.LOGOUT:
+            return {}
         default:
             return state;
     }

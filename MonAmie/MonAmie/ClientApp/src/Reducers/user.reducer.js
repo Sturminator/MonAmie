@@ -1,4 +1,5 @@
 ﻿import { userConstants } from '../Constants';
+import { authConstants } from '../Constants';
 
 export function users(state = {}, action) {
     switch (action.type) {
@@ -22,10 +23,12 @@ export function users(state = {}, action) {
             };
         case userConstants.GETALLFORUSER_SUCCESS:
             return {
+                loading: false,
                 items: action.users
             };
         case userConstants.GETALLFORUSER_FAILURE:
             return {
+                loading: false,
                 error: action.error
             };
         case userConstants.GETBYID_REQUEST:
@@ -42,6 +45,8 @@ export function users(state = {}, action) {
                 id: action.id,
                 error: action.error
             };
+        case authConstants.LOGOUT:
+            return {}
         default:
             return state;
     }

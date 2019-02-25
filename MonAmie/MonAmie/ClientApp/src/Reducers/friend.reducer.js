@@ -1,4 +1,5 @@
 ﻿import { friendConstants } from '../Constants';
+import { authConstants } from '../Constants';
 
 export function friends(state = {}, action) {
     switch (action.type) {
@@ -33,22 +34,8 @@ export function friends(state = {}, action) {
                 loading: false,
                 error: action.error
             };   
-        case friendConstants.ACCEPTREQUEST_REQUEST:
-            return {
-                loading: true,
-                id: action.id,
-                friendId: action.pendingId
-            };
-        case friendConstants.ACCEPTREQUEST_SUCCESS:
-            return {
-                loading: false,
-                items: action.friends
-            };
-        case friendConstants.ACCEPTREQUEST_FAILURE:
-            return {
-                loading: false,
-                error: action.error
-            };                
+        case authConstants.LOGOUT:
+            return {}
         default:
             return state;
     }
@@ -119,6 +106,22 @@ export function requests(state = {}, action) {
                 loading: false,
                 error: action.error
             }; 
+        case friendConstants.ACCEPTREQUEST_REQUEST:
+            return {
+                loading: true,
+                id: action.id,
+                friendId: action.pendingId
+            };
+        case friendConstants.ACCEPTREQUEST_SUCCESS:
+            return {
+                loading: false,
+                items: action.requests
+            };
+        case friendConstants.ACCEPTREQUEST_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
         default:
             return state;
     }
