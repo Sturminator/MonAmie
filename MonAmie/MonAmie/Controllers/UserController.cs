@@ -35,7 +35,12 @@ namespace MonAmie.Controllers
             public int Age { get; set; }
             public string InterestsInfo { get; set; }
             public int SharedCount { get; set; }
+        }
 
+        public class UserDisplayList
+        {
+            public int ToAddId { get; set; }
+            public List<UserDisplay> CurrentUsers { get; set; }
         }
 
         [HttpGet]
@@ -147,12 +152,14 @@ namespace MonAmie.Controllers
 
         [HttpPut]
         [Route("api/User/AddToCurrentUserList/{id}")]
-        public IActionResult AddToCurrentUserList(int id, int toAddId, List<UserDisplay> currentUsers)
+        public IActionResult AddToCurrentUserList(int id, [FromBody]UserDisplayList displayList)
         {
-            var user = userService.GetById(toAddId);
+            var user = userService.GetById(displayList.ToAddId);
             var interests = categoryService.GetAllCategoriesForUser(id);
-            var toAddInterests = categoryService.GetAllCategoriesForUser(toAddId);
+            var toAddInterests = categoryService.GetAllCategoriesForUser(displayList.ToAddId);
             var categories = categoryService.GetAllCategories();
+
+            var currentUsers = displayList.CurrentUsers;
 
             var sharedInterests = toAddInterests.Where(ui => interests.Any(lii => lii.CategoryId == ui.CategoryId));
 

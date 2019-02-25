@@ -36,10 +36,11 @@ function getById(id) {
     return fetch(`api/User/Get/` + id, requestOptions).then(handleResponse);
 }
 
-function addToCurrentUsers(id) {
+function addToCurrentUsers(id, toAddId, currentUsers) {
     const requestOptions = {
         method: 'PUT',
-        headers: authHeader()
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ toAddId: toAddId, currentUsers: currentUsers })
     };
 
     return fetch(`api/User/AddToCurrentUserList/` + id, requestOptions).then(handleResponse);

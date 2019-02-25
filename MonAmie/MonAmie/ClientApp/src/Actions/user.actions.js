@@ -44,11 +44,11 @@ function getAllForUser(id) {
     function failure(error) { return { type: userConstants.GETALLFORUSER_FAILURE, error } }
 }
 
-function addToCurrentUsers(id) {
+function addToCurrentUsers(id, toAddId, currentUsers) {
     return dispatch => {
         dispatch(request(id));
 
-        userService.addToCurrentUsers(id)
+        userService.addToCurrentUsers(id, toAddId, currentUsers)
             .then(
                 users => dispatch(success(users)),
                 error => dispatch(failure(error.toString()))
