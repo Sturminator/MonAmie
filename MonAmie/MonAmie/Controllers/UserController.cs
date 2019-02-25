@@ -217,6 +217,8 @@ namespace MonAmie.Controllers
                 SharedCount = sharedInterests.Count()
             });
 
+            currentUsers = currentUsers.OrderByDescending(res => res.SharedCount).ToList();
+
             return Ok(currentUsers);
         }
 

@@ -14,7 +14,6 @@ class FriendsPage extends Component {
         confirmDelete: false,
         targetedFriendName: "",
         targetedFriendId: -1,
-        updateUserList: false,
         acceptedRequest: false,
         refreshUsers: false,
         addToUsers: false,
@@ -33,7 +32,7 @@ class FriendsPage extends Component {
 
     componentDidUpdate() {
         const { user, users } = this.props;
-        const { acceptedRequest, updateUserList, refreshUsers, addToUsers, removeFromUsers, targetedFriendId } = this.state;
+        const { acceptedRequest, refreshUsers, addToUsers, removeFromUsers, targetedFriendId } = this.state;
 
         if (addToUsers) {
             this.props.dispatch(userActions.addToCurrentUsers(user.id, targetedFriendId, users.items));
@@ -58,14 +57,6 @@ class FriendsPage extends Component {
 
             this.setState({
                 acceptedRequest: false
-            });
-        }
-
-        if (updateUserList) {
-            this.props.dispatch(userActions.getAllForUser(user.id));
-
-            this.setState({
-                updateUserList: false
             });
         }
 
@@ -104,9 +95,8 @@ class FriendsPage extends Component {
 
         this.setState({
             confirmDelete: false,
-            updateUserList: true,
-            targetedFriendName: "",
-            targetedFriendId: -1
+            addToUsers: true,
+            targetedFriendName: ""
         });
     };
 
@@ -152,7 +142,8 @@ class FriendsPage extends Component {
             this.props.dispatch(friendActions.denyRequest(user.id, value.id));
 
             this.setState({
-                updateUserList: true
+                addToUsers: true,
+                targetedFriendId: value.id
             });
         }
     };
