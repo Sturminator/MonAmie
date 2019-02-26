@@ -31,7 +31,7 @@ class FriendsPage extends Component {
     }
 
     componentDidUpdate() {
-        const { user, users } = this.props;
+        const { user, users, friends } = this.props;
         const { acceptedRequest, refreshUsers, addToUsers, removeFromUsers, targetedFriendId } = this.state;
 
         if (addToUsers) {
@@ -53,10 +53,11 @@ class FriendsPage extends Component {
         }
 
         if (acceptedRequest) {
-            this.props.dispatch(friendActions.getAllFriends(user.id));
+            this.props.dispatch(friendActions.addToCurrentFriends(targetedFriendId, friends.items));
 
             this.setState({
-                acceptedRequest: false
+                acceptedRequest: false,
+                targetedFriendId: -1
             });
         }
 
@@ -86,11 +87,11 @@ class FriendsPage extends Component {
     });
 
     onConfirmDeleteFriendClick = (e) => {
-        const { user } = this.props;
+        const { user, friends } = this.props;
         const { targetedFriendId } = this.state;
 
         if (targetedFriendId != -1) {
-            this.props.dispatch(friendActions.removeFriend(user.id, targetedFriendId));
+            this.props.dispatch(friendActions.removeFriend(user.id, targetedFriendId, friends.items));
         }
 
         this.setState({
@@ -111,10 +112,10 @@ class FriendsPage extends Component {
     };
 
     addFriend = (e, { value }) => {
-        const { user } = this.props;
+        const { user, requests } = this.props;
 
         if (value) {
-            this.props.dispatch(friendActions.addFriend(user.id, value.id));
+            this.props.dispatch(friendActions.addFriend(user.id, value.id, requests.items));
 
             this.setState({
                 removeFromUsers: true,
@@ -124,22 +125,23 @@ class FriendsPage extends Component {
     };
 
     acceptRequest = (e, { value }) => {
-        const { user } = this.props;
+        const { user, requests } = this.props;
 
         if (value) {
-            this.props.dispatch(friendActions.acceptRequest(user.id, value.id));
+            this.props.dispatch(friendActions.acceptRequest(user.id, value.id, requests.items));
 
             this.setState({
-                acceptedRequest: true
+                acceptedRequest: true,
+                targetedFriendId: value.id
             });
         }
     };
 
     denyRequest = (e, { value }) => {
-        const { user } = this.props;
+        const { user, requests } = this.props;
 
         if (value) {
-            this.props.dispatch(friendActions.denyRequest(user.id, value.id));
+            this.props.dispatch(friendActions.denyRequest(user.id, value.id, requests.items));
 
             this.setState({
                 addToUsers: true,
@@ -149,10 +151,10 @@ class FriendsPage extends Component {
     };
 
     cancelRequest = (e, { value }) => {
-        const { user } = this.props;
+        const { user, requests } = this.props;
 
         if (value) {
-            this.props.dispatch(friendActions.cancelRequest(user.id, value.id));
+            this.props.dispatch(friendActions.cancelRequest(user.id, value.id, requests.items));
 
             this.setState({
                 addToUsers: true,
