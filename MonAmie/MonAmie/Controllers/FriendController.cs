@@ -23,18 +23,51 @@ namespace MonAmie.Controllers
             this.userService = userService;
         }
 
+        public class Friend
+        {
+            public int Id { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Gender { get; set; }
+            public string State { get; set; }
+            public int Age { get; set; }
+        }
+
+        public class FriendRequest
+        {
+            public int Id { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Gender { get; set; }
+            public string State { get; set; }
+            public int Age { get; set; }
+            public bool Incoming { get; set; }
+        }
+
+        public class Friends
+        {
+            public int FriendId { get; set; }
+            public List<Friend> CurrentFriends { get; set; }
+        }
+
+        public class Requests
+        {
+            public int PendingId { get; set; }
+            public List<FriendRequest> CurrentRequests { get; set; }
+        }
+
         [HttpGet]
         [Route("api/Friend/GetAllFriends/{id}")]
         public IActionResult GetAllFriends(int id)
         {
             var friendships = friendService.GetAllFriendshipsForUser(id);
-            List<Object> results = new List<Object>();
+            List<Friend> results = new List<Friend>();
 
             foreach (var friendship in friendships)
             {
-                var friend = userService.GetById(friendship.FriendId);              
+                var friend = userService.GetById(friendship.FriendId);
 
-                results.Add(new
+                results.Add(new Friend
                 {
                     Id = friendship.FriendId,
                     FirstName = friend.FirstName,
@@ -56,13 +89,13 @@ namespace MonAmie.Controllers
             var friendRequests = friendService.GetAllFriendRequestsForUser(id);
             var sentRequests = friendService.GetAllSentFriendRequestsForUser(id);
 
-            List<Object> results = new List<Object>();
+            List<FriendRequest> results = new List<FriendRequest>();
 
-            foreach(var request in friendRequests)
+            foreach (var request in friendRequests)
             {
                 var friend = userService.GetById(request.UserId);
 
-                results.Add(new
+                results.Add(new FriendRequest
                 {
                     Id = friend.UserId,
                     FirstName = friend.FirstName,
@@ -70,7 +103,7 @@ namespace MonAmie.Controllers
                     Gender = friend.Gender,
                     State = friend.State,
                     Age = userService.CalculateUserAge(friend.BirthDate),
-                    incoming = true
+                    Incoming = true
                 });
             }
 
@@ -78,7 +111,7 @@ namespace MonAmie.Controllers
             {
                 var friend = userService.GetById(request.PendingFriendId);
 
-                results.Add(new
+                results.Add(new FriendRequest
                 {
                     Id = friend.UserId,
                     FirstName = friend.FirstName,
@@ -86,7 +119,7 @@ namespace MonAmie.Controllers
                     Gender = friend.Gender,
                     State = friend.State,
                     Age = userService.CalculateUserAge(friend.BirthDate),
-                    incoming = false
+                    Incoming = false
                 });
             }
 
@@ -95,79 +128,134 @@ namespace MonAmie.Controllers
 
         [HttpPost]
         [Route("api/Friend/AddFriend/{id}")]
-        public IActionResult AddFriend(int id, [FromBody]int pendingId)
+        public IActionResult AddFriend(int id, [FromBody]Requests currentRequests)
         {
-            if(id == pendingId)
+            if (id == currentRequests.PendingId)
             {
                 return BadRequest("Can't add yourself.");
             }
 
-            if(id < 1 || pendingId < 1)
+            if (id < 1 || currentRequests.PendingId < 1)
             {
                 return BadRequest("Bad ID request.");
             }
 
-            friendService.AddFriendRequest(id, pendingId);
+            friendService.AddFriendRequest(id, currentRequests.PendingId);
 
-            return GetAllFriendRequests(id);
+            var friend = userService.GetById(currentRequests.PendingId);
+            var friendRequests = currentRequests.CurrentRequests;
+
+            if(friendRequests == null)
+            {
+                friendRequests = new List<FriendRequest>();
+            }
+
+            friendRequests.Add(new FriendRequest
+            {
+                Id = friend.UserId,
+                FirstName = friend.FirstName,
+                LastName = friend.LastName,
+                Gender = friend.Gender,
+                State = friend.State,
+                Age = userService.CalculateUserAge(friend.BirthDate),
+                Incoming = false
+            });
+
+            return Ok(friendRequests);
         }
 
         [HttpDelete]
         [Route("api/Friend/DeleteFriend/{id}")]
-        public IActionResult DeleteFriend(int id, [FromBody]int friendId)
+        public IActionResult DeleteFriend(int id, [FromBody]Friends currentFriends)
         {
-            if (id < 1 || friendId < 1)
+            if (id < 1 || currentFriends.FriendId < 1)
             {
                 return BadRequest("Bad ID request.");
             }
 
-            friendService.DeleteFriendship(id, friendId);
+            var friends = currentFriends.CurrentFriends;
 
-            return GetAllFriends(id);
+            friendService.DeleteFriendship(id, currentFriends.FriendId);
+
+            friends = friends.Where(f => f.Id != currentFriends.FriendId).ToList();
+
+            return Ok(friends);
         }
 
         [HttpDelete]
         [Route("api/Friend/CancelFriendRequest/{id}")]
-        public IActionResult CancelFriendRequest(int id, [FromBody]int pendingId)
+        public IActionResult CancelFriendRequest(int id, [FromBody]Requests currentRequests)
         {
-            if (id < 1 || pendingId < 1)
+            if (id < 1 || currentRequests.PendingId < 1)
             {
                 return BadRequest("Bad ID request.");
             }
 
-            friendService.DeleteFriendRequest(id, pendingId);
+            friendService.DeleteFriendRequest(id, currentRequests.PendingId);
 
-            return GetAllFriendRequests(id);
+            var requests = currentRequests.CurrentRequests;
+
+            requests = requests.Where(r => r.Id != currentRequests.PendingId).ToList();
+
+            return Ok(requests);
         }
 
         [HttpDelete]
         [Route("api/Friend/DenyFriendRequest/{id}")]
-        public IActionResult DenyFriendRequest(int id, [FromBody]int pendingId)
+        public IActionResult DenyFriendRequest(int id, [FromBody]Requests currentRequests)
         {
-            if (id < 1 || pendingId < 1)
+            if (id < 1 || currentRequests.PendingId < 1)
             {
                 return BadRequest("Bad ID request.");
             }
 
-            friendService.DeleteFriendRequest(pendingId, id);
+            friendService.DeleteFriendRequest(currentRequests.PendingId, id);
 
-            return GetAllFriendRequests(id);
+            var requests = currentRequests.CurrentRequests;
+
+            requests = requests.Where(r => r.Id != currentRequests.PendingId).ToList();
+
+            return Ok(requests);
         }
 
         [HttpPost]
         [Route("api/Friend/AcceptFriendRequest/{id}")]
-        public IActionResult AcceptFriendRequest(int id, [FromBody]int pendingId)
+        public IActionResult AcceptFriendRequest(int id, [FromBody]Requests currentRequests)
         {
-            if (id < 1 || pendingId < 1)
+            if (id < 1 || currentRequests.PendingId < 1)
             {
                 return BadRequest("Bad ID request.");
             }
 
-            friendService.DeleteFriendRequest(pendingId, id);
+            friendService.DeleteFriendRequest(currentRequests.PendingId, id);
 
-            friendService.AddFriendship(id, pendingId);
+            friendService.AddFriendship(id, currentRequests.PendingId);
 
-            return GetAllFriendRequests(id);
+            var requests = currentRequests.CurrentRequests;
+
+            requests = requests.Where(r => r.Id != currentRequests.PendingId).ToList();
+
+            return Ok(requests);
         }
+
+        [HttpPut]
+        [Route("api/Friend/AddToCurrentFriends/{id}")]
+        public IActionResult AddToCurrentFriends(int id, [FromBody]List<Friend> currentFriends)
+        {
+            var friend = userService.GetById(id);
+
+            currentFriends.Add(new Friend
+            {
+                Id = friend.UserId,
+                FirstName = friend.FirstName,
+                LastName = friend.LastName,
+                Gender = friend.Gender,
+                State = friend.State,
+                Age = userService.CalculateUserAge(friend.BirthDate)
+            });
+
+            return Ok(currentFriends);
+        }
+
     }
 }

@@ -8,6 +8,7 @@ export const friendService = {
     acceptRequest,
     denyRequest,
     cancelRequest,
+    addToCurrentFriends,
     logout
 }
 
@@ -29,54 +30,64 @@ function getAllRequests(id) {
     return fetch(`api/Friend/GetAllFriendRequests/` + id, requestOptions).then(handleResponse);
 }
 
-function addFriend(id, pendingId) {
+function addFriend(id, pendingId, currentRequests) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(pendingId)
+        body: JSON.stringify({ pendingId: pendingId, currentRequests: currentRequests })
     };
 
     return fetch(`api/Friend/AddFriend/` + id, requestOptions).then(handleResponse);
 }
 
-function removeFriend(id, friendId) {
+function removeFriend(id, friendId, currentFriends) {
     const requestOptions = {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(friendId)
+        body: JSON.stringify({ friendId: friendId, currentFriends: currentFriends })
     };
 
     return fetch(`api/Friend/DeleteFriend/` + id, requestOptions).then(handleResponse);
 }
 
-function acceptRequest(id, pendingId) {
+function acceptRequest(id, pendingId, currentRequests) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(pendingId)
+        body: JSON.stringify({ pendingId: pendingId, currentRequests: currentRequests })
     };
 
     return fetch(`api/Friend/AcceptFriendRequest/` + id, requestOptions).then(handleResponse);
 }
 
-function denyRequest(id, pendingId) {
+function denyRequest(id, pendingId, currentRequests) {
     const requestOptions = {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(pendingId)
+        body: JSON.stringify({ pendingId: pendingId, currentRequests: currentRequests })
     };
 
     return fetch(`api/Friend/DenyFriendRequest/` + id, requestOptions).then(handleResponse);
 }
 
-function cancelRequest(id, pendingId) {
+function cancelRequest(id, pendingId, currentRequests) {
     const requestOptions = {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(pendingId)
+        body: JSON.stringify({ pendingId: pendingId, currentRequests: currentRequests })
     };
 
     return fetch(`api/Friend/CancelFriendRequest/` + id, requestOptions).then(handleResponse);
+}
+
+function addToCurrentFriends(id, currentFriends) {
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentFriends)
+    };
+
+    return fetch(`api/Friend/AddToCurrentFriends/` + id, requestOptions).then(handleResponse);
 }
 
 function logout() {

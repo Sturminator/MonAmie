@@ -33,7 +33,23 @@ export function friends(state = {}, action) {
             return {
                 loading: false,
                 error: action.error
-            };   
+            };
+        case friendConstants.ADDTOCURRENTFRIENDS_REQUEST:
+            return {
+                loading: true,
+                id: action.id,
+                friendId: action.friendId
+            };
+        case friendConstants.ADDTOCURRENTFRIENDS_SUCCESS:
+            return {
+                loading: false,
+                items: action.friends
+            };
+        case friendConstants.ADDTOCURRENTFRIENDS_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
         case authConstants.LOGOUT:
             return {}
         default:
