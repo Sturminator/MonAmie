@@ -10,7 +10,7 @@ namespace MonAmieData.Models
         public int UserImageId { get; set; }
 
         [Required]
-        [Column(TypeName = "varbinary(200)")]
+        [Column(TypeName = "nvarchar(200)")]
         public String FileName { get; set; }
 
         [Required]

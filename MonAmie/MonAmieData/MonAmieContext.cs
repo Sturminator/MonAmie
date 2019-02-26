@@ -24,7 +24,7 @@ namespace MonAmieData
         public DbSet<UserImage> UserImage { get; set; }      
         public DbSet<UserMessage> UserMessage { get; set; }
         public DbSet<UserHasFriend> UserHasFriend { get; set; }
-        public DbSet <UserHasFriendRequest> UserHasFriendRequest { get; set; }
+        public DbSet<UserHasFriendRequest> UserHasFriendRequest { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -63,11 +63,6 @@ namespace MonAmieData
                 .WithMany()
                 .HasForeignKey(uhfr => uhfr.PendingFriendId)
                 .OnDelete(DeleteBehavior.Restrict);
-        }
-
-        public MonAmieContext()
-        {
-
         }
     }
 }

@@ -16,10 +16,12 @@ namespace MonAmie.Controllers
     public class UserImageController : ControllerBase
     {
         private IUserImageService userImageService;
+        private IUserService userService;
 
-        public UserImageController(IUserImageService userImageService)
+        public UserImageController(IUserImageService userImageService, IUserService userService)
         {
             this.userImageService = userImageService;
+            this.userService = userService;
         }
 
         [HttpGet]
@@ -33,49 +35,43 @@ namespace MonAmie.Controllers
 
         
         [HttpGet]
-        [Route("api/UserImage/ViewImage")]
+        [Route("api/UserImage/ViewImage/{id}")]
         public FileStreamResult ViewImage(int id)
         {
+            UserImage image = userImageService.GetById(id);
 
-            using (MonAmieContext dbContext = new MonAmieContext())
-            {
-                UserImage image = dbContext.UserImage.FirstOrDefault(m => m.UserImageId == id);
+            MemoryStream ms = new MemoryStream(image.Data);
 
-                MemoryStream ms = new MemoryStream(image.Data);
+            FileStreamResult imageItem = new FileStreamResult(ms, image.ContentType);
 
-                return new FileStreamResult(ms, image.ContentType);
-            }
+            return imageItem;
         }
 
         [HttpPost]
-        [Route("api/UserImage/UploadImage")]
-        public IActionResult UploadImage(IList <IFormFile> files)
+        [Route("api/UserImage/UploadImage/{files}")]
+        public IActionResult UploadImage(IList <IFormFile> files, int id)
         {
             IFormFile uploadedImage = files.FirstOrDefault();
+
             if(uploadedImage == null || uploadedImage.ContentType.ToLower().StartsWith("image/"))
             {
-                using (MonAmieContext dbContext = new MonAmieContext())///////////needs checking
+                MemoryStream ms = new MemoryStream();
+                uploadedImage.OpenReadStream().CopyTo(ms);
+
+                Image image = Image.FromStream(ms);
+
+                UserImage imageEntity = new UserImage()
                 {
-                    MemoryStream ms = new MemoryStream();
-                    uploadedImage.OpenReadStream().CopyTo(ms);
+                    UserImageId = id,
+                    FileName = uploadedImage.Name,
+                    Data = ms.ToArray(),
+                    Width = image.Width,
+                    Height = image.Height,
+                    ContentType = uploadedImage.ContentType,
+                    UserId = id
+                };
 
-                    Image image = Image.FromStream(ms);
-
-                    UserImage imageEntity = new UserImage()
-                    {
-                        UserImageId = 1,
-                        FileName = uploadedImage.Name,
-                        Data = ms.ToArray(),
-                        Width = image.Width,
-                        Height = image.Height,
-                        ContentType = uploadedImage.ContentType,
-                        UserId = 1
-                    };
-
-                    dbContext.UserImage.Add(imageEntity);
-
-                    dbContext.SaveChanges();
-                }
+                userImageService.AddUserImage(imageEntity);
             }
 
             return RedirectToAction("Index");
