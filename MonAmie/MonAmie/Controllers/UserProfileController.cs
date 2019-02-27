@@ -13,16 +13,18 @@ namespace MonAmie.Controllers
     {
         private IUserService userService;
         private ICategoryService categoryService;
+        private IFriendService friendService;
 
-        public UserProfileController(IUserService userService, ICategoryService categoryService)
+        public UserProfileController(IUserService userService, ICategoryService categoryService, IFriendService friendService)
         {
             this.userService = userService;
             this.categoryService = categoryService;
+            this.friendService = friendService;
         }
 
         [HttpGet]
-        [Route("profile/api/UserProfile/GetById/{id}")]
-        public IActionResult GetById(int id)
+        [Route("profile/api/UserProfile/GetById/{id}/{loggedInId}")]
+        public IActionResult GetById(int id, int loggedInId)
         {
             var user = userService.GetById(id);
             var userCategories = categoryService.GetAllCategoriesForUser(id);
@@ -37,6 +39,8 @@ namespace MonAmie.Controllers
             if (user == null)
                 return BadRequest(new { message = "Could not retrieve profile for user." });
 
+            var isFriend = friendService.IsFriend(loggedInId, id);
+
             return Ok(new
             {
                 Id = user.UserId,
@@ -47,7 +51,8 @@ namespace MonAmie.Controllers
                 Age = userService.CalculateUserAge(user.BirthDate),
                 State = user.State,
                 Bio = user.Bio,
-                Categories = userCategoryModels.ToList().OrderBy(ucm => ucm.CategoryName)
+                Categories = userCategoryModels.ToList().OrderBy(ucm => ucm.CategoryName),
+                isFriend = isFriend
             });
         }
 

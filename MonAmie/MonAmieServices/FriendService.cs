@@ -147,5 +147,16 @@ namespace MonAmieServices
         {
             return _context.UserHasFriend.Single(uhf => uhf.UserId == userId && uhf.FriendId == friendId);
         }
+
+        /// <summary>
+        /// Checks if a user is friends with another user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="friendId"></param>
+        /// <returns></returns>
+        public bool IsFriend(int userId, int friendId)
+        {
+            return _context.UserHasFriend.Any(uhf => uhf.UserId == userId && uhf.FriendId == friendId);
+        }
     }
 }

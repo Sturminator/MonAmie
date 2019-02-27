@@ -4,11 +4,12 @@ import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { userProfileActions, categoryActions } from '../../Actions';
 import {
-    Table, Form, Segment, TextArea, Divider, Header,
+    Table, Form, Segment, TextArea, Divider, Header, Label,
     Icon, Grid, Container, Loader, Dimmer, Button, Popup, Modal
 } from 'semantic-ui-react';
 
 import modalStyles from '../../Styles/modal.styles';
+import { userProfile } from '../../Reducers/userProfile.reducer';
 
 class ProfilePage extends Component {
     state = {
@@ -20,27 +21,27 @@ class ProfilePage extends Component {
     };
 
     componentDidMount() {
-        const { match: { params }, userProfile } = this.props;
+        const { match: { params }, userProfile, user } = this.props;
         var idStr = params.userId.split("_")[1];
         var id = parseInt(idStr) / 11;
 
         if (!userProfile.items) {
-            this.props.dispatch(userProfileActions.getById(id));
+            this.props.dispatch(userProfileActions.getById(id, user.id));
             this.props.dispatch(categoryActions.getAll());
         }
         else if (userProfile.items.id != id) {
-            this.props.dispatch(userProfileActions.getById(id));
+            this.props.dispatch(userProfileActions.getById(id, user.id));
             this.props.dispatch(categoryActions.getAll());
         }
     }
 
     componentWillReceiveProps(props) {
-        const { location } = this.props;
+        const { location, user } = this.props;
 
         if (location.pathname != props.location.pathname) {
             var idStr = props.location.pathname.split("_")[1];
             var id = parseInt(idStr) / 11;
-            this.props.dispatch(userProfileActions.getById(id));
+            this.props.dispatch(userProfileActions.getById(id, user.id));
         }
     }
 
@@ -84,7 +85,7 @@ class ProfilePage extends Component {
             editCategories: this.state.editCategories ? false : true
         })
 
-        this.props.dispatch(userProfileActions.updateCategories(userProfile));  
+        this.props.dispatch(userProfileActions.updateCategories(userProfile));
     };
 
     onEditProfileButtonClick = (e) => this.setState({
@@ -143,7 +144,7 @@ class ProfilePage extends Component {
             editProfile: this.state.editProfile ? false : true
         });
 
-        this.props.dispatch(userProfileActions.update(userProfile));     
+        this.props.dispatch(userProfileActions.update(userProfile));
     };
 
     createUserCategoriesTable = () => {
@@ -161,7 +162,7 @@ class ProfilePage extends Component {
                 //Create the parent and add the children
                 table.push(<Table.Row key={i + 1} children={children} />)
             }
-        } 
+        }
 
         return table
     }
@@ -193,12 +194,22 @@ class ProfilePage extends Component {
                         children.push(<Table.Cell key={i + 1}><Button onClick={this.onAddInterestToUser} value={categories.items[i]} size='tiny' icon color='green'><Icon name='plus' /></Button></Table.Cell>)
                         //Create the parent and add the children
                         table.push(<Table.Row key={i + 1} children={children} />)
-                    }                    
+                    }
                 }
-            }    
+            }
         }
 
         return table
+    }
+
+    renderFriend = () => {
+        const { userProfile } = this.props;
+
+        if (userProfile.items.isFriend) {
+            return (<Label color='green' attached='top right'>
+                <Icon name='checkmark' /> Friends
+                </Label>);
+        }
     }
 
     render() {
@@ -231,6 +242,7 @@ class ProfilePage extends Component {
                                 <Grid.Column>
                                 </Grid.Column>
                                 <Grid.Column>
+                                    {this.renderFriend()}
                                 </Grid.Column>
                             </Grid>
                             <Container>
@@ -292,7 +304,7 @@ class ProfilePage extends Component {
                                                             <Grid.Column>
                                                                 <Header size='large' style={{ color: 'white' }}>Groups</Header>
                                                             </Grid.Column>
-                                                            <Grid.Column>    
+                                                            <Grid.Column>
                                                             </Grid.Column>
                                                         </Grid>
                                                     </Table.HeaderCell>
@@ -363,7 +375,7 @@ class ProfilePage extends Component {
                             </Segment>
                         </Form>
                     </Modal.Content>
-                    <Modal.Actions style={{ backgroundColor: '#374785'}}>
+                    <Modal.Actions style={{ backgroundColor: '#374785' }}>
                         <Button onClick={this.onCancelProfileEditClick} negative>Cancel</Button>
                         <Button onClick={this.onSaveProfileEditClick} positive icon='checkmark' labelPosition='right' content='Save' />
                     </Modal.Actions>
@@ -389,10 +401,10 @@ class ProfilePage extends Component {
                                     <Header as='h3' style={{ color: 'white' }}>{userProfile.items.gender}</Header>
                                 </Grid.Column>
                                 <Grid.Column style={{ textAlign: "center" }}>
-                                    <Header as='h3'  style={{ color: 'white' }}>{userProfile.items.state}</Header>
+                                    <Header as='h3' style={{ color: 'white' }}>{userProfile.items.state}</Header>
                                 </Grid.Column>
                                 <Grid.Column style={{ textAlign: "right" }}>
-                                    <Header as='h3'  style={{ color: 'white' }}>{userProfile.items.age}</Header>
+                                    <Header as='h3' style={{ color: 'white' }}>{userProfile.items.age}</Header>
                                 </Grid.Column>
                             </Grid>
                         </Container>

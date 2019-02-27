@@ -62,5 +62,13 @@ namespace MonAmieData.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         IEnumerable<UserHasFriendRequest> GetAllSentFriendRequestsForUser(int id);
+
+        /// <summary>
+        /// Checks if a user is friends with another user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="friendId"></param>
+        /// <returns></returns>
+        bool IsFriend(int userId, int friendId);
     }
 }

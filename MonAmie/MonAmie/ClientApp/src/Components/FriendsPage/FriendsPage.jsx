@@ -319,39 +319,41 @@ class FriendsPage extends Component {
                     </Modal.Actions>
                 </Modal>
                 <Container fluid style={{ margin: '5px' }}>
+                    <Segment fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
                     <Grid stackable columns='equal'>
                         <Grid.Column>
-                            <Segment fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
+                            <Container fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
                                 <Header as='h1' textAlign='center'>
                                     <Header.Content style={{ color: 'white' }}>Friends</Header.Content>
                                 </Header>
                                 <Divider style={{ backgroundColor: 'white' }} />
                                 <Card.Group stackable centered itemsPerRow={3} children={this.createFriendCards()} />
-                            </Segment>
-                        </Grid.Column>
+                            </Container>
+                            </Grid.Column>
                         <Grid.Column>
                             <Grid stackable columns='equal'>
                                 <Grid.Column>
-                                    <Segment fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
+                                    <Container fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
                                         <Header as='h1' textAlign='center'>
                                             <Header.Content style={{ color: 'white' }}>Incoming Requests</Header.Content>
                                         </Header>
                                         <Divider style={{ backgroundColor: 'white' }} />
                                         <Card.Group fluid itemsPerRow={1} children={this.createRequestCards(true)} />
-                                    </Segment>
+                                    </Container>
                                 </Grid.Column>
                                 <Grid.Column>
-                                    <Segment fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
+                                    <Container fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
                                         <Header as='h1' textAlign='center'>
                                             <Header.Content style={{ color: 'white' }}>Outgoing Requests</Header.Content>
                                         </Header>
                                         <Divider style={{ backgroundColor: 'white' }} />
                                         <Card.Group fluid itemsPerRow={1} children={this.createRequestCards(false)} />
-                                    </Segment>
+                                    </Container>
                                 </Grid.Column>
                             </Grid>
                         </Grid.Column>
-                    </Grid>
+                        </Grid>
+                    </Segment>
                     <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
                         <Grid columns='equal'>
                             <Grid.Column>

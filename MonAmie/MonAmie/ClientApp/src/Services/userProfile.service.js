@@ -7,13 +7,13 @@ export const userProfileService = {
     logout
 };
 
-function getById(id) {
+function getById(id, loggedInId) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
 
-    return fetch(`api/UserProfile/GetById/` + id, requestOptions).then(handleResponse);
+    return fetch(`api/UserProfile/GetById/` + id + `/` + loggedInId, requestOptions).then(handleResponse);
 }
 
 function update(userProfile) {

@@ -10,11 +10,11 @@ export const userProfileActions = {
     logout
 };
 
-function getById(id) {
+function getById(id, loggedInId) {
     return dispatch => {
         dispatch(request(id));
 
-        userProfileService.getById(id)
+        userProfileService.getById(id, loggedInId)
             .then(
                 userProfile => dispatch(success(userProfile)),
                 error => dispatch(failure(error.toString()))
