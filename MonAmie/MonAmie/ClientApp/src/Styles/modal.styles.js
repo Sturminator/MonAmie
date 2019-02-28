@@ -2,7 +2,7 @@
 
 export default {
     EditProfileModal: {
-        maxHeight: '340px',
+        maxHeight: '420px',
         marginBottom: 'auto',
         marginTop: 'auto',
         marginLeft: 'auto',
