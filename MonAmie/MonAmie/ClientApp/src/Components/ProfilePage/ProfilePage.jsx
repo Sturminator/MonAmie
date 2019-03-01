@@ -17,6 +17,7 @@ class ProfilePage extends Component {
         originalCategories: [],
         newCategories: [],
         bio: "",
+        //image: undefined,
         editProfile: false,
         editCategories: false
     };
@@ -139,15 +140,17 @@ class ProfilePage extends Component {
 
     onSaveProfileEditClick = (e) => {
         const { userProfile } = this.props;
-        const { bio } = this.state;
+        const { bio, files } = this.state;
 
         userProfile.items.bio = bio;
+        //userProfile.items.files = files;
 
         this.setState({
             editProfile: this.state.editProfile ? false : true
         });
 
         this.props.dispatch(userProfileActions.update(userProfile));
+        //this.props.dispatch(imagesActions.uploadImage(files, userProfile.items.id))
     };
 
     createUserCategoriesTable = () => {
@@ -217,7 +220,7 @@ class ProfilePage extends Component {
 
     render() {
         const { user, userProfile, images } = this.props;
-        const { bio, editProfile, editCategories } = this.state;
+        const { bio, editProfile, editCategories, files, image} = this.state;
 
         if (!user) {
             return <Redirect to='/login' />
@@ -458,13 +461,13 @@ class ProfilePage extends Component {
                             <Button onClick={this.onCancelCategoriesEditClick} negative>Cancel</Button>
                             <Button onClick={this.onSaveCategoriesEditClick} positive icon='checkmark' labelPosition='right' content='Save' />
                         </Modal.Actions>
-                    </Modal>////////////////////////////////////////
+                    </Modal>
                     <Modal style={modalStyles.EditProfileModal} size='tiny' open={editProfile} onClose={this.close}>
                         <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Profile</Modal.Header>
                         <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
                             <Form fluid='true'>
                                 <b>Upload profile picture</b>
-                                <input type="file" name="files"/>
+                                <input type="file" name="files" value={files}/>
                                 <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
                                     <TextArea
                                         value={bio}
@@ -481,7 +484,7 @@ class ProfilePage extends Component {
                             <Button onClick={this.onCancelProfileEditClick} negative>Cancel</Button>
                             <Button onClick={this.onSaveProfileEditClick} positive icon='checkmark' labelPosition='right' content='Save' />
                         </Modal.Actions>
-                    </Modal>//////////////////////////////////////////////
+                    </Modal>
                     <Container style={{ marginTop: '50px' }}>
                         <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
                             <Grid fluid='true' columns='equal'>
@@ -613,7 +616,7 @@ class ProfilePage extends Component {
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
                         <Form fluid='true'>
                             <b>Upload new profile picture</b>
-                            <input type="file" name="files"/>
+                            <input type="file" name="files" value={files}/>
                             <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
                                 <TextArea
                                     value={bio}
@@ -644,7 +647,7 @@ class ProfilePage extends Component {
                         </Grid>
                         <Container>
                             <Header as='h1' icon textAlign='center'>
-                                ////////////<Icon name='user' />//////////
+                                <Icon name='user' />
                                 <img src={images.items.viewImage}/>
                                 <Header.Content style={{ color: 'white' }}>{userProfile.items.fullName}</Header.Content>
                             </Header>
