@@ -14,12 +14,14 @@ namespace MonAmie.Controllers
         private IUserService userService;
         private ICategoryService categoryService;
         private IFriendService friendService;
+        //private IUserImageService userImageService;
 
         public UserProfileController(IUserService userService, ICategoryService categoryService, IFriendService friendService)
         {
             this.userService = userService;
             this.categoryService = categoryService;
             this.friendService = friendService;
+            //this.userImageService = userImageService;
         }
 
         [HttpGet]
