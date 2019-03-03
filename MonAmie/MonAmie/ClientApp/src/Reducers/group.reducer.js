@@ -16,11 +16,19 @@ export function groups(state = {}, action) {
         case groupConstants.GETALLFORCATEGORY_FAILURE:
             break;
         case groupConstants.ADDGROUP_REQUEST:
-            break;
+            return {
+                loading: true,
+                group: action.group
+            };
         case groupConstants.ADDGROUP_SUCCESS:
-            break;
+            return {
+                loading: false
+            };
         case groupConstants.ADDGROUP_FAILURE:
-            break;
+            return {
+                loading: false,
+                error: action.error
+            };
         case groupConstants.UPDATEGROUP_REQUEST:
             break;
         case groupConstants.UPDATEGROUP_SUCCESS:

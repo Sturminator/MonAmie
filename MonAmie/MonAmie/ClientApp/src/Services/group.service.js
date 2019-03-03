@@ -17,8 +17,14 @@ function getAllForCategory() {
 
 }
 
-function addGroup() {
+function addGroup(group) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(group)
+    };
 
+    return fetch(`api/Group/AddGroup/`, requestOptions).then(handleResponse);
 }
 
 function updateGroup() {

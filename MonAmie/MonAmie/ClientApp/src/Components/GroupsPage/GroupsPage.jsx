@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { NavigationBar } from '../../Components';
-import { categoryActions } from '../../Actions';
+import { categoryActions, groupActions } from '../../Actions';
 import {
     Container, Grid, Header, Segment, Popup, Button, Divider,
     Modal, Form, TextArea, Search, Label
@@ -14,8 +14,8 @@ class GroupsPage extends Component {
 
         this.state = {
             newGroup: {
-                name: "",
-                category: "",
+                groupName: "",
+                categoryId: -1,
                 description: "",
             },
             categories: [],
@@ -54,14 +54,14 @@ class GroupsPage extends Component {
     handleChange(event) {
         const { name, value } = event.target;
         const { newGroup } = this.state;
-        var otherField = name === 'name' ? newGroup.description : newGroup.name;
+        var otherField = name === 'groupName' ? newGroup.description : newGroup.groupName;
 
         this.setState({
             newGroup: {
                 ...newGroup,
                 [name]: value
             },
-            canCreateGroup: value != "" > 0 && newGroup.category > 0 && otherField != ""
+            canCreateGroup: value != "" > 0 && newGroup.categoryId > 0 && otherField != ""
         });
     }
 
@@ -70,9 +70,9 @@ class GroupsPage extends Component {
         this.setState({
             newGroup: {
                 ...newGroup,
-                category: value.value
+                categoryId: value.value
             },
-            canCreateGroup: value.value > 0 && newGroup.name != "" && newGroup.description != ""
+            canCreateGroup: value.value > 0 && newGroup.groupName != "" && newGroup.description != ""
         });
     }
 
@@ -86,12 +86,28 @@ class GroupsPage extends Component {
     });
 
     onCancelCreateGroupClick = (e) => this.setState({
-        createGroup: this.state.createGroup ? false : true
+        createGroup: this.state.createGroup ? false : true,
+        newGroup: {
+            categoryId: -1,
+            groupName: "",
+            description: ""
+        }
     });
 
-    onSaveCreateGroupClick = (e) => this.setState({
-        createGroup: this.state.createGroup ? false : true
-    });
+    onSaveCreateGroupClick = (e) => {
+        const { newGroup } = this.state;
+
+        this.props.dispatch(groupActions.addGroup(newGroup));
+
+        this.setState({
+            createGroup: this.state.createGroup ? false : true,
+            newGroup: {
+                categoryId: -1,
+                groupName: "",
+                description: ""
+            }
+        })
+    };
 
 
     render() {
@@ -107,8 +123,8 @@ class GroupsPage extends Component {
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
                         <Form fluid='true'>
                             <Form.Group widths="equal">
-                                <Form.Input maxLength='50' type='text' fluid label="Name" placeholder="Name" value={newGroup.name} name='name' onChange={this.handleChange} />
-                                <Form.Select clearable noResultsMessage='No results found.' search fluid label="Category" options={this.createCategoryDropdown()} placeholder="Assign a category" value={newGroup.category} onChange={this.handleCategoryChange} />
+                                <Form.Input maxLength='50' type='text' fluid label="Name" placeholder="Name" value={newGroup.groupName} name='groupName' onChange={this.handleChange} />
+                                <Form.Select clearable noResultsMessage='No results found.' search fluid label="Category" options={this.createCategoryDropdown()} placeholder="Assign a category" value={newGroup.categoryId} onChange={this.handleCategoryChange} />
                             </Form.Group>
                             <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
                                 <TextArea

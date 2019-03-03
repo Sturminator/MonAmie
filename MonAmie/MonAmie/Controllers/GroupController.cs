@@ -48,6 +48,7 @@ namespace MonAmie.Controllers
         [Route("api/Group/AddGroup")]
         public IActionResult AddGroup([FromBody]Group group)
         {
+            
             return Ok();
         }
 
