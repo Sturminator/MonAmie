@@ -5,3 +5,4 @@ export * from './userProfile.constants';
 export * from './user.constants';
 export * from './friend.constants';
 export * from './images.constants';
+export * from './group.constants';

@@ -5,3 +5,4 @@ export * from './userProfile.actions';
 export * from './user.actions';
 export * from './friend.actions';
 export * from './images.actions';
+export * from './group.actions';
