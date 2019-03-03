@@ -1,15 +1,133 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { NavigationBar } from '../../Components';
-import { Container, Grid, Header, Segment, Popup, Button, Divider } from 'semantic-ui-react';
+import { categoryActions } from '../../Actions';
+import {
+    Container, Grid, Header, Segment, Popup, Button, Divider,
+    Modal, Form, TextArea, Search, Label
+} from 'semantic-ui-react';
+import modalStyles from '../../Styles/modal.styles';
 
 class GroupsPage extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            newGroup: {
+                name: "",
+                category: "",
+                description: "",
+            },
+            categories: [],
+            canCreateGroup: false,
+            createGroup: false
+        };
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleCategoryChange = this.handleCategoryChange.bind(this);
+    }
+
+    createCategoryDropdown = () => {
+        const { categories } = this.props;
+
+        var categoryOptions = [];
+
+        if (categories.items) {
+            for (let i = 0; i < categories.items.length; i++) {
+                categoryOptions.push({
+                    key: categories.items[i].categoryId, text: categories.items[i].categoryName,
+                    value: categories.items[i].categoryId
+                });
+            }
+        }
+        return categoryOptions;
+    }
+
+    componentDidMount() {
+        const { categories } = this.props;
+
+        if (!categories.items) {
+            this.props.dispatch(categoryActions.getAll());
+        }
+    }
+
+    handleChange(event) {
+        const { name, value } = event.target;
+        const { newGroup } = this.state;
+        var otherField = name === 'name' ? newGroup.description : newGroup.name;
+
+        this.setState({
+            newGroup: {
+                ...newGroup,
+                [name]: value
+            },
+            canCreateGroup: value != "" > 0 && newGroup.category > 0 && otherField != ""
+        });
+    }
+
+    handleCategoryChange(event, value) {
+        const { newGroup } = this.state;
+        this.setState({
+            newGroup: {
+                ...newGroup,
+                category: value.value
+            },
+            canCreateGroup: value.value > 0 && newGroup.name != "" && newGroup.description != ""
+        });
+    }
+
+    onDescriptionChange = (e, { value }) => this.setState({
+        description: value
+    });
+
+    onCreateGroupButtonClick = (e) => this.setState({
+        createGroup: this.state.createGroup ? false : true,
+        categories: this.createCategoryDropdown
+    });
+
+    onCancelCreateGroupClick = (e) => this.setState({
+        createGroup: this.state.createGroup ? false : true
+    });
+
+    onSaveCreateGroupClick = (e) => this.setState({
+        createGroup: this.state.createGroup ? false : true
+    });
+
+
     render() {
+        const { newGroup, createGroup, canCreateGroup } = this.state;
+
         return (
             <div>
                 <NavigationBar>
                 </NavigationBar>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
+                <Modal style={modalStyles.createGroupModal} size='tiny' open={createGroup} onClose={this.close}>
+                    <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Create Group</Modal.Header>
+                    <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
+                        <Form fluid='true'>
+                            <Form.Group widths="equal">
+                                <Form.Input maxLength='50' type='text' fluid label="Name" placeholder="Name" value={newGroup.name} name='name' onChange={this.handleChange} />
+                                <Form.Select clearable noResultsMessage='No results found.' search fluid label="Category" options={this.createCategoryDropdown()} placeholder="Assign a category" value={newGroup.category} onChange={this.handleCategoryChange} />
+                            </Form.Group>
+                            <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
+                                <TextArea
+                                    name='description'
+                                    value={newGroup.description}
+                                    style={{ minHeight: 100 }}
+                                    maxLength="500"
+                                    onChange={this.handleChange}
+                                    placeholder="Give a brief description of the group"
+                                />
+                                <Header sub style={{ color: 'white' }}>Characters: {newGroup.description ? newGroup.description.length : 0} / 500</Header>
+                            </Segment>
+                        </Form>
+                    </Modal.Content>
+                    <Modal.Actions style={{ backgroundColor: '#374785' }}>
+                        <Button onClick={this.onCancelCreateGroupClick} negative>Cancel</Button>
+                        <Button disabled={!canCreateGroup} onClick={this.onSaveCreateGroupClick} positive icon='checkmark' labelPosition='right' content='Create' />
+                    </Modal.Actions>
+                </Modal>
                 <Container fluid style={{ margin: '5px' }}>
                     <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
                         <Grid columns='equal'>
@@ -21,7 +139,7 @@ class GroupsPage extends Component {
                                 </Header>
                             </Grid.Column>
                             <Grid.Column>
-                                <Popup trigger={<Button floated='right' color='blue' icon='add' />} content='Create New Group' />
+                                <Popup trigger={<Button floated='right' color='blue' icon='add' onClick={this.onCreateGroupButtonClick} />} content='Create New Group' />
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ backgroundColor: 'white' }} />
@@ -48,10 +166,11 @@ class GroupsPage extends Component {
 }
 
 function mapStateToProps(state) {
-    const { authentication } = state;
+    const { authentication, categories } = state;
     const { user } = authentication;
     return {
-        user
+        user,
+        categories
     };
 }
 

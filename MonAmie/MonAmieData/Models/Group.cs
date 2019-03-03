@@ -10,8 +10,12 @@ namespace MonAmieData.Models
         public int GroupId { get; set; }
 
         [Required]
-        [Column(TypeName = "varchar(255)")]
+        [Column(TypeName = "varchar(50)")]
         public string GroupName { get; set; }
+
+        [Required]
+        [Column(TypeName = "varchar(500)")]
+        public string Description { get; set; }
 
         [Required]
         [ForeignKey("Category")]

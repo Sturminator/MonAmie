@@ -28,5 +28,15 @@ export default {
         marginRight: 'auto',
         backgroundColor: '#374785',
         color: 'white'
+    },
+
+    createGroupModal: {
+        maxHeight: '420px',
+        marginBottom: 'auto',
+        marginTop: 'auto',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        backgroundColor: '#374785',
+        color: 'white'
     }
 }
