@@ -20,5 +20,8 @@ namespace MonAmieData.Models
 
         [Required]
         public bool CanEvent { get; set; }
+
+        [Required]
+        public  string ImageSource { get; set; }
     }
 }

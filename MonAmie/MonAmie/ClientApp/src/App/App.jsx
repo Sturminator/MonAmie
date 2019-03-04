@@ -12,6 +12,7 @@ import { RegistrationPage } from '../Components/RegistrationPage';
 import { ProfilePage } from '../Components/ProfilePage';
 import { FriendsPage } from '../Components/FriendsPage';
 import { GroupsPage } from '../Components/GroupsPage';
+import { GroupsCategoryPage } from '../Components/GroupsCategoryPage';
 import { EventsPage } from '../Components/EventsPage';
 import { MessagesPage } from '../Components/MessagesPage';
 
@@ -41,11 +42,12 @@ class App extends Component {
                                 <PrivateRoute exact path="/" component={HomePage} />
                                 <Route path="/login" component={LoginPage} />
                                 <Route path="/registration" component={RegistrationPage} />
-                                <Route path="/profile/:userId" component={ProfilePage} />
-                                <Route path="/friends" component={FriendsPage} />
-                                <Route path="/groups" component={GroupsPage} />
-                                <Route path="/events" component={EventsPage} />
-                                <Route path="/messages" component={MessagesPage} />
+                                <PrivateRoute path="/profile/:userId" component={ProfilePage} />
+                                <PrivateRoute path="/friends" component={FriendsPage} />
+                                <PrivateRoute exact path="/groups" component={GroupsPage} />
+                                <PrivateRoute path="/groups/:categoryName" component={GroupsCategoryPage} />
+                                <PrivateRoute path="/events" component={EventsPage} />
+                                <PrivateRoute path="/messages" component={MessagesPage} />
                             </div>
                         </Router>
                     </div>

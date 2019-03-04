@@ -27,7 +27,8 @@ namespace MonAmie.Controllers
             var results = categories.Select(result => new CategoryViewModel
             {
                 CategoryId = result.CategoryId,
-                CategoryName = result.CategoryName
+                CategoryName = result.CategoryName,
+                ImageSource = result.ImageSource
             }).ToList().OrderBy(c => c.CategoryName);
 
             return Ok(results);
@@ -58,7 +59,8 @@ namespace MonAmie.Controllers
             return new CategoryViewModel
             {
                 CategoryId = category.CategoryId,
-                CategoryName = category.CategoryName
+                CategoryName = category.CategoryName,
+                ImageSource = category.ImageSource
             };
         }
 

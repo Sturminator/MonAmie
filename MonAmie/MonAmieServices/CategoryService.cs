@@ -158,6 +158,16 @@ namespace MonAmieServices
             return GetById(categoryId).CategoryName;
         }
 
+        /// <summary>
+        /// Get a category's image source
+        /// </summary>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
+        public string GetImageSource(int categoryId)
+        {
+            return GetById(categoryId).ImageSource;
+        }
+
         public IEnumerable<UserHasCategory> GetAllCategoriesForUser(int userId)
         {
             return _context.UserHasCategory.Where(ui => ui.UserId == userId);
