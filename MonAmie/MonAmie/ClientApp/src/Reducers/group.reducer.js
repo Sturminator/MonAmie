@@ -4,17 +4,34 @@ import { authConstants } from '../Constants';
 export function groups(state = {}, action) {
     switch (action.type) {
         case groupConstants.GETALL_REQUEST:
-            break;
+            return {
+                loading: true
+            };
         case groupConstants.GETALL_SUCCESS:
-            break;
+            return {
+                loading: false,
+                groups: action.groups
+            };
         case groupConstants.GETALL_FAILURE:
-            break;
+            return {
+                loading: false,
+                error: action.error
+            };
         case groupConstants.GETALLFORCATEGORY_REQUEST:
-            break;
+            return {
+                loading: true,
+                categoryId: action.categoryId
+            };
         case groupConstants.GETALLFORCATEGORY_SUCCESS:
-            break;
+            return {
+                loading: false,
+                groups: action.groups
+            };
         case groupConstants.GETALLFORCATEGORY_FAILURE:
-            break;
+            return {
+                loading: false,
+                error: action.error
+            };
         case groupConstants.ADDGROUP_REQUEST:
             return {
                 loading: true,

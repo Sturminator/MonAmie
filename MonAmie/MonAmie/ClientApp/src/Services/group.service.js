@@ -10,11 +10,21 @@ export const groupService = {
 }
 
 function getAll() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
 
+    return fetch(`api/Group/GetAll`, requestOptions).then(handleResponse);
 }
 
-function getAllForCategory() {
+function getAllForCategory(categoryId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
 
+    return fetch(`api/Group/GetAllForCategory/` + categoryId, requestOptions).then(handleResponse);
 }
 
 function addGroup(ownerId, group) {

@@ -5,7 +5,7 @@ import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions } from '../../Actions';
 import {
     Container, Grid, Header, Segment, Popup, Button, Divider,
-    Modal, Form, TextArea, Image, Card
+    Modal, Form, TextArea, Image, Card, Dimmer, Loader
 } from 'semantic-ui-react';
 import { states } from '../../Enums';
 import modalStyles from '../../Styles/modal.styles';
@@ -158,11 +158,19 @@ class GroupsPage extends Component {
     };
 
     render() {
+        const { categories } = this.props;
         const { newGroup, createGroup, canCreateGroup, whereTo } = this.state;
 
         if (whereTo != "") {
             return <Redirect to={whereTo} />
         }
+
+        if (categories.loading)
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
 
         return (
             <div>

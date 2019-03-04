@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions } from '../../Actions';
+import { Dimmer, Loader, Container, Segment, Divider, Grid, Header } from 'semantic-ui-react';
 
 class GroupsCategoryPage extends Component {
     constructor(props) {
@@ -23,19 +24,51 @@ class GroupsCategoryPage extends Component {
         }
 
         if (!groups.items) {
-            //this.dispatch(groupActions.getAllForCategory());
+            this.props.dispatch(groupActions.getAllForCategory(id));
         }
         else if (groups.items.id != id) {
-            //this.dispatch(groupActions.getAllForCategory());
+            this.props.dispatch(groupActions.getAllForCategory(id));
         }
     }
 
     render() {
+        const { groups } = this.props;
+
+        if (groups.loading)
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
+
+        if (!groups.groups)
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
+
         return (
             <div>
                 <NavigationBar>
                 </NavigationBar>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
+                <Container fluid style={{ margin: '5px' }}>
+                    <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
+                        <Grid columns='equal'>
+                            <Grid.Column>
+                            </Grid.Column>
+                            <Grid.Column>
+                                <Header as='h1' textAlign='center'>
+                                    <Header.Content style={{ color: 'white' }}>{groups.groups.categoryName}</Header.Content>
+                                </Header>
+                            </Grid.Column>
+                            <Grid.Column>
+                            </Grid.Column>
+                        </Grid>
+                        <Divider style={{ backgroundColor: 'white' }} />
+                    </Segment>
+                </Container>
             </div>
         );
     }

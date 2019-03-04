@@ -13,11 +13,35 @@ export const groupActions = {
 }
 
 function getAll() {
+    return dispatch => {
+        dispatch(request());
 
+        groupService.getAll()
+            .then(
+                groups => dispatch(success(groups)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: groupConstants.GETALL_REQUEST } }
+    function success(groups) { return { type: groupConstants.GETALL_SUCCESS, groups } }
+    function failure(error) { return { type: groupConstants.GETALL_FAILURE, error } }
 }
 
 function getAllForCategory(categoryId) {
+    return dispatch => {
+        dispatch(request(categoryId));
 
+        groupService.getAllForCategory(categoryId)
+            .then(
+                groups => dispatch(success(groups)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(categoryId) { return { type: groupConstants.GETALLFORCATEGORY_REQUEST, categoryId } }
+    function success(groups) { return { type: groupConstants.GETALLFORCATEGORY_SUCCESS, groups } }
+    function failure(error) { return { type: groupConstants.GETALLFORCATEGORY_FAILURE, error } }
 }
 
 function addGroup(ownerId, group) {

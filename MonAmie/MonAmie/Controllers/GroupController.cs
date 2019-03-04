@@ -36,6 +36,13 @@ namespace MonAmie.Controllers
             public DateTime CreationDate { get; set; }
         }
 
+        public class Groups
+        {
+            public string CategoryName { get; set; }
+            public int CategoryId { get; set; }
+            public List<GroupViewModel> GroupList { get; set; }
+        }
+
         [HttpGet]
         [Route("api/Group/GetAll")]
         public IActionResult GetAll()
@@ -58,24 +65,34 @@ namespace MonAmie.Controllers
         }
 
         [HttpGet]
-        [Route("api/Group/GetAllForCategory/{id}")]
+        [Route("groups/api/Group/GetAllForCategory/{id}")]
         public IActionResult GetAllForCategory(int id)
         {
             var groups = groupService.GetAllGroupsForCategory(id);
             var category = categoryService.GetById(id);
 
-            var results = groups.Select(result => new GroupViewModel
-            {
-                GroupId = result.GroupId,
-                GroupName = result.GroupName,
-                Description = result.Description,
-                State = result.State,
-                CategoryId = result.CategoryId,
-                CategoryName = category.CategoryName,
-                CreationDate = result.CreationDate
-            }).ToList().OrderBy(c => c.CategoryName);
+            List<GroupViewModel> groupViews = new List<GroupViewModel>();
 
-            return Ok(results);
+            foreach(var g in groups)
+            {
+                groupViews.Add(new GroupViewModel
+                {
+                    GroupId = g.GroupId,
+                    GroupName = g.GroupName,
+                    Description = g.Description,
+                    State = g.State,
+                    CategoryId = g.CategoryId,
+                    CategoryName = category.CategoryName,
+                    CreationDate = g.CreationDate
+                });
+            }
+
+            return Ok(new Groups
+            {
+                GroupList = groupViews.OrderBy(gv => gv.GroupName).ToList(),
+                CategoryId = category.CategoryId,
+                CategoryName = category.CategoryName
+            });
         }
 
         [HttpPost]
