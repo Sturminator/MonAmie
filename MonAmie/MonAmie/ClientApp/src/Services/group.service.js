@@ -3,6 +3,7 @@
 export const groupService = {
     getAll,
     getAllForCategory,
+    getAllForUser,
     addGroup,
     updateGroup,
     deleteGroup,
@@ -25,6 +26,15 @@ function getAllForCategory(categoryId) {
     };
 
     return fetch(`api/Group/GetAllForCategory/` + categoryId, requestOptions).then(handleResponse);
+}
+
+function getAllForUser(userId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`api/Group/GetAllForUser/` + userId, requestOptions).then(handleResponse);
 }
 
 function addGroup(ownerId, group) {

@@ -7,7 +7,7 @@ import { userProfile } from './userProfile.reducer';
 import { users } from './user.reducer';
 import { friends, requests } from './friend.reducer';
 import { images } from './images.reducer';
-import { groups } from './group.reducer';
+import { groups, userGroups } from './group.reducer';
 
 const rootReducer = combineReducers({
     authentication,
@@ -19,7 +19,8 @@ const rootReducer = combineReducers({
     friends,
     requests,
     images,
-    groups
+    groups,
+    userGroups
 });
 
 export default rootReducer;

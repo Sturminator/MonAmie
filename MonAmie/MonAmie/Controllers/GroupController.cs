@@ -31,6 +31,7 @@ namespace MonAmie.Controllers
             public string GroupName { get; set; }
             public string Description { get; set; }
             public string CategoryName { get; set; }
+            public int OwnerId { get; set; }
             public int CategoryId { get; set; }
             public string State { get; set; }
             public DateTime CreationDate { get; set; }
@@ -57,6 +58,7 @@ namespace MonAmie.Controllers
                 Description = result.Description,
                 State = result.State,
                 CategoryId = result.CategoryId,
+                OwnerId = result.OwnerId,
                 CategoryName = categories.FirstOrDefault(c => c.CategoryId == result.CategoryId).CategoryName,
                 CreationDate = result.CreationDate
             }).ToList().OrderBy(c => c.CategoryName);
@@ -82,6 +84,7 @@ namespace MonAmie.Controllers
                     Description = g.Description,
                     State = g.State,
                     CategoryId = g.CategoryId,
+                    OwnerId = g.OwnerId,
                     CategoryName = category.CategoryName,
                     CreationDate = g.CreationDate
                 });
@@ -93,6 +96,51 @@ namespace MonAmie.Controllers
                 CategoryId = category.CategoryId,
                 CategoryName = category.CategoryName
             });
+        }
+
+        [HttpGet]
+        [Route("api/Group/GetAllForUser/{id}")]
+        public IActionResult GetAllForUser(int id)
+        {
+            var ownedGroups = groupService.GetAllGroupsUserOwns(id).ToList();
+            var memberGroups = groupService.GetAllGroupsUserBelongsTo(id).ToList();
+            var categories = categoryService.GetAllCategories();
+
+            List<GroupViewModel> groups = new List<GroupViewModel>();
+
+            foreach (var g in ownedGroups)
+            {
+                groups.Add(new GroupViewModel
+                {
+                    GroupId = g.GroupId,
+                    GroupName = g.GroupName,
+                    Description = g.Description,
+                    State = g.State,
+                    CategoryId = g.CategoryId,
+                    OwnerId = g.OwnerId,
+                    CategoryName = categories.FirstOrDefault(c => c.CategoryId == g.CategoryId).CategoryName,
+                    CreationDate = g.CreationDate
+                });
+            }
+
+            foreach (var g in memberGroups)
+            {
+                groups.Add(new GroupViewModel
+                {
+                    GroupId = g.GroupId,
+                    GroupName = g.GroupName,
+                    Description = g.Description,
+                    State = g.State,
+                    CategoryId = g.CategoryId,
+                    OwnerId = g.OwnerId,
+                    CategoryName = categories.FirstOrDefault(c => c.CategoryId == g.CategoryId).CategoryName,
+                    CreationDate = g.CreationDate
+                });
+            }
+
+            groups = groups.OrderBy(g => g.OwnerId).ThenBy(g => g.GroupName).ToList();
+
+            return Ok(groups);
         }
 
         [HttpPost]
@@ -141,6 +189,7 @@ namespace MonAmie.Controllers
                 Description = group.Description,
                 State = group.State,
                 CategoryId = group.CategoryId,
+                OwnerId = group.OwnerId,
                 CreationDate = DateTime.UtcNow
             });
 

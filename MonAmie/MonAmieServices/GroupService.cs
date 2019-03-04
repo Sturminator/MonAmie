@@ -74,6 +74,28 @@ namespace MonAmieServices
         }
 
         /// <summary>
+        /// Get all groups a user belongs to
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public IEnumerable<Group> GetAllGroupsUserBelongsTo(int userId)
+        {
+            var groupUsers = _context.GroupHasUser.Where(ghu => ghu.UserId == ghu.UserId);
+
+            return _context.Group.Where(g => groupUsers.Any(ghu => ghu.GroupId == g.GroupId));
+        }
+
+        /// <summary>
+        /// Get all groups a user owns
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public IEnumerable<Group> GetAllGroupsUserOwns(int userId)
+        {
+            return _context.Group.Where(g => g.OwnerId == userId);
+        }
+
+        /// <summary>
         /// Update a group in the database
         /// </summary>
         /// <param name="group"></param>

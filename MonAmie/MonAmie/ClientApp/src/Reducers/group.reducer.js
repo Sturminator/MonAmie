@@ -31,7 +31,7 @@ export function groups(state = {}, action) {
             return {
                 loading: false,
                 error: action.error
-            };
+            };        
         case groupConstants.ADDGROUP_REQUEST:
             return {
                 loading: true,
@@ -59,6 +59,30 @@ export function groups(state = {}, action) {
             break;
         case groupConstants.DELETEGROUP_FAILURE:
             break;
+        case authConstants.LOGOUT:
+            return {}
+        default:
+            return state; 
+    }
+}
+
+export function userGroups(state = {}, action) {
+    switch (action.type) {
+        case groupConstants.GETALLFORUSER_REQUEST:
+            return {
+                loading: true,
+                userId: action.userId
+            };
+        case groupConstants.GETALLFORUSER_SUCCESS:
+            return {
+                loading: false,
+                groups: action.groups
+            };
+        case groupConstants.GETALLFORUSER_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
         case authConstants.LOGOUT:
             return {}
         default:

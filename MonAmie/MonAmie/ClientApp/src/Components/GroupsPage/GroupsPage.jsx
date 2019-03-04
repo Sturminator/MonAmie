@@ -34,10 +34,14 @@ class GroupsPage extends Component {
     }
 
     componentDidMount() {
-        const { categories } = this.props;
+        const { categories, userGroups, user } = this.props;
 
         if (!categories.items) {
             this.props.dispatch(categoryActions.getAll());
+        }
+
+        if (!userGroups.items) {
+            this.props.dispatch(groupActions.getAllForUser(user.id));
         }
     }    
 
@@ -243,11 +247,12 @@ class GroupsPage extends Component {
 }
 
 function mapStateToProps(state) {
-    const { authentication, categories } = state;
+    const { authentication, categories, userGroups } = state;
     const { user } = authentication;
     return {
         user,
-        categories
+        categories,
+        userGroups
     };
 }
 

@@ -6,6 +6,7 @@ import { history } from '../Helpers';
 export const groupActions = {
     getAll,
     getAllForCategory,
+    getAllForUser,
     addGroup,
     updateGroup,
     deleteGroup,
@@ -44,13 +45,29 @@ function getAllForCategory(categoryId) {
     function failure(error) { return { type: groupConstants.GETALLFORCATEGORY_FAILURE, error } }
 }
 
+function getAllForUser(userId) {
+    return dispatch => {
+        dispatch(request(userId));
+
+        groupService.getAllForUser(userId)
+            .then(
+                groups => dispatch(success(groups)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(userId) { return { type: groupConstants.GETALLFORUSER_REQUEST, userId } }
+    function success(groups) { return { type: groupConstants.GETALLFORUSER_SUCCESS, groups } }
+    function failure(error) { return { type: groupConstants.GETALLFORUSER_FAILURE, error } }
+}
+
 function addGroup(ownerId, group) {
     return dispatch => {
         dispatch(request(ownerId, group));
 
         groupService.addGroup(ownerId, group)
             .then(
-                group => dispatch(success()),
+                group => dispatch(success(group)),
                 error => dispatch(failure(error))
             );
     };
