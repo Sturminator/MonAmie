@@ -18,12 +18,20 @@ namespace MonAmieData.Models
         public string Description { get; set; }
 
         [Required]
-        [ForeignKey("Category")]
+        [Column(TypeName = "varchar(50)")]
+        public string State { get; set; }
+
+        [Required]
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+
+        [Required]
+        public int OwnerId { get; set; }
 
         [Required]
         [Column(TypeName = "smalldatetime")]
         public DateTime CreationDate { get; set; }
+
+        public virtual User Owner { get; set; }
+        public virtual Category Category { get; set; }
     }
 }

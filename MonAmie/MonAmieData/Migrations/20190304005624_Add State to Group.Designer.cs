@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MonAmieData;
 
 namespace MonAmieData.Migrations
 {
     [DbContext(typeof(MonAmieContext))]
-    partial class MonAmieContextModelSnapshot : ModelSnapshot
+    [Migration("20190304005624_Add State to Group")]
+    partial class AddStatetoGroup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,8 +80,6 @@ namespace MonAmieData.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("OwnerId");
-
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
@@ -87,8 +87,6 @@ namespace MonAmieData.Migrations
                     b.HasKey("GroupId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("Group");
                 });
@@ -367,12 +365,7 @@ namespace MonAmieData.Migrations
                     b.HasOne("MonAmieData.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("MonAmieData.Models.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("MonAmieData.Models.GroupHasTag", b =>

@@ -6,6 +6,7 @@ import {
     Container, Grid, Header, Segment, Popup, Button, Divider,
     Modal, Form, TextArea, Search, Label
 } from 'semantic-ui-react';
+import { states } from '../../Enums';
 import modalStyles from '../../Styles/modal.styles';
 
 class GroupsPage extends Component {
@@ -14,8 +15,9 @@ class GroupsPage extends Component {
 
         this.state = {
             newGroup: {
+                state: "",
                 groupName: "",
-                categoryId: -1,
+                categoryId: null,
                 description: "",
             },
             categories: [],
@@ -25,6 +27,7 @@ class GroupsPage extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleCategoryChange = this.handleCategoryChange.bind(this);
+        this.handleStateChange = this.handleStateChange.bind(this);
     }
 
     createCategoryDropdown = () => {
@@ -61,7 +64,7 @@ class GroupsPage extends Component {
                 ...newGroup,
                 [name]: value
             },
-            canCreateGroup: value != "" > 0 && newGroup.categoryId > 0 && otherField != ""
+            canCreateGroup: value != "" > 0 && newGroup.categoryId > 0 && otherField != "" && newGroup.state != ""
         });
     }
 
@@ -72,7 +75,18 @@ class GroupsPage extends Component {
                 ...newGroup,
                 categoryId: value.value
             },
-            canCreateGroup: value.value > 0 && newGroup.groupName != "" && newGroup.description != ""
+            canCreateGroup: value.value != null && newGroup.state != "" && newGroup.groupName != "" && newGroup.description != ""
+        });
+    }
+
+    handleStateChange(event, value) {
+        const { newGroup } = this.state;
+        this.setState({
+            newGroup: {
+                ...newGroup,
+                state: value.value
+            },
+            canCreateGroup: value.value != "" && newGroup.categoryId != null && newGroup.groupName != "" && newGroup.description != ""
         });
     }
 
@@ -88,27 +102,29 @@ class GroupsPage extends Component {
     onCancelCreateGroupClick = (e) => this.setState({
         createGroup: this.state.createGroup ? false : true,
         newGroup: {
-            categoryId: -1,
+            categoryId: null,
             groupName: "",
-            description: ""
+            description: "",
+            state: "",
         }
     });
 
     onSaveCreateGroupClick = (e) => {
+        const { user } = this.props;
         const { newGroup } = this.state;
 
-        this.props.dispatch(groupActions.addGroup(newGroup));
+        this.props.dispatch(groupActions.addGroup(user.id, newGroup));
 
         this.setState({
             createGroup: this.state.createGroup ? false : true,
             newGroup: {
-                categoryId: -1,
+                categoryId: null,
                 groupName: "",
-                description: ""
+                description: "",
+                state: ""
             }
         })
     };
-
 
     render() {
         const { newGroup, createGroup, canCreateGroup } = this.state;
@@ -122,15 +138,16 @@ class GroupsPage extends Component {
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Create Group</Modal.Header>
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
                         <Form fluid='true'>
+                            <Form.Input maxLength='50' type='text' fluid label="Name" placeholder="Name" value={newGroup.groupName} name='groupName' onChange={this.handleChange} />
                             <Form.Group widths="equal">
-                                <Form.Input maxLength='50' type='text' fluid label="Name" placeholder="Name" value={newGroup.groupName} name='groupName' onChange={this.handleChange} />
-                                <Form.Select clearable noResultsMessage='No results found.' search fluid label="Category" options={this.createCategoryDropdown()} placeholder="Assign a category" value={newGroup.categoryId} onChange={this.handleCategoryChange} />
+                                <Form.Select clearable search fluid label="State" placeholder="Choose an option" options={states} noResultsMessage='No results found.' value={newGroup.state} onChange={this.handleStateChange} />
+                                <Form.Select clearable noResultsMessage='No results found.' placeholder="Search/Select a category" search fluid label="Category" options={this.createCategoryDropdown()}  value={newGroup.categoryId} onChange={this.handleCategoryChange} />
                             </Form.Group>
                             <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
                                 <TextArea
                                     name='description'
                                     value={newGroup.description}
-                                    style={{ minHeight: 100 }}
+                                    style={{ minHeight: 110 }}
                                     maxLength="500"
                                     onChange={this.handleChange}
                                     placeholder="Give a brief description of the group"

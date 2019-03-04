@@ -79,9 +79,17 @@ namespace MonAmieServices
         /// <param name="group"></param>
         public void UpdateGroup(Group group)
         {
-            if (group != null)
+            var entity = _context.Group.SingleOrDefault(g => g.GroupId == group.GroupId);
+
+            if (entity != null)
             {
-                _context.Group.Update(group);
+                entity.GroupName = group.GroupName;
+                entity.Description = group.GroupName;
+                entity.CategoryId = group.CategoryId;
+                entity.OwnerId = group.OwnerId;
+                entity.State = group.State;
+
+                _context.Group.Update(entity);
                 _context.SaveChangesAsync();
             }
         }

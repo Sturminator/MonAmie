@@ -31,7 +31,7 @@ export default {
     },
 
     createGroupModal: {
-        maxHeight: '420px',
+        maxHeight: '500px',
         marginBottom: 'auto',
         marginTop: 'auto',
         marginLeft: 'auto',

@@ -18,6 +18,7 @@ export function groups(state = {}, action) {
         case groupConstants.ADDGROUP_REQUEST:
             return {
                 loading: true,
+                ownerId: action.ownerId,
                 group: action.group
             };
         case groupConstants.ADDGROUP_SUCCESS:

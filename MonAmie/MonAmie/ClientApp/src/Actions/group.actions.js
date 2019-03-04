@@ -20,18 +20,18 @@ function getAllForCategory(categoryId) {
 
 }
 
-function addGroup(group) {
+function addGroup(ownerId, group) {
     return dispatch => {
-        dispatch(request(group));
+        dispatch(request(ownerId, group));
 
-        groupService.addGroup(group)
+        groupService.addGroup(ownerId, group)
             .then(
                 group => dispatch(success()),
                 error => dispatch(failure(error))
             );
     };
 
-    function request(group) { return { type: groupConstants.ADDGROUP_REQUEST, group } }
+    function request(group) { return { type: groupConstants.ADDGROUP_REQUEST, ownerId, group } }
     function success(group) { return { type: groupConstants.ADDGROUP_SUCCESS, group } }
     function failure(error) { return { type: groupConstants.ADDGROUP_FAILURE, error } }
 }

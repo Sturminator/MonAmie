@@ -63,6 +63,18 @@ namespace MonAmieData
                 .WithMany()
                 .HasForeignKey(uhfr => uhfr.PendingFriendId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Group>()
+                .HasOne(g => g.Category)
+                .WithMany()
+                .HasForeignKey(g => g.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Group>()
+                .HasOne(g => g.Owner)
+                .WithMany()
+                .HasForeignKey(g => g.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
