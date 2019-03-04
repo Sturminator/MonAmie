@@ -6,8 +6,6 @@ import { NavigationBar } from '../../Components';
 import { userActions } from '../../Actions';
 
 import './card_theme.css';
-
-import art from '../../Images/Categories/art.jpg';
 import automotive from '../../Images/Categories/automotive.jpg';
 import boardgames from '../../Images/Categories/boardgames.jpg';
 
@@ -38,7 +36,7 @@ class HomePage extends Component {
                             </Grid.Column>
                             <Grid.Column>
                                 <Card href='#card-example-link-card'>
-                                    <Image src={art}/>
+                                    <Image src={require(`../../Images/Categories/art.jpg`)}/>
                                     <Card.Content textAlign='center'>
                                         <Card.Header>Art</Card.Header>
                                         <Card.Description>Everything artistic, from painting to photography</Card.Description>
