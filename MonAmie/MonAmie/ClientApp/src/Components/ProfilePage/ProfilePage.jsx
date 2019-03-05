@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
-import { userProfileActions, categoryActions, imagesActions } from '../../Actions';
+import { userProfileActions, categoryActions, imagesActions, groupActions } from '../../Actions';
 import {
     Table, Form, Segment, TextArea, Divider, Header, Label,
     Icon, Grid, Container, Loader, Dimmer, Button, Popup, Modal
@@ -30,11 +30,13 @@ class ProfilePage extends Component {
         if (!userProfile.items) {
             this.props.dispatch(userProfileActions.getById(id, user.id));
             this.props.dispatch(categoryActions.getAll());
+            this.props.dispatch(groupActions.getAllForUser(id));
             this.props.dispatch(imagesActions.viewImage(id));
         }
         else if (userProfile.items.id != id) {
             this.props.dispatch(userProfileActions.getById(id, user.id));
             this.props.dispatch(categoryActions.getAll());
+            this.props.dispatch(groupActions.getAllForUser(id));
             this.props.dispatch(imagesActions.viewImage(id));
         }
     }
@@ -208,6 +210,25 @@ class ProfilePage extends Component {
         return table
     }
 
+    createGroupsTable = () => {
+        const { userGroups } = this.props;
+
+        var table = []
+
+        if (userGroups.groups) {
+            // Outer loop to create parent
+            for (let i = 0; i < userGroups.groups.length; i++) {
+                var children = []
+                //Inner loop to create children
+                children.push(<Table.Cell key={i + 1}>{userGroups.groups[i].groupName}</Table.Cell>)
+                //Create the parent and add the children
+                table.push(<Table.Row key={i + 1} children={children} />)
+            }
+        }
+
+        return table
+    }
+
     renderFriend = () => {
         const { userProfile } = this.props;
 
@@ -219,7 +240,7 @@ class ProfilePage extends Component {
     }
 
     render() {
-        const { user, userProfile, images } = this.props;
+        const { user, userProfile, images, userGroups } = this.props;
         const { bio, editProfile, editCategories, files, image} = this.state;
 
         if (!user) {
@@ -227,6 +248,14 @@ class ProfilePage extends Component {
         }
 
         if (!userProfile.items) {
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
+        }
+
+        if (userGroups.loading) {
             return (<div style={{ paddingTop: '600px' }}>
                 <Dimmer active>
                     <Loader active size='massive' inline='centered' />
@@ -317,7 +346,7 @@ class ProfilePage extends Component {
                                                 </Table.Row>
                                             </Table.Header>
                                             <Table.Body>
-                                                {this.createUserCategoriesTable()}
+                                                {this.createGroupsTable()}
                                             </Table.Body>
                                         </Table>
                                     </Segment>
@@ -412,7 +441,7 @@ class ProfilePage extends Component {
                                                 </Table.Row>
                                             </Table.Header>
                                             <Table.Body>
-                                                {this.createUserCategoriesTable()}
+                                                {this.createGroupsTable()}
                                             </Table.Body>
                                         </Table>
                                     </Segment>
@@ -563,7 +592,7 @@ class ProfilePage extends Component {
                                                 </Table.Row>
                                             </Table.Header>
                                             <Table.Body>
-                                                {this.createUserCategoriesTable()}
+                                                {this.createGroupsTable()}
                                             </Table.Body>
                                         </Table>
                                     </Segment>
@@ -713,7 +742,7 @@ class ProfilePage extends Component {
                                             </Table.Row>
                                         </Table.Header>
                                         <Table.Body>
-                                            {this.createUserCategoriesTable()}
+                                            {this.createGroupsTable()}
                                         </Table.Body>
                                     </Table>
                                 </Segment>
@@ -727,13 +756,14 @@ class ProfilePage extends Component {
 }
 
 function mapStateToProps(state) {
-    const { userProfile, authentication, categories, images } = state;
+    const { userProfile, authentication, categories, images, userGroups } = state;
     const { user } = authentication;
     return {
         user,
         userProfile,
         categories,
-        images
+        images,
+        userGroups
     };
 }
 

@@ -81,6 +81,35 @@ class GroupsPage extends Component {
         return cards;
     }
 
+    createUserGroupCards = () => {
+        const { userGroups } = this.props;
+
+        var cards = [];
+
+        if (userGroups.groups) {
+            for (let i = 0; i < userGroups.groups.length; i++) {
+                var children = [];
+                children.push(<Card.Content>
+                    <Popup trigger={<Button value={userGroups.groups[i]} floated='right' color='blue' icon='group' />} content='View Profile' />
+                </Card.Content>)
+                children.push(<Card.Header textAlign='left'>
+                    {userGroups.groups[i].groupName}
+                </Card.Header>)
+                children.push(<Card.Meta textAlign='left'>{userGroups.groups[i].state} - {userGroups.groups[i].categoryName}</Card.Meta>)
+
+                if (userGroups.groups[i].memberCount > 1) {
+                    children.push(<Card.Meta textAlign='left'>{userGroups.groups[i].memberCount} Members</Card.Meta>)
+                }
+                else {
+                    children.push(<Card.Meta textAlign='left'>{userGroups.groups[i].memberCount} Member</Card.Meta>)
+                }
+
+                cards.push(<Card style={{ backgroundColor: '#374785' }} key={i + 1} value={userGroups.groups[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
+            }
+        }
+        return cards;
+    }
+
     onCardClick = (event, value) => {
         var categoryName = value.value.categoryName.replace(" ", "");
 
@@ -162,7 +191,7 @@ class GroupsPage extends Component {
     };
 
     render() {
-        const { categories } = this.props;
+        const { categories, userGroups } = this.props;
         const { newGroup, createGroup, canCreateGroup, whereTo } = this.state;
 
         if (whereTo != "") {
@@ -170,6 +199,13 @@ class GroupsPage extends Component {
         }
 
         if (categories.loading)
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
+
+        if (userGroups.loading)
             return (<div style={{ paddingTop: '600px' }}>
                 <Dimmer active>
                     <Loader active size='massive' inline='centered' />
@@ -223,6 +259,7 @@ class GroupsPage extends Component {
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ backgroundColor: 'white' }} />
+                        <Card.Group stackable centered children={this.createUserGroupCards()} />
                     </Segment>
                     <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
                         <Grid columns='equal'>

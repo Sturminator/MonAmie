@@ -34,6 +34,7 @@ namespace MonAmie.Controllers
             public int OwnerId { get; set; }
             public int CategoryId { get; set; }
             public string State { get; set; }
+            public int MemberCount { get; set; }
             public DateTime CreationDate { get; set; }
         }
 
@@ -59,6 +60,7 @@ namespace MonAmie.Controllers
                 State = result.State,
                 CategoryId = result.CategoryId,
                 OwnerId = result.OwnerId,
+                MemberCount = groupService.GetMemberCount(result.GroupId),
                 CategoryName = categories.FirstOrDefault(c => c.CategoryId == result.CategoryId).CategoryName,
                 CreationDate = result.CreationDate
             }).ToList().OrderBy(c => c.CategoryName);
@@ -86,6 +88,7 @@ namespace MonAmie.Controllers
                     CategoryId = g.CategoryId,
                     OwnerId = g.OwnerId,
                     CategoryName = category.CategoryName,
+                    MemberCount = groupService.GetMemberCount(g.GroupId),
                     CreationDate = g.CreationDate
                 });
             }
@@ -100,6 +103,7 @@ namespace MonAmie.Controllers
 
         [HttpGet]
         [Route("api/Group/GetAllForUser/{id}")]
+        [Route("profile/api/Group/GetAllForUser/{id}")]
         public IActionResult GetAllForUser(int id)
         {
             var ownedGroups = groupService.GetAllGroupsUserOwns(id).ToList();
@@ -118,6 +122,7 @@ namespace MonAmie.Controllers
                     State = g.State,
                     CategoryId = g.CategoryId,
                     OwnerId = g.OwnerId,
+                    MemberCount = groupService.GetMemberCount(g.GroupId),
                     CategoryName = categories.FirstOrDefault(c => c.CategoryId == g.CategoryId).CategoryName,
                     CreationDate = g.CreationDate
                 });
@@ -133,6 +138,7 @@ namespace MonAmie.Controllers
                     State = g.State,
                     CategoryId = g.CategoryId,
                     OwnerId = g.OwnerId,
+                    MemberCount = groupService.GetMemberCount(g.GroupId),
                     CategoryName = categories.FirstOrDefault(c => c.CategoryId == g.CategoryId).CategoryName,
                     CreationDate = g.CreationDate
                 });

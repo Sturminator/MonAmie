@@ -96,6 +96,16 @@ namespace MonAmieServices
         }
 
         /// <summary>
+        /// Get the number of users in a group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public int GetMemberCount(int groupId)
+        {
+            return _context.GroupHasUser.Where(g => g.GroupId == groupId).Count() + 1; // add 1 for the owner
+        }
+
+        /// <summary>
         /// Update a group in the database
         /// </summary>
         /// <param name="group"></param>

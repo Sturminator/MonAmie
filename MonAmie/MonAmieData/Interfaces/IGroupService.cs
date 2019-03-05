@@ -51,5 +51,12 @@ namespace MonAmieData.Interfaces
         /// <param name="groupId"></param>
         void DeleteGroup(int groupId);
 
+        /// <summary>
+        /// Get the number of users in a group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        int GetMemberCount(int groupId);
+
     }
 }
