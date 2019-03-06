@@ -9,7 +9,7 @@ import {
 } from 'semantic-ui-react';
 import { states } from '../../Enums';
 import modalStyles from '../../Styles/modal.styles';
-import { categoryService } from '../../Services';
+import { history } from '../../Helpers';
 
 class GroupsPage extends Component {
     constructor(props) {
@@ -112,6 +112,7 @@ class GroupsPage extends Component {
 
     onCardClick = (event, value) => {
         var categoryName = value.value.categoryName.replace(" ", "");
+        history.push('/groups');
 
         this.setState({
             whereTo: '/groups/' + categoryName.toLowerCase() + '_' + (value.value.categoryId * 11)

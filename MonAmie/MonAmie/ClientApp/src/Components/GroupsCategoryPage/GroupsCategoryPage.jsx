@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions } from '../../Actions';
-import { Dimmer, Loader, Container, Segment, Divider, Grid, Header } from 'semantic-ui-react';
+import { Dimmer, Loader, Container, Segment, Divider, Grid, Header, Card, Button, Popup } from 'semantic-ui-react';
 
 class GroupsCategoryPage extends Component {
     constructor(props) {
@@ -23,12 +23,43 @@ class GroupsCategoryPage extends Component {
             this.props.dispatch(categoryActions.getAll());
         }
 
-        if (!groups.items) {
+        if (!groups.groups) {
             this.props.dispatch(groupActions.getAllForCategory(id));
         }
-        else if (groups.items.id != id) {
+        else if (groups.groups.categoryId != id) {
             this.props.dispatch(groupActions.getAllForCategory(id));
         }
+    }
+
+    createGroupCards = () => {
+        const { groups } = this.props;
+
+        var cards = [];
+
+        if (groups.groups) {
+            var groupList = groups.groups.groupList;
+
+            for (let i = 0; i < groupList.length; i++) {
+                var children = [];
+                children.push(<Card.Content>
+                    <Popup trigger={<Button value={groupList[i]} floated='right' color='blue' icon='group' />} content='View Profile' />
+                </Card.Content>)
+                children.push(<Card.Header textAlign='left'>
+                    {groupList[i].groupName}
+                </Card.Header>)
+                children.push(<Card.Meta textAlign='left'>{groupList[i].state} - {groupList[i].categoryName}</Card.Meta>)
+
+                if (groupList[i].memberCount > 1) {
+                    children.push(<Card.Meta textAlign='left'>{groupList[i].memberCount} Members</Card.Meta>)
+                }
+                else {
+                    children.push(<Card.Meta textAlign='left'>{groupList[i].memberCount} Member</Card.Meta>)
+                }
+
+                cards.push(<Card style={{ backgroundColor: '#374785' }} key={i + 1} value={groupList[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
+            }
+        }
+        return cards;
     }
 
     render() {
@@ -67,6 +98,7 @@ class GroupsCategoryPage extends Component {
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ backgroundColor: 'white' }} />
+                        <Card.Group stackable centered children={this.createGroupCards()} />
                     </Segment>
                 </Container>
             </div>
