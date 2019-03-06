@@ -1,15 +1,18 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions } from '../../Actions';
 import { Dimmer, Loader, Container, Segment, Divider, Grid, Header, Card, Button, Popup } from 'semantic-ui-react';
+import { history } from '../../Helpers';
 
 class GroupsCategoryPage extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-
+            groupSelected: false,
+            redirectTo: ""
         };
     }
 
@@ -42,7 +45,7 @@ class GroupsCategoryPage extends Component {
             for (let i = 0; i < groupList.length; i++) {
                 var children = [];
                 children.push(<Card.Content>
-                    <Popup trigger={<Button value={groupList[i]} floated='right' color='blue' icon='group' />} content='View Profile' />
+                    <Popup trigger={<Button onClick={this.goToProfile} value={groupList[i]} floated='right' color='blue' icon='group' />} content='View Profile' />
                 </Card.Content>)
                 children.push(<Card.Header textAlign='left'>
                     {groupList[i].groupName}
@@ -62,8 +65,26 @@ class GroupsCategoryPage extends Component {
         return cards;
     }
 
+    goToProfile = (e, { value }) => {
+        var path = window.location.pathname;
+
+        history.push(path);
+
+        var groupName = value.groupName.replace(/ /g, ''); 
+
+        this.setState({
+            groupSelected: true,
+            redirectTo: '/group/' +
+                groupName.toLowerCase() + '_' + value.groupId * 11
+        });
+    };
+
     render() {
         const { groups } = this.props;
+        const { groupSelected, redirectTo } = this.state;
+
+        if (groupSelected)
+            return <Redirect to={redirectTo} />
 
         if (groups.loading)
             return (<div style={{ paddingTop: '600px' }}>
@@ -79,7 +100,7 @@ class GroupsCategoryPage extends Component {
                 </Dimmer>
             </div>);
 
-        return (
+        return (          
             <div>
                 <NavigationBar>
                 </NavigationBar>

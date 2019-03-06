@@ -25,7 +25,9 @@ class GroupsPage extends Component {
             categories: [],
             canCreateGroup: false,
             createGroup: false,
-            whereTo: ""
+            whereTo: "",
+            whereToCategoryId: -1,
+            groupSelected: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -90,7 +92,7 @@ class GroupsPage extends Component {
             for (let i = 0; i < userGroups.groups.length; i++) {
                 var children = [];
                 children.push(<Card.Content>
-                    <Popup trigger={<Button value={userGroups.groups[i]} floated='right' color='blue' icon='group' />} content='View Profile' />
+                    <Popup trigger={<Button onClick={this.goToProfile} value={userGroups.groups[i]} floated='right' color='blue' icon='group' />} content='View Profile' />
                 </Card.Content>)
                 children.push(<Card.Header textAlign='left'>
                     {userGroups.groups[i].groupName}
@@ -115,7 +117,20 @@ class GroupsPage extends Component {
         history.push('/groups');
 
         this.setState({
-            whereTo: '/groups/' + categoryName.toLowerCase() + '_' + (value.value.categoryId * 11)
+            whereTo: '/groups/' + categoryName.toLowerCase() + '_' + (value.value.categoryId * 11),
+            whereToCategoryId: value.value.categoryId
+        });
+    };
+
+    goToProfile = (e, { value }) => {
+        history.push('/groups');
+
+        var groupName = value.groupName.replace(/ /g, '');
+
+        this.setState({
+            groupSelected: true,
+            whereTo: '/group/' +
+                groupName.toLowerCase() + '_' + value.groupId * 11
         });
     };
 
@@ -193,10 +208,13 @@ class GroupsPage extends Component {
 
     render() {
         const { categories, userGroups } = this.props;
-        const { newGroup, createGroup, canCreateGroup, whereTo } = this.state;
+        const { newGroup, createGroup, canCreateGroup, whereTo, whereToCategoryId, groupSelected } = this.state;
 
-        if (whereTo != "") {
-            return <Redirect to={whereTo} />
+        if (groupSelected)
+            return <Redirect to={whereTo} /> 
+
+        if (whereTo != "" && whereToCategoryId != -1) {
+            return <Redirect to={{ pathname: whereTo, state: { categoryId: whereToCategoryId } }} />
         }
 
         if (categories.loading)
