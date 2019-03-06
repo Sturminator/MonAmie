@@ -25,6 +25,14 @@ namespace MonAmie.Controllers
             this.userService = userService;
         }
 
+        public class GroupMember
+        {
+            public int UserId { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string State { get; set; }
+        }
+
         public class GroupViewModel
         {
             public int GroupId { get; set; }
@@ -36,6 +44,7 @@ namespace MonAmie.Controllers
             public string State { get; set; }
             public int MemberCount { get; set; }
             public DateTime CreationDate { get; set; }
+            public List<GroupMember> GroupMembers { get; set; }
         }
 
         public class Groups
@@ -147,6 +156,18 @@ namespace MonAmie.Controllers
             groups = groups.OrderBy(g => g.OwnerId).ThenBy(g => g.GroupName).ToList();
 
             return Ok(groups);
+        }
+
+        [HttpGet]
+        [Route("group/api/Group/GetGroup/{groupId}")]
+        public IActionResult GetGroup(int groupId)
+        {
+            if (groupId < 1)
+                return BadRequest("Invalid groupId of " + groupId + ".");
+
+            var group = groupService.GetGroup(groupId);
+
+            return Ok();
         }
 
         [HttpPost]

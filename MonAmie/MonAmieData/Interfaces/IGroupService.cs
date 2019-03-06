@@ -34,6 +34,13 @@ namespace MonAmieData.Interfaces
         IEnumerable<Group> GetAllGroupsUserOwns(int userId);
 
         /// <summary>
+        /// Gets a group by its id
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        Group GetGroup(int groupId);
+
+        /// <summary>
         /// Adds a group to the database
         /// </summary>
         /// <param name="group"></param>

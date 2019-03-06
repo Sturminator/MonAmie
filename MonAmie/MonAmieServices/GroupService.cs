@@ -96,6 +96,16 @@ namespace MonAmieServices
         }
 
         /// <summary>
+        /// Gets a group by its id
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public Group GetGroup(int groupId)
+        {
+            return _context.Group.FirstOrDefault(g => g.GroupId == groupId);
+        }
+
+        /// <summary>
         /// Get the number of users in a group
         /// </summary>
         /// <param name="groupId"></param>
