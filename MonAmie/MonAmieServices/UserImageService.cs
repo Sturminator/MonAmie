@@ -35,7 +35,7 @@ namespace MonAmieServices
         /// <param name="userImage"></param>
         public void AddUserImage(UserImage userImage)
         {
-            var entity = _context.UserImage.FirstOrDefault(ui => ui.UserImageId == userImage.UserId);
+            var entity = _context.UserImage.FirstOrDefault(ui => ui.UserId == userImage.UserId);
 
             if(entity == null)
             {
@@ -50,7 +50,7 @@ namespace MonAmieServices
         /// <param name="userImage"></param>
         public void DeleteUserImage(UserImage userImage)
         {
-            var entity = _context.UserImage.FirstOrDefault(ui => ui.UserImageId == userImage.UserId);
+            var entity = _context.UserImage.FirstOrDefault(ui => ui.UserId == userImage.UserId);
 
             if (entity != null)
             {
