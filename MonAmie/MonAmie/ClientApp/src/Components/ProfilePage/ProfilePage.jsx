@@ -21,7 +21,6 @@ class ProfilePage extends Component {
         newCategories: [],
         bio: "",
         imageFile: [],
-        files: [],
         editProfile: false,
         editCategories: false
     };
@@ -148,8 +147,9 @@ class ProfilePage extends Component {
         const { match: { params }, userProfile, user } = this.props;
         const { bio, imageFile } = this.state;
 
-        //userProfile.items.bio = bio;
+        userProfile.items.bio = bio;
         //userProfile.items.imageFile = files;
+
 
         //var idStr = params.userId.split("_")[1];
         //var id = parseInt(idStr) / 11;
