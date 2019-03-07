@@ -3,18 +3,39 @@
 export const groupService = {
     getAll,
     getAllForCategory,
+    getAllForUser,
     addGroup,
     updateGroup,
     deleteGroup,
+    getGroup,
     logout
 }
 
 function getAll() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
 
+    return fetch(`api/Group/GetAll`, requestOptions).then(handleResponse);
 }
 
-function getAllForCategory() {
+function getAllForCategory(categoryId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
 
+    return fetch(`api/Group/GetAllForCategory/` + categoryId, requestOptions).then(handleResponse);
+}
+
+function getAllForUser(userId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`api/Group/GetAllForUser/` + userId, requestOptions).then(handleResponse);
 }
 
 function addGroup(ownerId, group) {
@@ -33,6 +54,15 @@ function updateGroup() {
 
 function deleteGroup() {
 
+}
+
+function getGroup(groupId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`api/Group/GetGroup/` + groupId, requestOptions).then(handleResponse);
 }
 
 function logout() {

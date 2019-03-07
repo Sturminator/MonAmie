@@ -74,6 +74,58 @@ namespace MonAmieServices
         }
 
         /// <summary>
+        /// Get all groups a user belongs to
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public IEnumerable<Group> GetAllGroupsUserBelongsTo(int userId)
+        {
+            var groupUsers = _context.GroupHasUser.Where(ghu => ghu.UserId == ghu.UserId);
+
+            return _context.Group.Where(g => groupUsers.Any(ghu => ghu.GroupId == g.GroupId));
+        }
+
+        /// <summary>
+        /// Get all groups a user owns
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public IEnumerable<Group> GetAllGroupsUserOwns(int userId)
+        {
+            return _context.Group.Where(g => g.OwnerId == userId);
+        }
+
+        /// <summary>
+        /// Gets all the users in a group (not including the owner)
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public IEnumerable<GroupHasUser> GetAllUsersInGroup(int groupId)
+        {
+            return _context.GroupHasUser.Where(ghu => ghu.GroupId == groupId);
+        }
+
+        /// <summary>
+        /// Gets a group by its id
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public Group GetGroup(int groupId)
+        {
+            return _context.Group.FirstOrDefault(g => g.GroupId == groupId);
+        }
+
+        /// <summary>
+        /// Get the number of users in a group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public int GetMemberCount(int groupId)
+        {
+            return _context.GroupHasUser.Where(g => g.GroupId == groupId).Count() + 1; // add 1 for the owner
+        }
+
+        /// <summary>
         /// Update a group in the database
         /// </summary>
         /// <param name="group"></param>

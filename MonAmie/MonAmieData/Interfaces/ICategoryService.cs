@@ -91,6 +91,13 @@ namespace MonAmieData.Interfaces
         IEnumerable<UserHasCategory> GetAllCategoriesForUser(int userId);
 
         /// <summary>
+        /// Get a category's image source
+        /// </summary>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
+        string GetImageSource(int categoryId);
+
+        /// <summary>
         /// Add a category to a user
         /// </summary>
         /// <param name="userId"></param>

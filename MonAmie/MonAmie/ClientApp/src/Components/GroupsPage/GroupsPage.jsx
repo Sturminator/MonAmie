@@ -1,13 +1,15 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions } from '../../Actions';
 import {
     Container, Grid, Header, Segment, Popup, Button, Divider,
-    Modal, Form, TextArea, Search, Label
+    Modal, Form, TextArea, Image, Card, Dimmer, Loader
 } from 'semantic-ui-react';
 import { states } from '../../Enums';
 import modalStyles from '../../Styles/modal.styles';
+import { history } from '../../Helpers';
 
 class GroupsPage extends Component {
     constructor(props) {
@@ -22,13 +24,28 @@ class GroupsPage extends Component {
             },
             categories: [],
             canCreateGroup: false,
-            createGroup: false
+            createGroup: false,
+            whereTo: "",
+            whereToCategoryId: -1,
+            groupSelected: false
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleCategoryChange = this.handleCategoryChange.bind(this);
         this.handleStateChange = this.handleStateChange.bind(this);
     }
+
+    componentDidMount() {
+        const { categories, userGroups, user } = this.props;
+
+        if (!categories.items) {
+            this.props.dispatch(categoryActions.getAll());
+        }
+
+        if (!userGroups.items) {
+            this.props.dispatch(groupActions.getAllForUser(user.id));
+        }
+    }    
 
     createCategoryDropdown = () => {
         const { categories } = this.props;
@@ -46,13 +63,76 @@ class GroupsPage extends Component {
         return categoryOptions;
     }
 
-    componentDidMount() {
+    createCategoryCards = () => {
         const { categories } = this.props;
 
-        if (!categories.items) {
-            this.props.dispatch(categoryActions.getAll());
+        var cards = [];
+
+        if (categories.items) {
+            for (let i = 0; i < categories.items.length; i++) {
+                var children = [];
+
+                children.push(<Image src={require(`../../Images/Categories/` + categories.items[i].imageSource)} />);
+                children.push(<Card.Header style={{ marginTop: '10px' }} textAlign='center'>
+                    {categories.items[i].categoryName}
+                </Card.Header>)
+
+                cards.push(<Card onClick={this.onCardClick} style={{ backgroundColor: '#374785' }} key={i + 1} value={categories.items[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
+            }
         }
+        return cards;
     }
+
+    createUserGroupCards = () => {
+        const { userGroups } = this.props;
+
+        var cards = [];
+
+        if (userGroups.groups) {
+            for (let i = 0; i < userGroups.groups.length; i++) {
+                var children = [];
+                children.push(<Card.Content>
+                    <Popup trigger={<Button onClick={this.goToProfile} value={userGroups.groups[i]} floated='right' color='blue' icon='group' />} content='View Profile' />
+                </Card.Content>)
+                children.push(<Card.Header textAlign='left'>
+                    {userGroups.groups[i].groupName}
+                </Card.Header>)
+                children.push(<Card.Meta textAlign='left'>{userGroups.groups[i].state} - {userGroups.groups[i].categoryName}</Card.Meta>)
+
+                if (userGroups.groups[i].memberCount > 1) {
+                    children.push(<Card.Meta textAlign='left'>{userGroups.groups[i].memberCount} Members</Card.Meta>)
+                }
+                else {
+                    children.push(<Card.Meta textAlign='left'>{userGroups.groups[i].memberCount} Member</Card.Meta>)
+                }
+
+                cards.push(<Card style={{ backgroundColor: '#374785' }} key={i + 1} value={userGroups.groups[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
+            }
+        }
+        return cards;
+    }
+
+    onCardClick = (event, value) => {
+        var categoryName = value.value.categoryName.replace(" ", "");
+        history.push('/groups');
+
+        this.setState({
+            whereTo: '/groups/' + categoryName.toLowerCase() + '_' + (value.value.categoryId * 11),
+            whereToCategoryId: value.value.categoryId
+        });
+    };
+
+    goToProfile = (e, { value }) => {
+        history.push('/groups');
+
+        var groupName = value.groupName.replace(/ /g, '');
+
+        this.setState({
+            groupSelected: true,
+            whereTo: '/group/' +
+                groupName.toLowerCase() + '_' + value.groupId * 11
+        });
+    };
 
     handleChange(event) {
         const { name, value } = event.target;
@@ -127,7 +207,29 @@ class GroupsPage extends Component {
     };
 
     render() {
-        const { newGroup, createGroup, canCreateGroup } = this.state;
+        const { categories, userGroups } = this.props;
+        const { newGroup, createGroup, canCreateGroup, whereTo, whereToCategoryId, groupSelected } = this.state;
+
+        if (groupSelected)
+            return <Redirect to={whereTo} /> 
+
+        if (whereTo != "" && whereToCategoryId != -1) {
+            return <Redirect to={{ pathname: whereTo, state: { categoryId: whereToCategoryId } }} />
+        }
+
+        if (categories.loading)
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
+
+        if (userGroups.loading)
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
 
         return (
             <div>
@@ -141,7 +243,7 @@ class GroupsPage extends Component {
                             <Form.Input maxLength='50' type='text' fluid label="Name" placeholder="Name" value={newGroup.groupName} name='groupName' onChange={this.handleChange} />
                             <Form.Group widths="equal">
                                 <Form.Select clearable search fluid label="State" placeholder="Choose an option" options={states} noResultsMessage='No results found.' value={newGroup.state} onChange={this.handleStateChange} />
-                                <Form.Select clearable noResultsMessage='No results found.' placeholder="Search/Select a category" search fluid label="Category" options={this.createCategoryDropdown()}  value={newGroup.categoryId} onChange={this.handleCategoryChange} />
+                                <Form.Select clearable noResultsMessage='No results found.' placeholder="Search/Select a category" search fluid label="Category" options={this.createCategoryDropdown()} value={newGroup.categoryId} onChange={this.handleCategoryChange} />
                             </Form.Group>
                             <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
                                 <TextArea
@@ -176,6 +278,7 @@ class GroupsPage extends Component {
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ backgroundColor: 'white' }} />
+                        <Card.Group stackable centered children={this.createUserGroupCards()} />
                     </Segment>
                     <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
                         <Grid columns='equal'>
@@ -183,7 +286,7 @@ class GroupsPage extends Component {
                             </Grid.Column>
                             <Grid.Column>
                                 <Header as='h1' textAlign='center'>
-                                    <Header.Content style={{ color: 'white' }}>All Groups</Header.Content>
+                                    <Header.Content style={{ color: 'white' }}>Group Categories</Header.Content>
                                 </Header>
                             </Grid.Column>
                             <Grid.Column>
@@ -191,6 +294,7 @@ class GroupsPage extends Component {
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ backgroundColor: 'white' }} />
+                        <Card.Group centered children={this.createCategoryCards()} />
                     </Segment>
                 </Container>
             </div>
@@ -199,11 +303,12 @@ class GroupsPage extends Component {
 }
 
 function mapStateToProps(state) {
-    const { authentication, categories } = state;
+    const { authentication, categories, userGroups } = state;
     const { user } = authentication;
     return {
         user,
-        categories
+        categories,
+        userGroups
     };
 }
 
