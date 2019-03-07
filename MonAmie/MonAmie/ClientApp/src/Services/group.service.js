@@ -7,6 +7,7 @@ export const groupService = {
     addGroup,
     updateGroup,
     deleteGroup,
+    getGroup,
     logout
 }
 
@@ -53,6 +54,15 @@ function updateGroup() {
 
 function deleteGroup() {
 
+}
+
+function getGroup(groupId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`api/Group/GetGroup/` + groupId, requestOptions).then(handleResponse);
 }
 
 function logout() {

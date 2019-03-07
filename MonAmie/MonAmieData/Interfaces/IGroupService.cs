@@ -59,6 +59,13 @@ namespace MonAmieData.Interfaces
         void DeleteGroup(int groupId);
 
         /// <summary>
+        /// Gets all the users in a group (not including the owner)
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        IEnumerable<GroupHasUser> GetAllUsersInGroup(int groupId);
+
+        /// <summary>
         /// Get the number of users in a group
         /// </summary>
         /// <param name="groupId"></param>

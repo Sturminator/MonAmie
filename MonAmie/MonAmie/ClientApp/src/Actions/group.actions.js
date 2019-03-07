@@ -10,6 +10,7 @@ export const groupActions = {
     addGroup,
     updateGroup,
     deleteGroup,
+    getGroup,
     logout
 }
 
@@ -83,6 +84,22 @@ function updateGroup(group) {
 
 function deleteGroup(groupId) {
 
+}
+
+function getGroup(groupId) {
+    return dispatch => {
+        dispatch(request(groupId));
+
+        groupService.getGroup(groupId)
+            .then(
+                group => dispatch(success(group)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(groupId) { return { type: groupConstants.GETGROUP_REQUEST, groupId } }
+    function success(group) { return { type: groupConstants.GETGROUP_SUCCESS, group } }
+    function failure(error) { return { type: groupConstants.GETGROUP_FAILURE, error } }
 }
 
 function logout() {

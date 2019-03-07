@@ -44,6 +44,7 @@ namespace MonAmie.Controllers
             public string State { get; set; }
             public int MemberCount { get; set; }
             public DateTime CreationDate { get; set; }
+            public GroupMember Owner { get; set; }
             public List<GroupMember> GroupMembers { get; set; }
         }
 
@@ -166,8 +167,46 @@ namespace MonAmie.Controllers
                 return BadRequest("Invalid groupId of " + groupId + ".");
 
             var group = groupService.GetGroup(groupId);
+            var owner = userService.GetById(group.OwnerId);
+            var groupMembers = groupService.GetAllUsersInGroup(groupId).ToList();
+            var categories = categoryService.GetAllCategories();
 
-            return Ok();
+            List<GroupMember> memberList = new List<GroupMember>();
+
+            foreach(var gm in groupMembers)
+            {
+                var groupMember = userService.GetById(gm.UserId);
+
+                memberList.Add(new GroupMember {
+                    UserId = groupMember.UserId,
+                    FirstName = groupMember.FirstName,
+                    LastName = groupMember.LastName,
+                    State = groupMember.State
+                });
+            }
+
+            var results = new GroupViewModel
+            {
+                GroupId = group.GroupId,
+                GroupName = group.GroupName,
+                Description = group.Description,
+                State = group.State,
+                CategoryId = group.CategoryId,
+                OwnerId = group.OwnerId,
+                MemberCount = groupMembers.Count + 1,
+                CategoryName = categories.FirstOrDefault(c => c.CategoryId == group.CategoryId).CategoryName,
+                CreationDate = group.CreationDate,
+                Owner = new GroupMember
+                {
+                    UserId = owner.UserId,
+                    FirstName = owner.FirstName,
+                    LastName = owner.LastName,
+                    State = owner.State
+                },
+                GroupMembers = memberList.OrderBy(gm => gm.LastName).ToList()
+            };
+
+            return Ok(results);
         }
 
         [HttpPost]

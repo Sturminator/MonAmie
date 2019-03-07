@@ -96,6 +96,16 @@ namespace MonAmieServices
         }
 
         /// <summary>
+        /// Gets all the users in a group (not including the owner)
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public IEnumerable<GroupHasUser> GetAllUsersInGroup(int groupId)
+        {
+            return _context.GroupHasUser.Where(ghu => ghu.GroupId == groupId);
+        }
+
+        /// <summary>
         /// Gets a group by its id
         /// </summary>
         /// <param name="groupId"></param>

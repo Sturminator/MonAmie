@@ -66,6 +66,30 @@ export function groups(state = {}, action) {
     }
 }
 
+export function group(state = {}, action) {
+    switch (action.type) {
+        case groupConstants.GETGROUP_REQUEST:
+            return {
+                loading: true,
+                groupId: action.groupId
+            };
+        case groupConstants.GETGROUP_SUCCESS:
+            return {
+                loading: false,
+                group: action.group
+            };
+        case groupConstants.GETGROUP_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
+        case authConstants.LOGOUT:
+            return {}
+        default:
+            return state; 
+    }
+}
+
 export function userGroups(state = {}, action) {
     switch (action.type) {
         case groupConstants.GETALLFORUSER_REQUEST:

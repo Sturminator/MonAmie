@@ -1,6 +1,8 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { NavigationBar } from '../../Components';
+import { groupActions } from '../../Actions';
+import { Dimmer, Loader } from 'semantic-ui-react';
 
 class GroupProfilePage extends Component {
     constructor(props) {
@@ -11,7 +13,30 @@ class GroupProfilePage extends Component {
         };
     }
 
+    componentDidMount() {
+        const { match: { params }, group } = this.props;
+
+        var idStr = params.groupId.split("_")[1];
+        var id = parseInt(idStr) / 11;
+
+        if (!group.group) {
+            this.props.dispatch(groupActions.getGroup(id));
+        }
+        else if (group.group.groupId != id) {
+            this.props.dispatch(groupActions.getGroup(id));
+        }
+    }
+
     render() {
+        const { group } = this.props;
+
+        if (group.loading)
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
+
         return (
             <div>
                 <NavigationBar>
@@ -23,10 +48,11 @@ class GroupProfilePage extends Component {
 }
 
 function mapStateToProps(state) {
-    const { authentication } = state;
+    const { authentication, group } = state;
     const { user } = authentication;
     return {
-        user
+        user,
+        group
     };
 }
 
