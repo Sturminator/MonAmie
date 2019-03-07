@@ -23,17 +23,18 @@ function viewImage(id) {
         headers: authHeader()
     };
 
-    return fetch(`api/UserImage/ViewImage` + id, requestOptions).then(handleResponse);
+    return fetch(`api/UserImage/ViewImage/` + id, requestOptions).then(handleResponse);
 }
 
 function uploadImage(files, id) {
+
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(id)
+        body: JSON.stringify(files)
     };
 
-    return fetch(`api/UserImage/UploadImage/` + files, requestOptions).then(handleResponse);
+    return fetch(`api/UserImage/UploadImage/` + id, requestOptions).then(handleResponse);
 }
 
 function logout() {

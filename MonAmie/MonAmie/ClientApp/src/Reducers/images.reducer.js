@@ -10,15 +10,14 @@ export function images(state = {}, action) {
             };
         case imagesConstants.INDEX_SUCCESS:
             return {
-                items: action.userImageIds
+                loading: false,
+                items: action.images
             };
         case imagesConstants.INDEX_FAILURE:
             return {
+                loading: false,
                 error: action.error
             };
-
-
-
         case imagesConstants.VIEWIMAGE_REQUEST:
             return {
                 loading: true,
@@ -26,15 +25,14 @@ export function images(state = {}, action) {
             };
         case imagesConstants.VIEWIMAGE_SUCCESS:
             return {
-                items: action.imageItem
+                loading: false,
+                items: action.image
             };
         case imagesConstants.VIEWIMAGE_FAILURE:
             return {
+                loading: false,
                 error: action.error
             };
-
-
-
         case imagesConstants.UPLOADIMAGE_REQUEST:
             return {
                 loading: true,
@@ -42,10 +40,12 @@ export function images(state = {}, action) {
             };
         case imagesConstants.UPLOADIMAGE_SUCCESS:
             return {
+                loading: false,
                 items: action.requests
             };
         case imagesConstants.UPLOADIMAGE_FAILURE:
             return {
+                loading: false,
                 error: action.error
             };
 

@@ -14,14 +14,14 @@ namespace MonAmie.Controllers
         private IUserService userService;
         private ICategoryService categoryService;
         private IFriendService friendService;
-        //private IUserImageService userImageService;
+        private IUserImageService userImageService;
 
-        public UserProfileController(IUserService userService, ICategoryService categoryService, IFriendService friendService)
+        public UserProfileController(IUserService userService, ICategoryService categoryService, IFriendService friendService, IUserImageService userImageService)
         {
             this.userService = userService;
             this.categoryService = categoryService;
             this.friendService = friendService;
-            //this.userImageService = userImageService;
+            this.userImageService = userImageService;
         }
 
         [HttpGet]
@@ -54,7 +54,8 @@ namespace MonAmie.Controllers
                 State = user.State,
                 Bio = user.Bio,
                 Categories = userCategoryModels.ToList().OrderBy(ucm => ucm.CategoryName),
-                isFriend = isFriend
+                isFriend = isFriend,
+                image = userImageService.GetById(id)
             });
         }
 
@@ -82,7 +83,8 @@ namespace MonAmie.Controllers
                 Age = userService.CalculateUserAge(updatedUser.BirthDate),
                 State = updatedUser.State,
                 Bio = updatedUser.Bio,
-                Categories = userDto.Categories
+                Categories = userDto.Categories,
+                image = userImageService.GetById(id)
             });
         }
 
@@ -128,7 +130,8 @@ namespace MonAmie.Controllers
                 Age = userService.CalculateUserAge(user.BirthDate),
                 State = user.State,
                 Bio = user.Bio,
-                Categories = newCategories
+                Categories = newCategories,
+                image = userImageService.GetById(id)
             });
         }
     }

@@ -36,14 +36,14 @@ function viewImage(id)
 
         imagesService.viewImage(id)
             .then(
-                imageItem => dispatch(success(imageItem)),
-                error => dispatch(failure(error))
+            image => dispatch(success(image)),
+            error => dispatch(failure(error.toString()))
             );
     };
 
     function request(id) { return { type: imagesConstants.VIEWIMAGE_REQUEST, id } }
-    function success(imageItem) { return { type: imagesConstants.VIEWIMAGE_SUCCESS, imageItem } }
-    function failure(id, error) { return { type: imagesConstants.VIEWIMAGE_FAILURE, id, error } }
+    function success(image) { return { type: imagesConstants.VIEWIMAGE_SUCCESS, image } }
+    function failure(error) { return { type: imagesConstants.VIEWIMAGE_FAILURE, error } }
 }
 
 function uploadImage(files, id)

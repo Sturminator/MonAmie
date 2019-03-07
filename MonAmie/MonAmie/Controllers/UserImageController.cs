@@ -8,12 +8,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MonAmieData.Models;
-using MonAmieData;
 
 namespace MonAmie.Controllers
 {
     [ApiController]
-    public class UserImageController : ControllerBase
+    public class UserImageController : Controller
     {
         private IUserImageService userImageService;
         private IUserService userService;
@@ -25,7 +24,7 @@ namespace MonAmie.Controllers
         }
 
         [HttpGet]
-        [Route("api/UserImage/Index")]
+        [Route("profile/api/UserImage/Index")]
         public IActionResult Index()
         {
             List<int> userImageIds = userImageService.GetAllUserImages().Select(ui => ui.UserImageId).ToList();
@@ -35,32 +34,57 @@ namespace MonAmie.Controllers
 
         
         [HttpGet]
-        [Route("api/UserImage/ViewImage/{id}")]
-        public FileStreamResult ViewImage(int id)
+        [Route("profile/api/UserImage/ViewImage/{id}")]
+        public IActionResult ViewImage(int id)
         {
-            UserImage image = userImageService.GetById(id);
+            var image = userImageService.GetByUserId(id);
 
-            MemoryStream ms = new MemoryStream(image.Data);
+            if (image != null)
+            {
 
-            FileStreamResult imageItem = new FileStreamResult(ms, image.ContentType);
+                var ms = new MemoryStream(image.Data);
 
-            return imageItem;
+                var imageItem = new FileStreamResult(ms, image.ContentType);
+
+                return Ok(imageItem);
+            }
+
+            return null;
+        }
+
+        [HttpGet]
+        [Route("api/UserImage/ViewImageDirect/{id}")]
+        public IActionResult ViewImageDirect(int id)
+        {
+            var image = userImageService.GetByUserId(id);
+
+            if (image != null)
+            {
+
+                var ms = new MemoryStream(image.Data);
+
+                var imageItem = new FileStreamResult(ms, image.ContentType);
+
+                return imageItem;
+            }
+
+            return null;
         }
 
         [HttpPost]
-        [Route("api/UserImage/UploadImage/{files}")]
-        public IActionResult UploadImage(IList <IFormFile> files, int id)
+        [Route("profile/api/UserImage/UploadImage/{id}")]
+        public IActionResult UploadImage(int id, [FromBody]IList<IFormFile> files)
         {
             IFormFile uploadedImage = files.FirstOrDefault();
 
-            if(uploadedImage == null || uploadedImage.ContentType.ToLower().StartsWith("image/"))
+            if(uploadedImage.ContentType.ToLower().StartsWith("image/"))
             {
                 MemoryStream ms = new MemoryStream();
                 uploadedImage.OpenReadStream().CopyTo(ms);
 
                 Image image = Image.FromStream(ms);
 
-                UserImage imageEntity = new UserImage()
+                UserImage imageEntity = new UserImage
                 {
                     UserImageId = id,
                     FileName = uploadedImage.Name,
@@ -75,6 +99,37 @@ namespace MonAmie.Controllers
             }
 
             return RedirectToAction("Index");
-        }     
+        }
+
+        [HttpPost]
+        [Route("api/UserImage/UploadImage")]
+        public IActionResult UploadImage(IList<IFormFile> files, int id)
+        {
+            IFormFile uploadedImage = files.FirstOrDefault();
+
+            var user = userService.GetById(1);
+
+            if (uploadedImage.ContentType.ToLower().StartsWith("image/"))
+            {
+                MemoryStream ms = new MemoryStream();
+                uploadedImage.OpenReadStream().CopyTo(ms);
+
+                Image image = Image.FromStream(ms);
+
+                UserImage imageEntity = new UserImage
+                {
+                    FileName = uploadedImage.Name,
+                    Data = ms.ToArray(),
+                    Width = image.Width,
+                    Height = image.Height,
+                    ContentType = uploadedImage.ContentType,
+                    UserId = 1
+                };
+
+                userImageService.AddUserImage(imageEntity);
+            }
+
+            return Ok();
+        }
     }
 }

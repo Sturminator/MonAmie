@@ -11,32 +11,36 @@ import {
 import modalStyles from '../../Styles/modal.styles';
 import { userProfile } from '../../Reducers/userProfile.reducer';
 import { images } from '../../Reducers/images.reducer';
+import { object } from 'prop-types';
+
+import UIcon from '../../Images/icon.png';
 
 class ProfilePage extends Component {
     state = {
         originalCategories: [],
         newCategories: [],
         bio: "",
-        //image: undefined,
+        imageFile: [],
+        files: [],
         editProfile: false,
         editCategories: false
     };
 
     componentDidMount() {
-        const { match: { params }, userProfile, user } = this.props;
+        const { match: { params }, userProfile, user, images } = this.props;
         var idStr = params.userId.split("_")[1];
         var id = parseInt(idStr) / 11;
 
         if (!userProfile.items) {
             this.props.dispatch(userProfileActions.getById(id, user.id));
             this.props.dispatch(categoryActions.getAll());
-            this.props.dispatch(imagesActions.viewImage(id));
         }
         else if (userProfile.items.id != id) {
             this.props.dispatch(userProfileActions.getById(id, user.id));
             this.props.dispatch(categoryActions.getAll());
-            this.props.dispatch(imagesActions.viewImage(id));
         }
+
+        this.props.dispatch(imagesActions.viewImage(id));
     }
 
     componentWillReceiveProps(props) {
@@ -139,18 +143,21 @@ class ProfilePage extends Component {
     };
 
     onSaveProfileEditClick = (e) => {
-        const { userProfile } = this.props;
-        const { bio, files } = this.state;
+        const { match: { params }, userProfile, user } = this.props;
+        const { bio, imageFile, files } = this.state;
 
         userProfile.items.bio = bio;
-        //userProfile.items.files = files;
+        //userProfile.items.imageFile = files;
+
+        //var idStr = params.userId.split("_")[1];
+        //var id = parseInt(idStr) / 11;
 
         this.setState({
             editProfile: this.state.editProfile ? false : true
         });
 
         this.props.dispatch(userProfileActions.update(userProfile));
-        //this.props.dispatch(imagesActions.uploadImage(files, userProfile.items.id))
+        //this.props.dispatch(imagesActions.uploadImage(userProfile.items.imageFile, id))
     };
 
     createUserCategoriesTable = () => {
@@ -220,7 +227,7 @@ class ProfilePage extends Component {
 
     render() {
         const { user, userProfile, images } = this.props;
-        const { bio, editProfile, editCategories, files, image} = this.state;
+        const { bio, editProfile, editCategories, files } = this.state;
 
         if (!user) {
             return <Redirect to='/login' />
@@ -234,7 +241,7 @@ class ProfilePage extends Component {
             </div>);
         }
 
-        if (userProfile.items.id != user.id && images.items != null) {
+        if (userProfile.items.id != user.id) {
             return (
                 <div>
                     <NavigationBar>
@@ -254,6 +261,7 @@ class ProfilePage extends Component {
                             <Container>
                                 <Header as='h1' icon textAlign='center'>
                                     <Icon name='user' />
+                                    <img src={"/api/UserImage/ViewImageDirect/" + userProfile.items.id} />
                                     <Header.Content style={{ color: 'white' }}>{userProfile.items.fullName}</Header.Content>
                                 </Header>
                                 <Grid fluid='true' columns={3}>
@@ -287,252 +295,6 @@ class ProfilePage extends Component {
                                                                 <Header size='large' style={{ color: 'white' }}>Interests</Header>
                                                             </Grid.Column>
                                                             <Grid.Column>
-                                                            </Grid.Column>
-                                                        </Grid>
-                                                    </Table.HeaderCell>
-                                                </Table.Row>
-                                            </Table.Header>
-                                            <Table.Body>
-                                                {this.createUserCategoriesTable()}
-                                            </Table.Body>
-                                        </Table>
-                                    </Segment>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Segment style={{ backgroundColor: '#374785', minHeight: '250px' }}>
-                                        <Table style={{ textAlign: 'center', color: 'white' }} basic='very' celled>
-                                            <Table.Header>
-                                                <Table.Row>
-                                                    <Table.HeaderCell>
-                                                        <Grid stackable fluid='true' columns='equal'>
-                                                            <Grid.Column>
-                                                            </Grid.Column>
-                                                            <Grid.Column>
-                                                                <Header size='large' style={{ color: 'white' }}>Groups</Header>
-                                                            </Grid.Column>
-                                                            <Grid.Column>
-                                                            </Grid.Column>
-                                                        </Grid>
-                                                    </Table.HeaderCell>
-                                                </Table.Row>
-                                            </Table.Header>
-                                            <Table.Body>
-                                                {this.createUserCategoriesTable()}
-                                            </Table.Body>
-                                        </Table>
-                                    </Segment>
-                                </Grid.Column>
-                            </Grid>
-                        </Segment>
-                    </Container>
-                </div>
-            );
-        }
-
-        else if (userProfile.items.id != user.id && images.items == null) {
-            return (
-                <div>
-                    <NavigationBar>
-                    </NavigationBar>
-                    <style>{`html, body {background-color: #24305E !important; } `}</style>
-                    <Container style={{ marginTop: '50px' }}>
-                        <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
-                            <Grid fluid='true' columns='equal'>
-                                <Grid.Column>
-                                </Grid.Column>
-                                <Grid.Column>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    {this.renderFriend()}
-                                </Grid.Column>
-                            </Grid>
-                            <Container>
-                                <Header as='h1' icon textAlign='center'>
-                                    <Icon name='user' />
-                                    <Header.Content style={{ color: 'white' }}>{userProfile.items.fullName}</Header.Content>
-                                </Header>
-                                <Grid fluid='true' columns={3}>
-                                    <Grid.Column style={{ textAlign: "left" }}>
-                                        <Header as='h3' style={{ color: 'white' }}>{userProfile.items.gender}</Header>
-                                    </Grid.Column>
-                                    <Grid.Column style={{ textAlign: "center" }}>
-                                        <Header as='h3' style={{ color: 'white' }}>{userProfile.items.state}</Header>
-                                    </Grid.Column>
-                                    <Grid.Column style={{ textAlign: "right" }}>
-                                        <Header as='h3' style={{ color: 'white' }}>{userProfile.items.age}</Header>
-                                    </Grid.Column>
-                                </Grid>
-                            </Container>
-                            <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
-                                <Header size='large' style={{ color: 'white' }} textAlign='center'>Bio</Header>
-                                <Divider style={{ backgroundColor: 'white' }} />
-                                <Container style={{ color: 'white' }} content={userProfile.items.bio} />
-                            </Segment>
-                            <Grid fluid='true' stackable columns={2} style={{ paddingTop: '10px' }}>
-                                <Grid.Column>
-                                    <Segment style={{ backgroundColor: '#374785', minHeight: '250px' }}>
-                                        <Table style={{ textAlign: 'center', color: 'white' }} basic='very'>
-                                            <Table.Header>
-                                                <Table.Row>
-                                                    <Table.HeaderCell>
-                                                        <Grid stackable fluid='true' columns='equal'>
-                                                            <Grid.Column>
-                                                            </Grid.Column>
-                                                            <Grid.Column>
-                                                                <Header size='large' style={{ color: 'white' }}>Interests</Header>
-                                                            </Grid.Column>
-                                                            <Grid.Column>
-                                                            </Grid.Column>
-                                                        </Grid>
-                                                    </Table.HeaderCell>
-                                                </Table.Row>
-                                            </Table.Header>
-                                            <Table.Body>
-                                                {this.createUserCategoriesTable()}
-                                            </Table.Body>
-                                        </Table>
-                                    </Segment>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Segment style={{ backgroundColor: '#374785', minHeight: '250px' }}>
-                                        <Table style={{ textAlign: 'center', color: 'white' }} basic='very' celled>
-                                            <Table.Header>
-                                                <Table.Row>
-                                                    <Table.HeaderCell>
-                                                        <Grid stackable fluid='true' columns='equal'>
-                                                            <Grid.Column>
-                                                            </Grid.Column>
-                                                            <Grid.Column>
-                                                                <Header size='large' style={{ color: 'white' }}>Groups</Header>
-                                                            </Grid.Column>
-                                                            <Grid.Column>
-                                                            </Grid.Column>
-                                                        </Grid>
-                                                    </Table.HeaderCell>
-                                                </Table.Row>
-                                            </Table.Header>
-                                            <Table.Body>
-                                                {this.createUserCategoriesTable()}
-                                            </Table.Body>
-                                        </Table>
-                                    </Segment>
-                                </Grid.Column>
-                            </Grid>
-                        </Segment>
-                    </Container>
-                </div>
-            );
-        }
-
-
-        else if (images.items == null) {
-            return (
-                <div>
-                    <NavigationBar>
-                    </NavigationBar>
-                    <style>{`html, body {background-color: #24305E !important; } `}</style>
-                    <Modal style={modalStyles.EditCategoriesModal} size='tiny' open={editCategories} onClose={this.close}>
-                        <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Interests</Modal.Header>
-                        <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
-                            <Grid fluid='true' stackable columns={2} style={{ paddingTop: '10px' }}>
-                                <Grid.Column>
-                                    <Segment style={{ backgroundColor: '#374785', minHeight: '250px' }}>
-                                        <Header size='large' style={{ textAlign: 'center', color: 'white' }}>Interests</Header>
-                                        <Table style={{ textAlign: 'center', color: 'white' }} basic='very' celled>
-                                            <Table.Body>
-                                                {this.createCategoriesTable(false)}
-                                            </Table.Body>
-                                        </Table>
-                                    </Segment>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Segment style={{ backgroundColor: '#374785', minHeight: '250px' }}>
-                                        <Header size='large' style={{ textAlign: 'center', color: 'white' }}>My Interests</Header>
-                                        <Table style={{ textAlign: 'center', color: 'white' }} basic='very' celled>
-                                            <Table.Body>
-                                                {this.createCategoriesTable(true)}
-                                            </Table.Body>
-                                        </Table>
-                                    </Segment>
-                                </Grid.Column>
-                            </Grid>
-                        </Modal.Content>
-                        <Modal.Actions style={{ backgroundColor: '#374785' }}>
-                            <Button onClick={this.onCancelCategoriesEditClick} negative>Cancel</Button>
-                            <Button onClick={this.onSaveCategoriesEditClick} positive icon='checkmark' labelPosition='right' content='Save' />
-                        </Modal.Actions>
-                    </Modal>
-                    <Modal style={modalStyles.EditProfileModal} size='tiny' open={editProfile} onClose={this.close}>
-                        <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Profile</Modal.Header>
-                        <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
-                            <Form fluid='true'>
-                                <b>Upload profile picture</b>
-                                <input type="file" name="files" value={files}/>
-                                <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
-                                    <TextArea
-                                        value={bio}
-                                        style={{ minHeight: 100 }}
-                                        maxLength="500"
-                                        onChange={this.onBioChange}
-                                        placeholder="Give a brief bio of yourself"
-                                    />
-                                    <Header sub style={{ color: 'white' }}>Characters: {bio ? bio.length : 0} / 500</Header>
-                                </Segment>
-                            </Form>
-                        </Modal.Content>
-                        <Modal.Actions style={{ backgroundColor: '#374785' }}>
-                            <Button onClick={this.onCancelProfileEditClick} negative>Cancel</Button>
-                            <Button onClick={this.onSaveProfileEditClick} positive icon='checkmark' labelPosition='right' content='Save' />
-                        </Modal.Actions>
-                    </Modal>
-                    <Container style={{ marginTop: '50px' }}>
-                        <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
-                            <Grid fluid='true' columns='equal'>
-                                <Grid.Column>
-                                </Grid.Column>
-                                <Grid.Column>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Popup trigger={<Button floated='right' onClick={this.onEditProfileButtonClick} color='blue' icon='edit' />} content='Edit Profile' />
-                                </Grid.Column>
-                            </Grid>
-                            <Container>
-                                <Header as='h1' icon textAlign='center'>
-                                    <Icon name='user' />
-                                    <Header.Content style={{ color: 'white' }}>{userProfile.items.fullName}</Header.Content>
-                                </Header>
-                                <Grid fluid='true' columns={3}>
-                                    <Grid.Column style={{ textAlign: "left" }}>
-                                        <Header as='h3' style={{ color: 'white' }}>{userProfile.items.gender}</Header>
-                                    </Grid.Column>
-                                    <Grid.Column style={{ textAlign: "center" }}>
-                                        <Header as='h3' style={{ color: 'white' }}>{userProfile.items.state}</Header>
-                                    </Grid.Column>
-                                    <Grid.Column style={{ textAlign: "right" }}>
-                                        <Header as='h3' style={{ color: 'white' }}>{userProfile.items.age}</Header>
-                                    </Grid.Column>
-                                </Grid>
-                            </Container>
-                            <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
-                                <Header size='large' style={{ color: 'white' }} textAlign='center'>Bio</Header>
-                                <Divider style={{ backgroundColor: 'white' }} />
-                                <Container style={{ color: 'white' }} content={userProfile.items.bio} />
-                            </Segment>
-                            <Grid fluid='true' stackable columns={2} style={{ paddingTop: '10px' }}>
-                                <Grid.Column>
-                                    <Segment style={{ backgroundColor: '#374785', minHeight: '250px' }}>
-                                        <Table style={{ textAlign: 'center', color: 'white' }} basic='very'>
-                                            <Table.Header>
-                                                <Table.Row>
-                                                    <Table.HeaderCell>
-                                                        <Grid stackable fluid='true' columns='equal'>
-                                                            <Grid.Column>
-                                                            </Grid.Column>
-                                                            <Grid.Column>
-                                                                <Header size='large' style={{ color: 'white' }}>Interests</Header>
-                                                            </Grid.Column>
-                                                            <Grid.Column>
-                                                                <Popup trigger={<Button floated='right' onClick={this.onEditCategoriesButtonClick} color='blue' icon='edit' size='tiny' />} content='Edit Interests' />
                                                             </Grid.Column>
                                                         </Grid>
                                                     </Table.HeaderCell>
@@ -614,9 +376,12 @@ class ProfilePage extends Component {
                 <Modal style={modalStyles.EditProfileModal} size='tiny' open={editProfile} onClose={this.close}>
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Profile</Modal.Header>
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
+                        <Form fluid='true' encType="multipart/form-data" action={"/api/UserImage/UploadImage/"} method="post">
+                            <b>Upload profile picture</b>
+                            <input type="file" name="files" accept=".jpeg, .jpg, .png" />
+                            <button>Save Profile Picture</button>
+                        </Form>
                         <Form fluid='true'>
-                            <b>Upload new profile picture</b>
-                            <input type="file" name="files" value={files}/>
                             <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
                                 <TextArea
                                     value={bio}
@@ -647,8 +412,9 @@ class ProfilePage extends Component {
                         </Grid>
                         <Container>
                             <Header as='h1' icon textAlign='center'>
-                                <Icon name='user' />
-                                <img src={images.items.viewImage}/>
+                                <object data={"/api/UserImage/ViewImageDirect/" + userProfile.items.id} type="image/png" width="120" height="120">
+                                    <img src={UIcon} alt="User Profile Picture" width="120" height="120"/>
+                                </object>
                                 <Header.Content style={{ color: 'white' }}>{userProfile.items.fullName}</Header.Content>
                             </Header>
                             <Grid fluid='true' columns={3}>
