@@ -44,7 +44,8 @@ namespace MonAmie.Controllers
             var results = userCategories.Select(result => new CategoryViewModel
             {
                 CategoryId = result.CategoryId,
-                CategoryName = categories.SingleOrDefault(c => c.CategoryId == result.CategoryId).CategoryName
+                CategoryName = categories.SingleOrDefault(c => c.CategoryId == result.CategoryId).CategoryName,
+                ImageSource = categories.SingleOrDefault(c => c.CategoryId == result.CategoryId).ImageSource
             }).ToList();
 
             return Ok(results);

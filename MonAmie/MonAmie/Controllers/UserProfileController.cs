@@ -35,7 +35,8 @@ namespace MonAmie.Controllers
             var userCategoryModels = userCategories.Select(result => new CategoryViewModel
             {
                 CategoryId = result.CategoryId,
-                CategoryName = categories.SingleOrDefault(c => c.CategoryId == result.CategoryId).CategoryName
+                CategoryName = categories.SingleOrDefault(c => c.CategoryId == result.CategoryId).CategoryName,
+                ImageSource = categories.SingleOrDefault(c => c.CategoryId == result.CategoryId).ImageSource
             });
 
             if (user == null)
@@ -101,7 +102,8 @@ namespace MonAmie.Controllers
             var userCategoryModels = userCategories.Select(userCat => new Category
             {
                 CategoryId = userCat.CategoryId,
-                CategoryName = categories.SingleOrDefault(c => c.CategoryId == userCat.CategoryId).CategoryName
+                CategoryName = categories.SingleOrDefault(c => c.CategoryId == userCat.CategoryId).CategoryName,
+                ImageSource = categories.SingleOrDefault(c => c.CategoryId == userCat.CategoryId).ImageSource
             }).ToList();
 
             var toRemove = userCategoryModels.Where(ucm => !newCategories.Any(cat => cat.CategoryId == ucm.CategoryId)).ToList();
