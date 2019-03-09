@@ -170,10 +170,6 @@ class GroupsPage extends Component {
         });
     }
 
-    onDescriptionChange = (e, { value }) => this.setState({
-        description: value
-    });
-
     onCreateGroupButtonClick = (e) => this.setState({
         createGroup: this.state.createGroup ? false : true,
         categories: this.createCategoryDropdown

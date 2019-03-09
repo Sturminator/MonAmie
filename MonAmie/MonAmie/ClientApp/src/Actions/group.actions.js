@@ -78,8 +78,20 @@ function addGroup(ownerId, group) {
     function failure(error) { return { type: groupConstants.ADDGROUP_FAILURE, error } }
 }
 
-function updateGroup(group) {
+function updateGroup(groupId, group) {
+    return dispatch => {
+        dispatch(request(groupId, group));
 
+        groupService.updateGroup(groupId, group)
+            .then(
+                group => dispatch(success(group)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(groupId) { return { type: groupConstants.UPDATEGROUP_REQUEST, groupId } }
+    function success(group) { return { type: groupConstants.UPDATEGROUP_SUCCESS, group } }
+    function failure(error) { return { type: groupConstants.UPDATEGROUP_FAILURE, error } }
 }
 
 function deleteGroup(groupId) {

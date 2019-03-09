@@ -43,7 +43,7 @@ namespace MonAmie.Controllers
             public int CategoryId { get; set; }
             public string State { get; set; }
             public int MemberCount { get; set; }
-            public DateTime CreationDate { get; set; }
+            public string CreationDate { get; set; }
             public GroupMember Owner { get; set; }
             public List<GroupMember> GroupMembers { get; set; }
         }
@@ -72,7 +72,7 @@ namespace MonAmie.Controllers
                 OwnerId = result.OwnerId,
                 MemberCount = groupService.GetMemberCount(result.GroupId),
                 CategoryName = categories.FirstOrDefault(c => c.CategoryId == result.CategoryId).CategoryName,
-                CreationDate = result.CreationDate
+                CreationDate = result.CreationDate.ToString("MMMM") + " " + result.CreationDate.Year
             }).ToList().OrderBy(c => c.CategoryName);
 
             return Ok(results);
@@ -99,7 +99,7 @@ namespace MonAmie.Controllers
                     OwnerId = g.OwnerId,
                     CategoryName = category.CategoryName,
                     MemberCount = groupService.GetMemberCount(g.GroupId),
-                    CreationDate = g.CreationDate
+                    CreationDate = g.CreationDate.ToString("MMMM") + " " + g.CreationDate.Year
                 });
             }
 
@@ -134,7 +134,7 @@ namespace MonAmie.Controllers
                     OwnerId = g.OwnerId,
                     MemberCount = groupService.GetMemberCount(g.GroupId),
                     CategoryName = categories.FirstOrDefault(c => c.CategoryId == g.CategoryId).CategoryName,
-                    CreationDate = g.CreationDate
+                    CreationDate = g.CreationDate.ToString("MMMM") + " " + g.CreationDate.Year
                 });
             }
 
@@ -150,7 +150,7 @@ namespace MonAmie.Controllers
                     OwnerId = g.OwnerId,
                     MemberCount = groupService.GetMemberCount(g.GroupId),
                     CategoryName = categories.FirstOrDefault(c => c.CategoryId == g.CategoryId).CategoryName,
-                    CreationDate = g.CreationDate
+                    CreationDate = g.CreationDate.ToString("MMMM") + " " + g.CreationDate.Year
                 });
             }
 
@@ -195,7 +195,7 @@ namespace MonAmie.Controllers
                 OwnerId = group.OwnerId,
                 MemberCount = groupMembers.Count + 1,
                 CategoryName = categories.FirstOrDefault(c => c.CategoryId == group.CategoryId).CategoryName,
-                CreationDate = group.CreationDate,
+                CreationDate = group.CreationDate.ToString("MMMM") + " " + group.CreationDate.Year,
                 Owner = new GroupMember
                 {
                     UserId = owner.UserId,
@@ -236,8 +236,8 @@ namespace MonAmie.Controllers
         }
 
         [HttpPut]
-        [Route("api/Group/UpdateGroup")]
-        public IActionResult UpdateGroup([FromBody]Group group)
+        [Route("group/api/Group/UpdateGroup/{groupId}")]
+        public IActionResult UpdateGroup(int groupId, [FromBody]GroupViewModel group)
         {
             if (group == null)
                 return BadRequest("Group cannot be null.");
@@ -247,6 +247,10 @@ namespace MonAmie.Controllers
 
             if (string.IsNullOrEmpty(group.Description) || string.IsNullOrEmpty(group.State) || string.IsNullOrEmpty(group.GroupName) || group.CategoryId < 1)
                 return BadRequest("Missing a description, state, group name, or category.");
+
+            var categories = categoryService.GetAllCategories();
+
+            group.CategoryName = categories.FirstOrDefault(c => c.CategoryId == group.CategoryId).CategoryName;
 
             groupService.UpdateGroup(new Group
             {
@@ -259,7 +263,7 @@ namespace MonAmie.Controllers
                 CreationDate = DateTime.UtcNow
             });
 
-            return Ok();
+            return Ok(group);
         }
 
         [HttpGet]

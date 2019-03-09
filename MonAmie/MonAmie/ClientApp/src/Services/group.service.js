@@ -48,8 +48,14 @@ function addGroup(ownerId, group) {
     return fetch(`api/Group/AddGroup/` + ownerId, requestOptions).then(handleResponse);
 }
 
-function updateGroup() {
+function updateGroup(groupId, group) {
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(group.group)
+    };
 
+    return fetch(`api/Group/UpdateGroup/` + groupId, requestOptions).then(handleResponse);
 }
 
 function deleteGroup() {

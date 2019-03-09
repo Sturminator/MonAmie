@@ -19,6 +19,7 @@ namespace MonAmie.Controllers
 
         [HttpGet]
         [Route("profile/api/Category/GetAll")]
+        [Route("group/api/Category/GetAll")]
         [Route("api/Category/GetAll")]
         public IActionResult GetAll()
         {

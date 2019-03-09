@@ -136,7 +136,7 @@ namespace MonAmieServices
             if (entity != null)
             {
                 entity.GroupName = group.GroupName;
-                entity.Description = group.GroupName;
+                entity.Description = group.Description;
                 entity.CategoryId = group.CategoryId;
                 entity.OwnerId = group.OwnerId;
                 entity.State = group.State;

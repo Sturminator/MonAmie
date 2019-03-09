@@ -17,10 +17,14 @@ class GroupProfilePage extends Component {
                 categoryId: null,
                 description: "",
             },
-            canEditGroup: false,
+            canUpdateGroup: false,
             updateGroup: false,
             deleteGroup: false
         };
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleCategoryChange = this.handleCategoryChange.bind(this);
+        this.handleStateChange = this.handleStateChange.bind(this);
     }
 
     componentDidMount() {
@@ -57,20 +61,93 @@ class GroupProfilePage extends Component {
         return categoryOptions;
     }
 
+    handleChange(event) {
+        const { name, value } = event.target;
+        const { editedGroup } = this.state;
+        var otherField = name === 'groupName' ? editedGroup.description : editedGroup.groupName;
+
+        this.setState({
+            editedGroup: {
+                ...editedGroup,
+                [name]: value
+            },
+            canUpdateGroup: value != "" > 0 && editedGroup.categoryId > 0 && otherField != "" && editedGroup.state != ""
+        });
+    }
+
+    handleCategoryChange(event, value) {
+        const { editedGroup } = this.state;
+
+        this.setState({
+            editedGroup: {
+                ...editedGroup,
+                categoryId: value.value
+            },
+            canUpdateGroup: value.value != null && editedGroup.state != "" && editedGroup.groupName != "" && editedGroup.description != ""
+        });
+    }
+
+    handleStateChange(event, value) {
+        const { editedGroup } = this.state;
+
+        this.setState({
+            editedGroup: {
+                ...editedGroup,
+                state: value.value
+            },
+            canUpdateGroup: value.value != "" && editedGroup.categoryId != null && editedGroup.groupName != "" && editedGroup.description != ""
+        });
+    }
+
     onCancelEditGroupButtonClick = () => this.setState({
         updateGroup: false
     });
 
-    onEditGroupButtonClick = () => this.setState({
-        updateGroup: true
-    });
+    onSaveEditGroupButtonClick = (e) => {
+        const { editedGroup } = this.state;
+        const { group } = this.props;
+
+        group.group.state = editedGroup.state;
+        group.group.groupName = editedGroup.groupName;
+        group.group.description = editedGroup.description;
+        group.group.categoryId = editedGroup.categoryId;
+
+        this.props.dispatch(groupActions.updateGroup(group.group.groupId, group));
+
+        this.setState({
+            updateGroup: this.state.updateGroup ? false : true
+        })
+    };
+
+    onEditGroupButtonClick = () => {
+        const { editedGroup } = this.state;
+        const { group } = this.props;
+
+        this.setState({
+            editedGroup: {
+                ...editedGroup,
+                state: group.group.state,
+                groupName: group.group.groupName,
+                description: group.group.description,
+                categoryId: group.group.categoryId
+            },
+            updateGroup: true
+        })
+    };
 
     render() {
-        const { group } = this.props;
-        const { canEditGroup, editedGroup, updateGroup, deleteGroup } = this.state;
+        const { group, categories } = this.props;
+        const { canUpdateGroup, editedGroup, updateGroup, deleteGroup } = this.state;
         var memberFormat = "Member";
 
         if (group.loading)
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
+
+        if (categories.loading)
             return (<div style={{ paddingTop: '600px' }}>
                 <Dimmer active>
                     <Loader active size='massive' inline='centered' />
@@ -93,7 +170,7 @@ class GroupProfilePage extends Component {
                 </NavigationBar>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
                 <Modal style={modalStyles.createGroupModal} size='tiny' open={updateGroup} onClose={this.close}>
-                    <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Create Group</Modal.Header>
+                    <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Group</Modal.Header>
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
                         <Form fluid='true'>
                             <Form.Input maxLength='50' type='text' fluid label="Name" placeholder="Name" value={editedGroup.groupName} name='groupName' onChange={this.handleChange} />
@@ -116,14 +193,14 @@ class GroupProfilePage extends Component {
                     </Modal.Content>
                     <Modal.Actions style={{ backgroundColor: '#374785' }}>
                         <Button onClick={this.onCancelEditGroupButtonClick} negative>Cancel</Button>
-                        <Button disabled={!canEditGroup} onClick={this.onSaveCreateGroupClick} positive icon='checkmark' labelPosition='right' content='Create' />
+                        <Button disabled={!canUpdateGroup} onClick={this.onSaveEditGroupButtonClick} positive icon='checkmark' labelPosition='right' content='Save' />
                     </Modal.Actions>
                 </Modal>
                 <Container style={{ marginTop: '50px' }}>
                     <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
                         <Grid fluid='true' columns='equal'>
                             <Grid.Column>
-                                <Header floated='left' as='h3' style={{ color: 'white' }}>Owner: {group.group.owner.firstName} {group.group.owner.lastName}</Header>
+                                <Header floated='left' as='h3' style={{ color: 'white' }}>Created: {group.group.creationDate}</Header>
                             </Grid.Column>
                             <Grid.Column>
                             </Grid.Column>

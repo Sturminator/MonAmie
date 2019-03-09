@@ -46,13 +46,7 @@ export function groups(state = {}, action) {
             return {
                 loading: false,
                 error: action.error
-            };
-        case groupConstants.UPDATEGROUP_REQUEST:
-            break;
-        case groupConstants.UPDATEGROUP_SUCCESS:
-            break;
-        case groupConstants.UPDATEGROUP_FAILURE:
-            break;
+            };        
         case groupConstants.DELETEGROUP_REQUEST:
             break;
         case groupConstants.DELETEGROUP_SUCCESS:
@@ -79,6 +73,21 @@ export function group(state = {}, action) {
                 group: action.group
             };
         case groupConstants.GETGROUP_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
+        case groupConstants.UPDATEGROUP_REQUEST:
+            return {
+                loading: true,
+                groupId: action.groupId
+            };
+        case groupConstants.UPDATEGROUP_SUCCESS:
+            return {
+                loading: false,
+                group: action.group
+            };
+        case groupConstants.UPDATEGROUP_FAILURE:
             return {
                 loading: false,
                 error: action.error
