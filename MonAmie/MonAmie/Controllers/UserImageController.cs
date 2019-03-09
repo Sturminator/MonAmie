@@ -126,12 +126,12 @@ namespace MonAmie.Controllers
                     UserId = 1
                 };
 
-
-
                 UserImage item = userImageService.GetByUserId(1);
 
                 if (item != null)
                 {
+                    imageEntity.UserImageId = item.UserImageId;
+
                     userImageService.UpdateUserImage(imageEntity);
                 }
 
