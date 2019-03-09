@@ -21,7 +21,6 @@ class ProfilePage extends Component {
         newCategories: [],
         bio: "",
         imageFile: [],
-        files: [],
         editProfile: false,
         editCategories: false
     };
@@ -144,12 +143,16 @@ class ProfilePage extends Component {
         });
     };
 
-    onSaveProfileEditClick = (e) => {
+    onSaveProfileEditClick = (e, { value }) => {
         const { match: { params }, userProfile, user } = this.props;
         const { bio, imageFile } = this.state;
 
-        //userProfile.items.bio = bio;
+        userProfile.items.bio = bio;
+
+
+        //value.files;
         //userProfile.items.imageFile = files;
+
 
         //var idStr = params.userId.split("_")[1];
         //var id = parseInt(idStr) / 11;
@@ -406,11 +409,8 @@ class ProfilePage extends Component {
                 <Modal style={modalStyles.EditProfileModal} size='tiny' open={editProfile} onClose={this.close}>
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Profile</Modal.Header>
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
-                        <Form fluid='true' encType="multipart/form-data" action={"/api/UserImage/UploadImage/"} method="post">
-                            <b>Upload profile picture</b>
-                            <input type="file" name="files" accept=".jpeg, .jpg, .png" />
-                            <button>Save Profile Picture</button>
-                        </Form>
+                        <label for="files">Upload profile picture</label>
+                        <input type="file" name={"files"} id={"files"} accept=".jpeg, .jpg, .png" />
                         <Form fluid='true'>
                             <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
                                 <TextArea
