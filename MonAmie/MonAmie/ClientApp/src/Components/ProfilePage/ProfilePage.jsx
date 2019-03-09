@@ -176,9 +176,9 @@ class ProfilePage extends Component {
             for (let i = 0; i < categories.length; i++) {
                 var children = []
                 //Inner loop to create children
-                children.push(<Table.Cell key={i + 1}>{categories[i].categoryName}</Table.Cell>)
+                children.push(<Table.Cell key={categories[i].categoryId}>{categories[i].categoryName}</Table.Cell>)
                 //Create the parent and add the children
-                table.push(<Table.Row key={i + 1} children={children} />)
+                table.push(<Table.Row key={categories[i].categoryId} children={children} />)
             }
         }
 
@@ -196,8 +196,8 @@ class ProfilePage extends Component {
                 for (let i = 0; i < newCategories.length; i++) {
                     var children = []
                     //Inner loop to create children
-                    children.push(<Table.Cell key={i + 1}>{newCategories[i].categoryName}</Table.Cell>)
-                    children.push(<Table.Cell key={i + 1}><Button onClick={this.onRemoveInterestFromUser} value={newCategories[i]} size='tiny' icon color='red'><Icon name='minus' /></Button></Table.Cell>)
+                    children.push(<Table.Cell key={newCategories[i].categoryName}>{newCategories[i].categoryName}</Table.Cell>)
+                    children.push(<Table.Cell key={newCategories[i].categoryId}><Button onClick={this.onRemoveInterestFromUser} value={newCategories[i]} size='tiny' icon color='red'><Icon name='minus' /></Button></Table.Cell>)
                     //Create the parent and add the children
                     table.push(<Table.Row key={i + 1} children={children} />)
                 }
@@ -208,8 +208,8 @@ class ProfilePage extends Component {
                     if (!newCategories.some(uc => uc.categoryId === categories.items[i].categoryId)) {
                         var children = []
                         //Inner loop to create children
-                        children.push(<Table.Cell key={i + 1}>{categories.items[i].categoryName}</Table.Cell>)
-                        children.push(<Table.Cell key={i + 1}><Button onClick={this.onAddInterestToUser} value={categories.items[i]} size='tiny' icon color='green'><Icon name='plus' /></Button></Table.Cell>)
+                        children.push(<Table.Cell key={categories.items[i].categoryName}>{categories.items[i].categoryName}</Table.Cell>)
+                        children.push(<Table.Cell key={categories.items[i].categoryId}><Button onClick={this.onAddInterestToUser} value={categories.items[i]} size='tiny' icon color='green'><Icon name='plus' /></Button></Table.Cell>)
                         //Create the parent and add the children
                         table.push(<Table.Row key={i + 1} children={children} />)
                     }
@@ -292,7 +292,7 @@ class ProfilePage extends Component {
                             </Grid>
                             <Container>
                                 <Header as='h1' icon textAlign='center'>
-                                    <object data={"/api/UserImage/ViewImageDirect/" + userProfile.items.id} type="image/png" width="120" height="120">
+                                    <object data={"/api/UserImage/ViewImageDirect/" + userProfile.items.id} type="image/png" width="250" height="250">
                                         <img src={UIcon} alt="User Profile Picture" width="120" height="120" />
                                     </object>
                                     <Header.Content style={{ color: 'white' }}>{userProfile.items.fullName}</Header.Content>
@@ -442,7 +442,7 @@ class ProfilePage extends Component {
                         </Grid>
                         <Container>
                             <Header as='h1' icon textAlign='center'>
-                                <object data={"/api/UserImage/ViewImageDirect/" + userProfile.items.id} type="image/png" width="120" height="120">
+                                <object data={"/api/UserImage/ViewImageDirect/" + userProfile.items.id} type="image/png" width="250" height="250">
                                     <img src={UIcon} alt="User Profile Picture" width="120" height="120"/>
                                 </object>
                                 <Header.Content style={{ color: 'white' }}>{userProfile.items.fullName}</Header.Content>

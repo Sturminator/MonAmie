@@ -12,7 +12,8 @@ class GroupsCategoryPage extends Component {
 
         this.state = {
             groupSelected: false,
-            redirectTo: ""
+            redirectTo: "",
+            goBack: false
         };
     }
 
@@ -65,12 +66,22 @@ class GroupsCategoryPage extends Component {
         return cards;
     }
 
+    onGoBackButtonClick = (e) => {
+        var path = window.location.pathname;
+
+        history.push(path);
+
+        this.setState({
+            goBack: true
+        });
+    };
+
     goToProfile = (e, { value }) => {
         var path = window.location.pathname;
 
         history.push(path);
 
-        var groupName = value.groupName.replace(/ /g, ''); 
+        var groupName = value.groupName.replace(/ /g, '');
 
         this.setState({
             groupSelected: true,
@@ -81,7 +92,10 @@ class GroupsCategoryPage extends Component {
 
     render() {
         const { groups } = this.props;
-        const { groupSelected, redirectTo } = this.state;
+        const { groupSelected, redirectTo, goBack } = this.state;
+
+        if (goBack)
+            return <Redirect to='/groups' />
 
         if (groupSelected)
             return <Redirect to={redirectTo} />
@@ -100,7 +114,7 @@ class GroupsCategoryPage extends Component {
                 </Dimmer>
             </div>);
 
-        return (          
+        return (
             <div>
                 <NavigationBar>
                 </NavigationBar>
@@ -109,6 +123,7 @@ class GroupsCategoryPage extends Component {
                     <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
                         <Grid columns='equal'>
                             <Grid.Column>
+                                <Popup trigger={<Button onClick={this.onGoBackButtonClick} floated='left' color='blue' icon='arrow left' />} content='Back' />
                             </Grid.Column>
                             <Grid.Column>
                                 <Header as='h1' textAlign='center'>
