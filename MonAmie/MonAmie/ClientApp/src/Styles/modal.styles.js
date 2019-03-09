@@ -2,7 +2,7 @@
 
 export default {
     EditProfileModal: {
-        maxHeight: '420px',
+        position: 'relative',
         marginBottom: 'auto',
         marginTop: 'auto',
         marginLeft: 'auto',
@@ -12,6 +12,7 @@ export default {
     },
 
     EditCategoriesModal: {
+        position: 'relative',
         marginBottom: 'auto',
         marginTop: 'auto',
         marginLeft: 'auto',
@@ -21,7 +22,7 @@ export default {
     },
 
     confirmDeleteModal: {
-        maxHeight: '230px',
+        position: 'relative',
         marginBottom: 'auto',
         marginTop: 'auto',
         marginLeft: 'auto',
@@ -31,7 +32,7 @@ export default {
     },
 
     createGroupModal: {
-        maxHeight: '500px',
+        position: 'relative',
         marginBottom: 'auto',
         marginTop: 'auto',
         marginLeft: 'auto',

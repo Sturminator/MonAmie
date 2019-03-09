@@ -192,6 +192,7 @@ class GroupProfilePage extends Component {
                         </Form>
                     </Modal.Content>
                     <Modal.Actions style={{ backgroundColor: '#374785' }}>
+                        <Button onClick={this.onCancelEditGroupButtonClick} negative icon='delete' floated='left' labelPosition='left' content='Delete Group' />
                         <Button onClick={this.onCancelEditGroupButtonClick} negative>Cancel</Button>
                         <Button disabled={!canUpdateGroup} onClick={this.onSaveEditGroupButtonClick} positive icon='checkmark' labelPosition='right' content='Save' />
                     </Modal.Actions>
