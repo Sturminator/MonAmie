@@ -34,6 +34,20 @@ namespace MonAmieData.Interfaces
         IEnumerable<Group> GetAllGroupsUserOwns(int userId);
 
         /// <summary>
+        /// Adds a user to a group
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        void AddUserToGroup(int userId, int groupId);
+
+        /// <summary>
+        /// Removes a user from a group
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        void RemoveUserFromGroup(int userId, int groupId);
+
+        /// <summary>
         /// Gets a group by its id
         /// </summary>
         /// <param name="groupId"></param>
@@ -56,7 +70,8 @@ namespace MonAmieData.Interfaces
         /// Delete a group from the database
         /// </summary>
         /// <param name="groupId"></param>
-        void DeleteGroup(int groupId);
+        /// <param name="userIds"></param>
+        void DeleteGroup(int groupId, List<int> userIds);
 
         /// <summary>
         /// Gets all the users in a group (not including the owner)

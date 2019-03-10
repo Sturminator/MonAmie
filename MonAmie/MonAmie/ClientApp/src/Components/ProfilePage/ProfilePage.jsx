@@ -344,7 +344,7 @@ class ProfilePage extends Component {
             return <Redirect to='/login' />
         }
 
-        if (!userProfile.items) {
+        if (userGroups.loading) {
             return (<div style={{ paddingTop: '600px' }}>
                 <Dimmer active>
                     <Loader active size='massive' inline='centered' />
@@ -352,11 +352,19 @@ class ProfilePage extends Component {
             </div>);
         }
 
-        if (userGroups.loading) {
+        if (userProfile.loading) {
             return (<div style={{ paddingTop: '600px' }}>
                 <Dimmer active>
                     <Loader active size='massive' inline='centered' />
                 </Dimmer>
+            </div>);
+        }
+
+        if (!userProfile.items) {
+            return (<div>
+                <NavigationBar>
+                </NavigationBar>
+                <style>{`html, body {background-color: #24305E !important; } `}</style>
             </div>);
         }
 

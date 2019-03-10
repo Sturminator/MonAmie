@@ -90,6 +90,21 @@ class GroupsCategoryPage extends Component {
         });
     };
 
+    renderGroups = () => {
+        const { groups } = this.props;
+
+        if (groups.groups) {
+            if (groups.groups.groupList.length > 0) {
+                return (<Card.Group stackable centered children={this.createGroupCards()} />)
+            }
+            else {
+                return (<Header as='h1' textAlign='center'>
+                    <Header.Content style={{ color: 'white' }}>No Groups in this Category</Header.Content>
+                </Header>)
+            }
+        }
+    }
+
     render() {
         const { groups } = this.props;
         const { groupSelected, redirectTo, goBack } = this.state;
@@ -120,7 +135,7 @@ class GroupsCategoryPage extends Component {
                 </NavigationBar>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
                 <Container fluid style={{ margin: '5px' }}>
-                    <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
+                    <Segment fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '150px' }}>
                         <Grid columns='equal'>
                             <Grid.Column>
                                 <Popup trigger={<Button onClick={this.onGoBackButtonClick} floated='left' color='blue' icon='arrow left' />} content='Back' />
@@ -134,7 +149,7 @@ class GroupsCategoryPage extends Component {
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ backgroundColor: 'white' }} />
-                        <Card.Group stackable centered children={this.createGroupCards()} />
+                        {this.renderGroups()}
                     </Segment>
                 </Container>
             </div>

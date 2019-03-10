@@ -1,10 +1,12 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions } from '../../Actions';
 import modalStyles from '../../Styles/modal.styles';
 import { states } from '../../Enums';
-import { Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon, Popup, Header, Modal, Form, TextArea } from 'semantic-ui-react';
+import { Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon, Popup, Header, Modal, Form, TextArea, Label } from 'semantic-ui-react';
+import { history } from '../../Helpers';
 
 class GroupProfilePage extends Component {
     constructor(props) {
@@ -19,7 +21,8 @@ class GroupProfilePage extends Component {
             },
             canUpdateGroup: false,
             updateGroup: false,
-            deleteGroup: false
+            deleteGroup: false,
+            confirmLeave: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -135,10 +138,69 @@ class GroupProfilePage extends Component {
         })
     };
 
+    onLeaveGroupLabelClick = () => {
+        this.setState({
+            confirmLeave: true
+        })
+    }
+
+    onJoinGroupLabelClick = () => {
+        const { group, user } = this.props;
+
+        this.props.dispatch(groupActions.addUserToGroup(user.id, group));
+    }
+
+    onCancelLeaveGroupClick = () => {
+        this.setState({
+            confirmLeave: false
+        })
+    }
+
+    onConfirmLeaveGroupClick = () => {
+        const { group, user } = this.props;
+
+        this.props.dispatch(groupActions.removeUserFromGroup(user.id, group));
+
+        this.setState({
+            confirmLeave: false
+        })
+    }
+
+    onConfirmDeleteGroupClick = () => {
+        const { group } = this.props;
+
+        history.push('/groups');
+
+        this.props.dispatch(groupActions.deleteGroup(group.group.groupId, group));
+
+        this.setState({
+            confirmLeave: false,
+            confirmDelete: false,
+            deleteGroup: true
+        })
+    }
+
+    renderMemberLabel = () => {
+        const { group, user } = this.props;
+
+        if (group.group.groupMembers.some(gm => gm.userId === user.id)) {
+            return (<Popup trigger={<Label onHover={this.onLeaveGroupLabelClick} onClick={this.onLeaveGroupLabelClick} as='a' color='green' attached='top right'>
+                <Icon name='checkmark' /> Member
+                </Label>} content='Leave Group' />);
+        } else {
+            return (<Label onClick={this.onJoinGroupLabelClick} as='a' color='blue' attached='top right'>
+                <Icon name='add' /> Join Group
+                </Label>);
+        }
+    }
+
     render() {
-        const { group, categories } = this.props;
-        const { canUpdateGroup, editedGroup, updateGroup, deleteGroup } = this.state;
+        const { group, categories, user } = this.props;
+        const { canUpdateGroup, editedGroup, updateGroup, deleteGroup, confirmLeave } = this.state;
         var memberFormat = "Member";
+
+        if (deleteGroup)
+            return <Redirect to='/groups' />
 
         if (group.loading)
             return (<div style={{ paddingTop: '600px' }}>
@@ -155,20 +217,86 @@ class GroupProfilePage extends Component {
             </div>);
 
         if (!group.group)
-            return (<div style={{ paddingTop: '600px' }}>
-                <Dimmer active>
-                    <Loader active size='massive' inline='centered' />
-                </Dimmer>
+            return (<div>
+                <NavigationBar>
+                </NavigationBar>
+                <style>{`html, body {background-color: #24305E !important; } `}</style>
             </div>);
 
-        if (group.memberCount > 1)
+        if (group.group.memberCount > 1)
             memberFormat = "Members";
+
+        if (group.group.ownerId != user.id) {
+            return (
+                <div>
+                    <NavigationBar>
+                    </NavigationBar>
+                    <style>{`html, body {background-color: #24305E !important; } `}</style>
+                    <Modal style={modalStyles.confirmDeleteModal} size='tiny' open={confirmLeave} onClose={this.close}>
+                        <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Leave Group</Modal.Header>
+                        <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
+                            <Header as='h2' style={{ color: 'white' }}>Are you sure you want to leave {group.group.groupName}?</Header>
+                        </Modal.Content>
+                        <Modal.Actions style={{ backgroundColor: '#374785' }}>
+                            <Button negative onClick={this.onCancelLeaveGroupClick}>No</Button>
+                            <Button positive onClick={this.onConfirmLeaveGroupClick} icon='checkmark' labelPosition='right' content='Yes' />
+                        </Modal.Actions>
+                    </Modal>
+                    <Container style={{ marginTop: '50px' }}>
+                        <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
+                            <Grid fluid='true' columns='equal'>
+                                <Grid.Column>
+                                    <Header floated='left' as='h3' style={{ color: 'white' }}>Created: {group.group.creationDate}</Header>
+                                </Grid.Column>
+                                <Grid.Column>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    {this.renderMemberLabel()}
+                                </Grid.Column>
+                            </Grid>
+                            <Container>
+                                <Header as='h1' icon textAlign='center'>
+                                    <Icon name='group' />
+                                    <Header.Content style={{ color: 'white' }}>{group.group.groupName}</Header.Content>
+                                </Header>
+                                <Grid fluid='true' columns={3}>
+                                    <Grid.Column style={{ textAlign: "left" }}>
+                                        <Header as='h3' style={{ color: 'white' }}>{group.group.categoryName}</Header>
+                                    </Grid.Column>
+                                    <Grid.Column style={{ textAlign: "center" }}>
+                                        <Header as='h3' style={{ color: 'white' }}>{group.group.state}</Header>
+                                    </Grid.Column>
+                                    <Grid.Column style={{ textAlign: "right" }}>
+                                        <Header as='h3' style={{ color: 'white' }}>{group.group.memberCount} {memberFormat}</Header>
+                                    </Grid.Column>
+                                </Grid>
+                            </Container>
+                            <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
+                                <Header size='large' style={{ color: 'white' }} textAlign='center'>Description</Header>
+                                <Divider style={{ backgroundColor: 'white' }} />
+                                <Container style={{ color: 'white' }} content={group.group.description} />
+                            </Segment>
+                        </Segment>
+                    </Container>
+                </div>
+            );
+        }
 
         return (
             <div>
                 <NavigationBar>
                 </NavigationBar>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
+                <Modal style={modalStyles.confirmDeleteModal} size='tiny' open={confirmLeave} onClose={this.close}>
+                    <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Delete Group</Modal.Header>
+                    <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
+                        <Header as='h2' style={{ color: 'white' }}>Are you sure you want to delete {group.group.groupName}?</Header>
+                    </Modal.Content>
+                    <Modal.Actions style={{ backgroundColor: '#374785' }}>
+                        <Button negative onClick={this.onCancelLeaveGroupClick}>No</Button>
+                        <Button positive onClick={this.onConfirmDeleteGroupClick} icon='checkmark' labelPosition='right' content='Yes' />
+                    </Modal.Actions>
+                </Modal>
                 <Modal style={modalStyles.createGroupModal} size='tiny' open={updateGroup} onClose={this.close}>
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Group</Modal.Header>
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
@@ -192,7 +320,7 @@ class GroupProfilePage extends Component {
                         </Form>
                     </Modal.Content>
                     <Modal.Actions style={{ backgroundColor: '#374785' }}>
-                        <Button onClick={this.onCancelEditGroupButtonClick} negative icon='delete' floated='left' labelPosition='left' content='Delete Group' />
+                        <Button onClick={this.onLeaveGroupLabelClick} negative icon='delete' floated='left' labelPosition='left' content='Delete Group' />
                         <Button onClick={this.onCancelEditGroupButtonClick} negative>Cancel</Button>
                         <Button disabled={!canUpdateGroup} onClick={this.onSaveEditGroupButtonClick} positive icon='checkmark' labelPosition='right' content='Save' />
                     </Modal.Actions>

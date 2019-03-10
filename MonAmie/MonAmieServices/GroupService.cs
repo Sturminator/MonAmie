@@ -40,15 +40,47 @@ namespace MonAmieServices
         }
 
         /// <summary>
+        /// Adds a user to a group
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        public void AddUserToGroup(int userId, int groupId)
+        {
+            var entity = _context.GroupHasUser.FirstOrDefault(ghu => ghu.UserId == userId && ghu.GroupId == groupId);
+
+            if(entity == null)
+            {
+                _context.GroupHasUser.Add(new GroupHasUser
+                {
+                    UserId = userId,
+                    GroupId = groupId,
+                    JoinDate = DateTime.UtcNow
+                });
+                _context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
         /// Delete a group from the database
         /// </summary>
         /// <param name="groupId"></param>
-        public void DeleteGroup(int groupId)
+        /// <param name="userIds"></param>
+        public void DeleteGroup(int groupId, List<int> userIds)
         {
             var group = _context.Group.FirstOrDefault(g => g.GroupId == groupId);
 
             if (group != null)
             {
+                foreach(var id in userIds)
+                {
+                    var entity = _context.GroupHasUser.FirstOrDefault(ghu => ghu.UserId == id && ghu.GroupId == groupId);
+
+                    if (entity != null)
+                    {
+                        _context.GroupHasUser.Remove(entity);
+                    }
+                }
+
                 _context.Group.Remove(group);
                 _context.SaveChangesAsync();
             }
@@ -80,7 +112,7 @@ namespace MonAmieServices
         /// <returns></returns>
         public IEnumerable<Group> GetAllGroupsUserBelongsTo(int userId)
         {
-            var groupUsers = _context.GroupHasUser.Where(ghu => ghu.UserId == ghu.UserId);
+            var groupUsers = _context.GroupHasUser.Where(ghu => ghu.UserId == userId);
 
             return _context.Group.Where(g => groupUsers.Any(ghu => ghu.GroupId == g.GroupId));
         }
@@ -123,6 +155,22 @@ namespace MonAmieServices
         public int GetMemberCount(int groupId)
         {
             return _context.GroupHasUser.Where(g => g.GroupId == groupId).Count() + 1; // add 1 for the owner
+        }
+
+        /// <summary>
+        /// Removes a user from a group
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        public void RemoveUserFromGroup(int userId, int groupId)
+        {
+            var entity = _context.GroupHasUser.FirstOrDefault(ghu => ghu.UserId == userId && ghu.GroupId == groupId);
+
+            if (entity != null)
+            {
+                _context.GroupHasUser.Remove(entity);
+                _context.SaveChangesAsync();
+            }
         }
 
         /// <summary>

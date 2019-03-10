@@ -47,12 +47,6 @@ export function groups(state = {}, action) {
                 loading: false,
                 error: action.error
             };        
-        case groupConstants.DELETEGROUP_REQUEST:
-            break;
-        case groupConstants.DELETEGROUP_SUCCESS:
-            break;
-        case groupConstants.DELETEGROUP_FAILURE:
-            break;
         case authConstants.LOGOUT:
             return {}
         default:
@@ -77,6 +71,22 @@ export function group(state = {}, action) {
                 loading: false,
                 error: action.error
             };
+        case groupConstants.DELETEGROUP_REQUEST:
+            return {
+                loading: true,
+                ownerId: action.ownerId,
+                group: action.group
+            };
+        case groupConstants.DELETEGROUP_SUCCESS:
+            return {
+                loading: false,
+                group: action.group
+            };
+        case groupConstants.DELETEGROUP_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };  
         case groupConstants.UPDATEGROUP_REQUEST:
             return {
                 loading: true,
@@ -88,6 +98,36 @@ export function group(state = {}, action) {
                 group: action.group
             };
         case groupConstants.UPDATEGROUP_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
+        case groupConstants.ADDUSERTOGROUP_REQUEST:
+            return {
+                loading: true,
+                userId: action.userId
+            };
+        case groupConstants.ADDUSERTOGROUP_SUCCESS:
+            return {
+                loading: false,
+                group: action.group
+            };
+        case groupConstants.ADDUSERTOGROUP_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
+        case groupConstants.REMOVEUSERFROMGROUP_REQUEST:
+            return {
+                loading: true,
+                userId: action.userId
+            };
+        case groupConstants.REMOVEUSERFROMGROUP_SUCCESS:
+            return {
+                loading: false,
+                group: action.group
+            };
+        case groupConstants.REMOVEUSERFROMGROUP_FAILURE:
             return {
                 loading: false,
                 error: action.error

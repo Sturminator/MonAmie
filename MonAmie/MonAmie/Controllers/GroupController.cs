@@ -17,7 +17,7 @@ namespace MonAmie.Controllers
         private IGroupService groupService;
         private ICategoryService categoryService;
         private IUserService userService;
-        
+
         public GroupController(IGroupService groupService, ICategoryService categoryService, IUserService userService)
         {
             this.groupService = groupService;
@@ -87,7 +87,7 @@ namespace MonAmie.Controllers
 
             List<GroupViewModel> groupViews = new List<GroupViewModel>();
 
-            foreach(var g in groups)
+            foreach (var g in groups)
             {
                 groupViews.Add(new GroupViewModel
                 {
@@ -167,17 +167,22 @@ namespace MonAmie.Controllers
                 return BadRequest("Invalid groupId of " + groupId + ".");
 
             var group = groupService.GetGroup(groupId);
+
+            if (group == null)
+                return NotFound("Group could not be found.");
+
             var owner = userService.GetById(group.OwnerId);
             var groupMembers = groupService.GetAllUsersInGroup(groupId).ToList();
             var categories = categoryService.GetAllCategories();
 
             List<GroupMember> memberList = new List<GroupMember>();
 
-            foreach(var gm in groupMembers)
+            foreach (var gm in groupMembers)
             {
                 var groupMember = userService.GetById(gm.UserId);
 
-                memberList.Add(new GroupMember {
+                memberList.Add(new GroupMember
+                {
                     UserId = groupMember.UserId,
                     FirstName = groupMember.FirstName,
                     LastName = groupMember.LastName,
@@ -266,16 +271,93 @@ namespace MonAmie.Controllers
             return Ok(group);
         }
 
-        [HttpGet]
-        [Route("api/Group/DeleteGroup/{id}")]
-        public IActionResult DeleteGroup(int id)
+        [HttpDelete]
+        [Route("api/Group/DeleteGroup/{groupId}")]
+        public IActionResult DeleteGroup(int groupId, [FromBody]GroupViewModel group)
         {
-            if (id < 1)
+            if (groupId < 1)
                 return BadRequest("Group Id cannot be less than 1");
 
-            groupService.DeleteGroup(id);
+            var userIds = new List<int>();
 
-            return Ok();
+            foreach(var gm in group.GroupMembers)
+            {
+                userIds.Add(gm.UserId);
+            }
+
+            groupService.DeleteGroup(groupId, userIds);
+
+            return Ok(null);
+        }
+
+        [HttpPost]
+        [Route("group/api/Group/AddUserToGroup/{userId}")]
+        public IActionResult AddUserToGroup(int userId, [FromBody]GroupViewModel group)
+        {
+            if (group == null)
+                return BadRequest("Group cannot be null.");
+
+            if (group.GroupId < 1)
+                return BadRequest("Group does not exist.");
+
+            if (userId < 1)
+                return BadRequest("User does not exist");
+
+            var categories = categoryService.GetAllCategories();
+
+            group.CategoryName = categories.FirstOrDefault(c => c.CategoryId == group.CategoryId).CategoryName;
+
+            var user = userService.GetById(userId);
+
+            if (user == null)
+                return NotFound("User could not be found");
+
+            groupService.AddUserToGroup(userId, group.GroupId);
+
+            group.GroupMembers.Add(new GroupMember
+            {
+                UserId = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                State = user.State
+            });
+
+            group.GroupMembers.OrderBy(gm => gm.LastName).ToList();
+
+            group.MemberCount = group.MemberCount + 1;
+
+            return Ok(group);
+        }
+
+        [HttpDelete]
+        [Route("group/api/Group/RemoveUserFromGroup/{userId}")]
+        public IActionResult RemoveUserFromGroup(int userId, [FromBody]GroupViewModel group)
+        {
+            if (group == null)
+                return BadRequest("Group cannot be null.");
+
+            if (group.GroupId < 1)
+                return BadRequest("Group does not exist.");
+
+            if (userId < 1)
+                return BadRequest("User does not exist");
+
+            var categories = categoryService.GetAllCategories();
+
+            group.CategoryName = categories.FirstOrDefault(c => c.CategoryId == group.CategoryId).CategoryName;
+
+            var user = group.GroupMembers.FirstOrDefault(gm => gm.UserId == userId);
+
+            if (user == null)
+                return NotFound("User could not be found");
+
+            groupService.RemoveUserFromGroup(userId, group.GroupId);
+
+            group.GroupMembers.Remove(user);
+
+            group.MemberCount = group.MemberCount - 1;
+
+            return Ok(group);
         }
     }
 }

@@ -11,6 +11,8 @@ export const groupActions = {
     updateGroup,
     deleteGroup,
     getGroup,
+    addUserToGroup,
+    removeUserFromGroup,
     logout
 }
 
@@ -94,8 +96,20 @@ function updateGroup(groupId, group) {
     function failure(error) { return { type: groupConstants.UPDATEGROUP_FAILURE, error } }
 }
 
-function deleteGroup(groupId) {
+function deleteGroup(groupId, group) {
+    return dispatch => {
+        dispatch(request(groupId, group));
 
+        groupService.deleteGroup(groupId, group)
+            .then(
+                group => dispatch(success(group)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(group) { return { type: groupConstants.DELETEGROUP_REQUEST, groupId, group } }
+    function success(group) { return { type: groupConstants.DELETEGROUP_SUCCESS, group } }
+    function failure(error) { return { type: groupConstants.DELETEGROUP_FAILURE, error } }
 }
 
 function getGroup(groupId) {
@@ -112,6 +126,38 @@ function getGroup(groupId) {
     function request(groupId) { return { type: groupConstants.GETGROUP_REQUEST, groupId } }
     function success(group) { return { type: groupConstants.GETGROUP_SUCCESS, group } }
     function failure(error) { return { type: groupConstants.GETGROUP_FAILURE, error } }
+}
+
+function addUserToGroup(userId, group) {
+    return dispatch => {
+        dispatch(request(userId, group));
+
+        groupService.addUserToGroup(userId, group)
+            .then(
+                group => dispatch(success(group)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(userId) { return { type: groupConstants.ADDUSERTOGROUP_REQUEST, userId } }
+    function success(group) { return { type: groupConstants.ADDUSERTOGROUP_SUCCESS, group } }
+    function failure(error) { return { type: groupConstants.ADDUSERTOGROUP_FAILURE, error } }
+}
+
+function removeUserFromGroup(userId, group) {
+    return dispatch => {
+        dispatch(request(userId, group));
+
+        groupService.removeUserFromGroup(userId, group)
+            .then(
+                group => dispatch(success(group)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(userId) { return { type: groupConstants.REMOVEUSERFROMGROUP_REQUEST, userId } }
+    function success(group) { return { type: groupConstants.REMOVEUSERFROMGROUP_SUCCESS, group } }
+    function failure(error) { return { type: groupConstants.REMOVEUSERFROMGROUP_FAILURE, error } }
 }
 
 function logout() {

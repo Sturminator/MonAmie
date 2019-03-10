@@ -8,6 +8,8 @@ export const groupService = {
     updateGroup,
     deleteGroup,
     getGroup,
+    addUserToGroup,
+    removeUserFromGroup,
     logout
 }
 
@@ -58,8 +60,34 @@ function updateGroup(groupId, group) {
     return fetch(`api/Group/UpdateGroup/` + groupId, requestOptions).then(handleResponse);
 }
 
-function deleteGroup() {
+function deleteGroup(groupId, group) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(group.group)
+    };
 
+    return fetch(`api/Group/DeleteGroup/` + groupId, requestOptions).then(handleResponse);
+}
+
+function addUserToGroup(userId, group) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(group.group)
+    };
+
+    return fetch(`api/Group/AddUserToGroup/` + userId, requestOptions).then(handleResponse);
+}
+
+function removeUserFromGroup(userId, group) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(group.group)
+    };
+
+    return fetch(`api/Group/RemoveUserFromGroup/` + userId, requestOptions).then(handleResponse);
 }
 
 function getGroup(groupId) {

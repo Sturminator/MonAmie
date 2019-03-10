@@ -269,8 +269,9 @@ class GroupsPage extends Component {
                                     <Header.Content style={{ color: 'white' }}>My Groups</Header.Content>
                                 </Header>
                             </Grid.Column>
-                            <Grid.Column>
+                            <Grid.Column>                               
                                 <Popup trigger={<Button floated='right' color='blue' icon='add' onClick={this.onCreateGroupButtonClick} />} content='Create New Group' />
+                                <Popup trigger={<Button floated='right' color='blue' icon='refresh' />} content='Refresh' />
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ backgroundColor: 'white' }} />
@@ -286,7 +287,6 @@ class GroupsPage extends Component {
                                 </Header>
                             </Grid.Column>
                             <Grid.Column>
-                                <Popup trigger={<Button floated='right' color='blue' icon='refresh' />} content='Refresh' />
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ backgroundColor: 'white' }} />
