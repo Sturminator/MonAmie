@@ -42,10 +42,8 @@ class GroupsPage extends Component {
             this.props.dispatch(categoryActions.getAll());
         }
 
-        if (!userGroups.items) {
-            this.props.dispatch(groupActions.getAllForUser(user.id));
-        }
-    }    
+        this.props.dispatch(groupActions.getAllForUser(user.id));
+    }
 
     createCategoryDropdown = () => {
         const { categories } = this.props;
@@ -170,6 +168,12 @@ class GroupsPage extends Component {
         });
     }
 
+    onRefreshButtonClick = () => {
+        const { user } = this.props;
+
+        this.props.dispatch(groupActions.getAllForUser(user.id));
+    }
+
     onCreateGroupButtonClick = (e) => this.setState({
         createGroup: this.state.createGroup ? false : true,
         categories: this.createCategoryDropdown
@@ -186,10 +190,12 @@ class GroupsPage extends Component {
     });
 
     onSaveCreateGroupClick = (e) => {
-        const { user } = this.props;
+        const { user, userGroups } = this.props;
         const { newGroup } = this.state;
 
-        this.props.dispatch(groupActions.addGroup(user.id, newGroup));
+        this.props.dispatch(groupActions.addGroup(user.id, newGroup, userGroups.groups));
+
+        this.props.dispatch(groupActions.getAllForUser(user.id));
 
         this.setState({
             createGroup: this.state.createGroup ? false : true,
@@ -271,7 +277,7 @@ class GroupsPage extends Component {
                             </Grid.Column>
                             <Grid.Column>                               
                                 <Popup trigger={<Button floated='right' color='blue' icon='add' onClick={this.onCreateGroupButtonClick} />} content='Create New Group' />
-                                <Popup trigger={<Button floated='right' color='blue' icon='refresh' />} content='Refresh' />
+                                <Popup trigger={<Button floated='right' color='blue' icon='refresh' onClick={this.onRefreshButtonClick} />} content='Refresh' />
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ backgroundColor: 'white' }} />

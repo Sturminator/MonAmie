@@ -31,22 +31,7 @@ export function groups(state = {}, action) {
             return {
                 loading: false,
                 error: action.error
-            };        
-        case groupConstants.ADDGROUP_REQUEST:
-            return {
-                loading: true,
-                ownerId: action.ownerId,
-                group: action.group
-            };
-        case groupConstants.ADDGROUP_SUCCESS:
-            return {
-                loading: false
-            };
-        case groupConstants.ADDGROUP_FAILURE:
-            return {
-                loading: false,
-                error: action.error
-            };        
+            };            
         case authConstants.LOGOUT:
             return {}
         default:
@@ -156,6 +141,21 @@ export function userGroups(state = {}, action) {
                 loading: false,
                 error: action.error
             };
+        case groupConstants.ADDGROUP_REQUEST:
+            return {
+                loading: true,
+                ownerId: action.ownerId,
+                group: action.group
+            };
+        case groupConstants.ADDGROUP_SUCCESS:
+            return {
+                loading: true
+            };
+        case groupConstants.ADDGROUP_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };    
         case authConstants.LOGOUT:
             return {}
         default:

@@ -276,6 +276,10 @@ class GroupProfilePage extends Component {
                                 <Divider style={{ backgroundColor: 'white' }} />
                                 <Container style={{ color: 'white' }} content={group.group.description} />
                             </Segment>
+                            <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
+                                <Header size='large' style={{ color: 'white' }} textAlign='left'>Recent Activity</Header>
+                                <Divider style={{ backgroundColor: 'white' }} />
+                            </Segment>
                         </Segment>
                     </Container>
                 </div>
@@ -358,6 +362,10 @@ class GroupProfilePage extends Component {
                             <Header size='large' style={{ color: 'white' }} textAlign='center'>Description</Header>
                             <Divider style={{ backgroundColor: 'white' }} />
                             <Container style={{ color: 'white' }} content={group.group.description} />
+                        </Segment>
+                        <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
+                            <Header size='large' style={{ color: 'white' }} textAlign='left'>Recent Activity</Header>
+                            <Divider style={{ backgroundColor: 'white' }} />
                         </Segment>
                     </Segment>
                 </Container>

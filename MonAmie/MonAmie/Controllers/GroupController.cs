@@ -46,6 +46,7 @@ namespace MonAmie.Controllers
             public string CreationDate { get; set; }
             public GroupMember Owner { get; set; }
             public List<GroupMember> GroupMembers { get; set; }
+            public List<GroupViewModel> UserGroups { get; set; }
         }
 
         public class Groups

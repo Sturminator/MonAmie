@@ -87,5 +87,14 @@ namespace MonAmieData.Interfaces
         /// <returns></returns>
         int GetMemberCount(int groupId);
 
+        /// <summary>
+        /// Gets a newly created group's id
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="creationDate"></param>
+        /// <param name="groupName"></param>
+        /// <returns></returns>
+        int GetCreatedGroupId(int ownerId, DateTime creationDate, string groupName);
+
     }
 }

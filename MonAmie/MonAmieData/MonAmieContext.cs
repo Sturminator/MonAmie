@@ -18,6 +18,7 @@ namespace MonAmieData
         public DbSet<Event> Event { get; set; }
         public DbSet<Tag> Tag { get; set; }
         public DbSet<GroupHasUser> GroupHasUser { get; set; }
+        public DbSet<GroupHasActivity> GroupHasActivity { get; set; }
         public DbSet<GroupHasTag> GroupHasTag { get; set; }
         public DbSet<UserHasInterest> UserHasInterest { get; set; }
         public DbSet<UserHasCategory> UserHasCategory { get; set; }
@@ -74,6 +75,18 @@ namespace MonAmieData
                 .HasOne(g => g.Owner)
                 .WithMany()
                 .HasForeignKey(g => g.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<GroupHasActivity>()
+                .HasOne(g => g.Group)
+                .WithMany()
+                .HasForeignKey(g => g.GroupId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<GroupHasActivity>()
+                .HasOne(g => g.User)
+                .WithMany()
+                .HasForeignKey(g => g.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

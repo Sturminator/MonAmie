@@ -40,6 +40,18 @@ namespace MonAmieServices
         }
 
         /// <summary>
+        /// Gets a newly created group's id
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="creationDate"></param>
+        /// <param name="groupName"></param>
+        /// <returns></returns>
+        public int GetCreatedGroupId(int ownerId, DateTime creationDate, string groupName)
+        {
+            return _context.Group.FirstOrDefault(g => g.OwnerId == ownerId && g.CreationDate == creationDate && g.GroupName == groupName).GroupId;
+        }
+
+        /// <summary>
         /// Adds a user to a group
         /// </summary>
         /// <param name="userId"></param>

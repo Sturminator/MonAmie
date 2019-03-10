@@ -64,11 +64,11 @@ function getAllForUser(userId) {
     function failure(error) { return { type: groupConstants.GETALLFORUSER_FAILURE, error } }
 }
 
-function addGroup(ownerId, group) {
+function addGroup(ownerId, group, userGroups) {
     return dispatch => {
         dispatch(request(ownerId, group));
 
-        groupService.addGroup(ownerId, group)
+        groupService.addGroup(ownerId, group, userGroups)
             .then(
                 group => dispatch(success(group)),
                 error => dispatch(failure(error))
