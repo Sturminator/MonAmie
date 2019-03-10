@@ -2,6 +2,7 @@
 
 export default {
     EditProfileModal: {
+        overflow: 'initial',
         position: 'relative',
         marginBottom: 'auto',
         marginTop: 'auto',
@@ -12,6 +13,7 @@ export default {
     },
 
     EditCategoriesModal: {
+        overflow: 'initial',
         position: 'relative',
         marginBottom: 'auto',
         marginTop: 'auto',
@@ -22,6 +24,7 @@ export default {
     },
 
     confirmDeleteModal: {
+        overflow: 'initial',
         position: 'relative',
         marginBottom: 'auto',
         marginTop: 'auto',
@@ -32,6 +35,7 @@ export default {
     },
 
     createGroupModal: {
+        overflow: 'initial',
         position: 'relative',
         marginBottom: 'auto',
         marginTop: 'auto',
