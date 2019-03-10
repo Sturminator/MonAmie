@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, withRouter } from 'react-router-dom';
-import { Menu, Icon, Dropdown, Image } from 'semantic-ui-react';
+import { Menu, Icon, Dropdown, Image, Label } from 'semantic-ui-react';
 import { history } from '../Helpers';
 
 class NavigationBar extends Component {
