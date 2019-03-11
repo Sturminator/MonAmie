@@ -70,13 +70,13 @@ function addGroup(ownerId, group, userGroups) {
 
         groupService.addGroup(ownerId, group, userGroups)
             .then(
-                group => dispatch(success(group)),
+                groups => dispatch(success(groups)),
                 error => dispatch(failure(error))
             );
     };
 
     function request(group) { return { type: groupConstants.ADDGROUP_REQUEST, ownerId, group } }
-    function success(group) { return { type: groupConstants.ADDGROUP_SUCCESS, group } }
+    function success(groups) { return { type: groupConstants.ADDGROUP_SUCCESS, groups } }
     function failure(error) { return { type: groupConstants.ADDGROUP_FAILURE, error } }
 }
 

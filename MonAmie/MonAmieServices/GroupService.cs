@@ -30,13 +30,21 @@ namespace MonAmieServices
         /// Adds a group to the database
         /// </summary>
         /// <param name="group"></param>
-        public void AddGroup(Group group)
+        public int AddGroup(Group group)
         {
             if(group != null)
             {
                 _context.Group.Add(group);
-                _context.SaveChangesAsync();
+                _context.GroupHasActivity.Add(new GroupHasActivity
+                {
+                    GroupId = group.GroupId,
+                    UserId = group.OwnerId,
+                    Type = "CREATION",
+                    CreationDate = group.CreationDate
+                });
+                _context.SaveChanges();               
             }
+            return group.GroupId;
         }
 
         /// <summary>
@@ -68,6 +76,13 @@ namespace MonAmieServices
                     GroupId = groupId,
                     JoinDate = DateTime.UtcNow
                 });
+                _context.GroupHasActivity.Add(new GroupHasActivity
+                {
+                    GroupId = groupId,
+                    UserId = userId,
+                    Type = "JOIN",
+                    CreationDate = DateTime.UtcNow
+                });
                 _context.SaveChangesAsync();
             }
         }
@@ -91,6 +106,13 @@ namespace MonAmieServices
                     {
                         _context.GroupHasUser.Remove(entity);
                     }
+                }
+
+                var activity = _context.GroupHasActivity.Where(gha => gha.GroupId == groupId);
+
+                foreach(var act in activity)
+                {
+                    _context.GroupHasActivity.Remove(act);
                 }
 
                 _context.Group.Remove(group);
@@ -181,6 +203,13 @@ namespace MonAmieServices
             if (entity != null)
             {
                 _context.GroupHasUser.Remove(entity);
+                _context.GroupHasActivity.Add(new GroupHasActivity
+                {
+                    GroupId = groupId,
+                    UserId = userId,
+                    Type = "LEAVE",
+                    CreationDate = DateTime.UtcNow
+                });
                 _context.SaveChangesAsync();
             }
         }

@@ -58,7 +58,7 @@ namespace MonAmieData.Interfaces
         /// Adds a group to the database
         /// </summary>
         /// <param name="group"></param>
-        void AddGroup(Group group);
+        int AddGroup(Group group);
 
         /// <summary>
         /// Update a group in the database

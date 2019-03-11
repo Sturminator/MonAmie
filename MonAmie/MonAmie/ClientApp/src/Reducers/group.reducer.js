@@ -144,12 +144,12 @@ export function userGroups(state = {}, action) {
         case groupConstants.ADDGROUP_REQUEST:
             return {
                 loading: true,
-                ownerId: action.ownerId,
-                group: action.group
+                ownerId: action.ownerId
             };
         case groupConstants.ADDGROUP_SUCCESS:
             return {
-                loading: true
+                loading: false,
+                groups: action.groups
             };
         case groupConstants.ADDGROUP_FAILURE:
             return {

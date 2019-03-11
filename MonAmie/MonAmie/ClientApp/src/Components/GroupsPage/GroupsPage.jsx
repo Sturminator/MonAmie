@@ -27,7 +27,8 @@ class GroupsPage extends Component {
             createGroup: false,
             whereTo: "",
             whereToCategoryId: -1,
-            groupSelected: false
+            groupSelected: false,
+            refreshUserGroups: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -43,6 +44,19 @@ class GroupsPage extends Component {
         }
 
         this.props.dispatch(groupActions.getAllForUser(user.id));
+    }
+
+    componentDidUpdate() {
+        const { user } = this.props;
+        const { refreshUserGroups } = this.state;
+
+        if (refreshUserGroups) {
+            this.props.dispatch(groupActions.getAllForUser(user.id));
+
+            this.setState({
+                refreshUserGroups: false
+            })
+        }
     }
 
     createCategoryDropdown = () => {
@@ -193,9 +207,7 @@ class GroupsPage extends Component {
         const { user, userGroups } = this.props;
         const { newGroup } = this.state;
 
-        this.props.dispatch(groupActions.addGroup(user.id, newGroup, userGroups.groups));
-
-        this.props.dispatch(groupActions.getAllForUser(user.id));
+        this.props.dispatch(groupActions.addGroup(user.id, newGroup, userGroups.groups));       
 
         this.setState({
             createGroup: this.state.createGroup ? false : true,
@@ -227,6 +239,13 @@ class GroupsPage extends Component {
             </div>);
 
         if (userGroups.loading)
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
+
+        if (!userGroups.groups)
             return (<div style={{ paddingTop: '600px' }}>
                 <Dimmer active>
                     <Loader active size='massive' inline='centered' />

@@ -169,8 +169,6 @@ class GroupProfilePage extends Component {
     onConfirmDeleteGroupClick = () => {
         const { group } = this.props;
 
-        history.push('/groups');
-
         this.props.dispatch(groupActions.deleteGroup(group.group.groupId, group));
 
         this.setState({
@@ -199,15 +197,16 @@ class GroupProfilePage extends Component {
         const { canUpdateGroup, editedGroup, updateGroup, deleteGroup, confirmLeave } = this.state;
         var memberFormat = "Member";
 
-        if (deleteGroup)
-            return <Redirect to='/groups' />
-
         if (group.loading)
             return (<div style={{ paddingTop: '600px' }}>
                 <Dimmer active>
                     <Loader active size='massive' inline='centered' />
                 </Dimmer>
             </div>);
+
+
+        if (deleteGroup)
+            return <Redirect to='/groups' />
 
         if (categories.loading)
             return (<div style={{ paddingTop: '600px' }}>

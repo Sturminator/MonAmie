@@ -228,17 +228,39 @@ namespace MonAmie.Controllers
             if (string.IsNullOrEmpty(group.Description) || string.IsNullOrEmpty(group.State) || string.IsNullOrEmpty(group.GroupName) || group.CategoryId < 1)
                 return BadRequest("Missing a description, state, group name, or category.");
 
-            groupService.AddGroup(new Group
+            var categories = categoryService.GetAllCategories();
+
+            var creationDate = DateTime.UtcNow;
+
+            var groupId = groupService.AddGroup(new Group
             {
                 GroupName = group.GroupName,
                 Description = group.Description,
                 CategoryId = group.CategoryId,
                 OwnerId = ownerId,
                 State = group.State,
-                CreationDate = DateTime.UtcNow
+                CreationDate = creationDate
             });
 
-            return Ok();
+            if(groupId > 0)
+            {
+                group.UserGroups.Add(new GroupViewModel
+                {
+                    GroupId = groupId,
+                    GroupName = group.GroupName,
+                    Description = group.Description,
+                    State = group.State,
+                    CategoryId = group.CategoryId,
+                    OwnerId = ownerId,
+                    MemberCount = 1,
+                    CategoryName = categories.FirstOrDefault(c => c.CategoryId == group.CategoryId).CategoryName,
+                    CreationDate = creationDate.ToString("MMMM") + " " + creationDate.Year
+                });
+            }
+
+            List<GroupViewModel> groups = group.UserGroups.OrderBy(g => g.OwnerId).ThenBy(g => g.GroupName).ToList();
+
+            return Ok(groups);
         }
 
         [HttpPut]
@@ -274,6 +296,7 @@ namespace MonAmie.Controllers
 
         [HttpDelete]
         [Route("api/Group/DeleteGroup/{groupId}")]
+        [Route("group/api/Group/DeleteGroup/{groupId}")]
         public IActionResult DeleteGroup(int groupId, [FromBody]GroupViewModel group)
         {
             if (groupId < 1)
