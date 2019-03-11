@@ -1,6 +1,11 @@
 ﻿body {
 }
 
+.ui.inverted.blue.segment.Change:hover {
+    background-color: black!important;
+    color: #fff!important;
+}
+
 .ui.card,
 .ui.cards>.card {
     background-color: #A8D0E6;

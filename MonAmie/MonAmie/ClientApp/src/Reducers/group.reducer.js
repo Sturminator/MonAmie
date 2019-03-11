@@ -31,34 +31,7 @@ export function groups(state = {}, action) {
             return {
                 loading: false,
                 error: action.error
-            };        
-        case groupConstants.ADDGROUP_REQUEST:
-            return {
-                loading: true,
-                ownerId: action.ownerId,
-                group: action.group
-            };
-        case groupConstants.ADDGROUP_SUCCESS:
-            return {
-                loading: false
-            };
-        case groupConstants.ADDGROUP_FAILURE:
-            return {
-                loading: false,
-                error: action.error
-            };
-        case groupConstants.UPDATEGROUP_REQUEST:
-            break;
-        case groupConstants.UPDATEGROUP_SUCCESS:
-            break;
-        case groupConstants.UPDATEGROUP_FAILURE:
-            break;
-        case groupConstants.DELETEGROUP_REQUEST:
-            break;
-        case groupConstants.DELETEGROUP_SUCCESS:
-            break;
-        case groupConstants.DELETEGROUP_FAILURE:
-            break;
+            };            
         case authConstants.LOGOUT:
             return {}
         default:
@@ -79,6 +52,67 @@ export function group(state = {}, action) {
                 group: action.group
             };
         case groupConstants.GETGROUP_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
+        case groupConstants.DELETEGROUP_REQUEST:
+            return {
+                loading: true,
+                ownerId: action.ownerId,
+                group: action.group
+            };
+        case groupConstants.DELETEGROUP_SUCCESS:
+            return {
+                loading: false,
+                group: action.group
+            };
+        case groupConstants.DELETEGROUP_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };  
+        case groupConstants.UPDATEGROUP_REQUEST:
+            return {
+                loading: true,
+                groupId: action.groupId
+            };
+        case groupConstants.UPDATEGROUP_SUCCESS:
+            return {
+                loading: false,
+                group: action.group
+            };
+        case groupConstants.UPDATEGROUP_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
+        case groupConstants.ADDUSERTOGROUP_REQUEST:
+            return {
+                loading: true,
+                userId: action.userId
+            };
+        case groupConstants.ADDUSERTOGROUP_SUCCESS:
+            return {
+                loading: false,
+                group: action.group
+            };
+        case groupConstants.ADDUSERTOGROUP_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
+        case groupConstants.REMOVEUSERFROMGROUP_REQUEST:
+            return {
+                loading: true,
+                userId: action.userId
+            };
+        case groupConstants.REMOVEUSERFROMGROUP_SUCCESS:
+            return {
+                loading: false,
+                group: action.group
+            };
+        case groupConstants.REMOVEUSERFROMGROUP_FAILURE:
             return {
                 loading: false,
                 error: action.error
@@ -107,6 +141,21 @@ export function userGroups(state = {}, action) {
                 loading: false,
                 error: action.error
             };
+        case groupConstants.ADDGROUP_REQUEST:
+            return {
+                loading: true,
+                ownerId: action.ownerId
+            };
+        case groupConstants.ADDGROUP_SUCCESS:
+            return {
+                loading: false,
+                groups: action.groups
+            };
+        case groupConstants.ADDGROUP_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };    
         case authConstants.LOGOUT:
             return {}
         default:

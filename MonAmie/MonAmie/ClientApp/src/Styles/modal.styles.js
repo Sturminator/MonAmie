@@ -2,7 +2,8 @@
 
 export default {
     EditProfileModal: {
-        maxHeight: '420px',
+        overflow: 'initial',
+        position: 'relative',
         marginBottom: 'auto',
         marginTop: 'auto',
         marginLeft: 'auto',
@@ -12,6 +13,8 @@ export default {
     },
 
     EditCategoriesModal: {
+        overflow: 'initial',
+        position: 'relative',
         marginBottom: 'auto',
         marginTop: 'auto',
         marginLeft: 'auto',
@@ -21,7 +24,8 @@ export default {
     },
 
     confirmDeleteModal: {
-        maxHeight: '230px',
+        overflow: 'initial',
+        position: 'relative',
         marginBottom: 'auto',
         marginTop: 'auto',
         marginLeft: 'auto',
@@ -31,7 +35,8 @@ export default {
     },
 
     createGroupModal: {
-        maxHeight: '500px',
+        overflow: 'initial',
+        position: 'relative',
         marginBottom: 'auto',
         marginTop: 'auto',
         marginLeft: 'auto',

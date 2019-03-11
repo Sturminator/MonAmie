@@ -8,6 +8,8 @@ export const groupService = {
     updateGroup,
     deleteGroup,
     getGroup,
+    addUserToGroup,
+    removeUserFromGroup,
     logout
 }
 
@@ -38,22 +40,54 @@ function getAllForUser(userId) {
     return fetch(`api/Group/GetAllForUser/` + userId, requestOptions).then(handleResponse);
 }
 
-function addGroup(ownerId, group) {
+function addGroup(ownerId, group, userGroups) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(group)
+        body: JSON.stringify({ groupName: group.groupName, description: group.description, categoryId: group.categoryId, state: group.state, userGroups: userGroups })
     };
 
     return fetch(`api/Group/AddGroup/` + ownerId, requestOptions).then(handleResponse);
 }
 
-function updateGroup() {
+function updateGroup(groupId, group) {
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(group.group)
+    };
 
+    return fetch(`api/Group/UpdateGroup/` + groupId, requestOptions).then(handleResponse);
 }
 
-function deleteGroup() {
+function deleteGroup(groupId, group) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(group.group)
+    };
 
+    return fetch(`api/Group/DeleteGroup/` + groupId, requestOptions).then(handleResponse);
+}
+
+function addUserToGroup(userId, group) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(group.group)
+    };
+
+    return fetch(`api/Group/AddUserToGroup/` + userId, requestOptions).then(handleResponse);
+}
+
+function removeUserFromGroup(userId, group) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(group.group)
+    };
+
+    return fetch(`api/Group/RemoveUserFromGroup/` + userId, requestOptions).then(handleResponse);
 }
 
 function getGroup(groupId) {

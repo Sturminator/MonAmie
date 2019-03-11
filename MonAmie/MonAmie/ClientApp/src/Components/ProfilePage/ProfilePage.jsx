@@ -4,11 +4,12 @@ import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { userProfileActions, categoryActions, imagesActions, groupActions } from '../../Actions';
 import {
-    Table, Form, Segment, TextArea, Divider, Header, Label,
+    Table, Form, Segment, TextArea, Divider, Header, Label, Dropdown,
     Icon, Grid, Container, Loader, Dimmer, Button, Popup, Modal
 } from 'semantic-ui-react';
 
 import modalStyles from '../../Styles/modal.styles';
+import { history } from '../../Helpers';
 import { userProfile } from '../../Reducers/userProfile.reducer';
 import { images } from '../../Reducers/images.reducer';
 import { object } from 'prop-types';
@@ -23,7 +24,9 @@ class ProfilePage extends Component {
         imageFile: [],
         files: undefined,
         editProfile: false,
-        editCategories: false
+        editCategories: false,
+        groupSelected: false,
+        redirectTo: ""
     };
 
     componentDidMount() {
@@ -228,6 +231,87 @@ class ProfilePage extends Component {
         return table
     }
 
+    createGroupLabels = () => {
+        const { userGroups } = this.props;
+
+        var labels = []
+
+        if (userGroups.groups) {
+            // Outer loop to create parent
+            for (let i = 0; i < userGroups.groups.length; i++) {
+                labels.push(<Label value={userGroups.groups[i]} onClick={this.onGroupLabelClick} style={{ marginBottom: '5px' }} as='a' >
+                    {userGroups.groups[i].groupName}
+                </Label >)
+            }
+        }
+
+        return labels
+    }
+
+    onGroupLabelClick = (e, { value }) => {
+        var path = window.location.pathname;
+
+        history.push(path);
+
+        var groupName = value.groupName.replace(/ /g, '');
+
+        this.setState({
+            groupSelected: true,
+            redirectTo: '/group/' +
+                groupName.toLowerCase() + '_' + value.groupId * 11
+        });
+    };
+
+    createCategoryLabels = (editable) => {
+        const { newCategories } = this.state;
+        const { userProfile } = this.props;
+
+        var categories = userProfile.items.categories;
+
+        var labels = []
+
+        if (editable) {
+            for (let i = 0; i < newCategories.length; i++) {
+                labels.push(<Label style={{ marginBottom: '5px' }} image >
+                    <img src={require(`../../Images/Categories/` + newCategories[i].imageSource)} />
+                    {newCategories[i].categoryName}
+                    < Icon value={newCategories[i]} name='delete' onClick={this.onRemoveInterestFromUser} />
+                </Label >)
+            }
+        }
+        else {
+            if (userProfile.items) {
+                for (let i = 0; i < categories.length; i++) {
+                    labels.push(<Label style={{ marginBottom: '5px' }} as='a' image >
+                        <img src={require(`../../Images/Categories/` + categories[i].imageSource)} />
+                        {categories[i].categoryName}
+                    </Label >)
+                }
+            }
+        }
+
+        return labels
+    }
+
+    createCategoryDropdown = () => {
+        const { categories } = this.props;
+        const { newCategories } = this.state;
+
+        var categoryOptions = [];
+
+        if (categories.items) {
+            for (let i = 0; i < categories.items.length; i++) {
+                if (!newCategories.some(uc => uc.categoryId === categories.items[i].categoryId)) {
+                    categoryOptions.push({
+                        key: categories.items[i].categoryId, text: categories.items[i].categoryName,
+                        value: categories.items[i]
+                    });
+                }
+            }
+        }
+        return categoryOptions;
+    }
+
     createGroupsTable = () => {
         const { userGroups } = this.props;
 
@@ -251,7 +335,7 @@ class ProfilePage extends Component {
         const { userProfile } = this.props;
 
         if (userProfile.items.isFriend) {
-            return (<Label color='green' attached='top right'>
+            return (<Label as='a' color='green' attached='top right'>
                 <Icon name='checkmark' /> Friends
                 </Label>);
         }
@@ -259,18 +343,13 @@ class ProfilePage extends Component {
 
     render() {
         const { user, userProfile, images, userGroups } = this.props;
-        const { bio, editProfile, editCategories, files} = this.state;
+        const { bio, editProfile, editCategories, image, files, groupSelected, redirectTo } = this.state;
+
+        if (groupSelected)
+            return <Redirect to={redirectTo} />
 
         if (!user) {
             return <Redirect to='/login' />
-        }
-
-        if (!userProfile.items) {
-            return (<div style={{ paddingTop: '600px' }}>
-                <Dimmer active>
-                    <Loader active size='massive' inline='centered' />
-                </Dimmer>
-            </div>);
         }
 
         if (userGroups.loading) {
@@ -278,6 +357,22 @@ class ProfilePage extends Component {
                 <Dimmer active>
                     <Loader active size='massive' inline='centered' />
                 </Dimmer>
+            </div>);
+        }
+
+        if (userProfile.loading) {
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
+        }
+
+        if (!userProfile.items) {
+            return (<div>
+                <NavigationBar>
+                </NavigationBar>
+                <style>{`html, body {background-color: #24305E !important; } `}</style>
             </div>);
         }
 
@@ -342,7 +437,7 @@ class ProfilePage extends Component {
                                                 </Table.Row>
                                             </Table.Header>
                                             <Table.Body>
-                                                {this.createUserCategoriesTable()}
+                                                <Label.Group size='medium' color='blue' children={this.createCategoryLabels(false)} />
                                             </Table.Body>
                                         </Table>
                                     </Segment>
@@ -366,7 +461,7 @@ class ProfilePage extends Component {
                                                 </Table.Row>
                                             </Table.Header>
                                             <Table.Body>
-                                                {this.createGroupsTable()}
+                                                <Label.Group size='medium' color='blue' children={this.createGroupLabels()} />
                                             </Table.Body>
                                         </Table>
                                     </Segment>
@@ -386,28 +481,9 @@ class ProfilePage extends Component {
                 <Modal style={modalStyles.EditCategoriesModal} size='tiny' open={editCategories} onClose={this.close}>
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Interests</Modal.Header>
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
-                        <Grid fluid='true' stackable columns={2} style={{ paddingTop: '10px' }}>
-                            <Grid.Column>
-                                <Segment style={{ backgroundColor: '#374785', minHeight: '250px' }}>
-                                    <Header size='large' style={{ textAlign: 'center', color: 'white' }}>Interests</Header>
-                                    <Table style={{ textAlign: 'center', color: 'white' }} basic='very' celled>
-                                        <Table.Body>
-                                            {this.createCategoriesTable(false)}
-                                        </Table.Body>
-                                    </Table>
-                                </Segment>
-                            </Grid.Column>
-                            <Grid.Column>
-                                <Segment style={{ backgroundColor: '#374785', minHeight: '250px' }}>
-                                    <Header size='large' style={{ textAlign: 'center', color: 'white' }}>My Interests</Header>
-                                    <Table style={{ textAlign: 'center', color: 'white' }} basic='very' celled>
-                                        <Table.Body>
-                                            {this.createCategoriesTable(true)}
-                                        </Table.Body>
-                                    </Table>
-                                </Segment>
-                            </Grid.Column>
-                        </Grid>
+                        <Form.Select selectOnBlur={false} icon='none' noResultsMessage='No results found.' placeholder="Search/Select a category" search fluid options={this.createCategoryDropdown()} value={null} onChange={this.onAddInterestToUser} />
+                        <Divider style={{ backgroundColor: 'white' }} />
+                        <Label.Group size='medium' color='blue' children={this.createCategoryLabels(true)} />
                     </Modal.Content>
                     <Modal.Actions style={{ backgroundColor: '#374785' }}>
                         <Button onClick={this.onCancelCategoriesEditClick} negative>Cancel</Button>
@@ -451,7 +527,7 @@ class ProfilePage extends Component {
                         <Container>
                             <Header as='h1' icon textAlign='center'>
                                 <object data={"/api/UserImage/ViewImageDirect/" + userProfile.items.id} type="image/png" width="250" height="250">
-                                    <img src={UIcon} alt="User Profile Picture" width="120" height="120"/>
+                                    <img src={UIcon} alt="User Profile Picture" width="120" height="120" />
                                 </object>
                                 <Header.Content style={{ color: 'white' }}>{userProfile.items.fullName}</Header.Content>
                             </Header>
@@ -493,7 +569,7 @@ class ProfilePage extends Component {
                                             </Table.Row>
                                         </Table.Header>
                                         <Table.Body>
-                                            {this.createUserCategoriesTable()}
+                                            <Label.Group size='medium' color='blue' children={this.createCategoryLabels(false)} />
                                         </Table.Body>
                                     </Table>
                                 </Segment>
@@ -517,7 +593,7 @@ class ProfilePage extends Component {
                                             </Table.Row>
                                         </Table.Header>
                                         <Table.Body>
-                                            {this.createGroupsTable()}
+                                            <Label.Group size='medium' color='blue' children={this.createGroupLabels()} />
                                         </Table.Body>
                                     </Table>
                                 </Segment>

@@ -30,11 +30,59 @@ namespace MonAmieServices
         /// Adds a group to the database
         /// </summary>
         /// <param name="group"></param>
-        public void AddGroup(Group group)
+        public int AddGroup(Group group)
         {
             if(group != null)
             {
                 _context.Group.Add(group);
+                _context.GroupHasActivity.Add(new GroupHasActivity
+                {
+                    GroupId = group.GroupId,
+                    UserId = group.OwnerId,
+                    Type = "CREATION",
+                    CreationDate = group.CreationDate
+                });
+                _context.SaveChanges();               
+            }
+            return group.GroupId;
+        }
+
+        /// <summary>
+        /// Gets a newly created group's id
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="creationDate"></param>
+        /// <param name="groupName"></param>
+        /// <returns></returns>
+        public int GetCreatedGroupId(int ownerId, DateTime creationDate, string groupName)
+        {
+            return _context.Group.FirstOrDefault(g => g.OwnerId == ownerId && g.CreationDate == creationDate && g.GroupName == groupName).GroupId;
+        }
+
+        /// <summary>
+        /// Adds a user to a group
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        public void AddUserToGroup(int userId, int groupId)
+        {
+            var entity = _context.GroupHasUser.FirstOrDefault(ghu => ghu.UserId == userId && ghu.GroupId == groupId);
+
+            if(entity == null)
+            {
+                _context.GroupHasUser.Add(new GroupHasUser
+                {
+                    UserId = userId,
+                    GroupId = groupId,
+                    JoinDate = DateTime.UtcNow
+                });
+                _context.GroupHasActivity.Add(new GroupHasActivity
+                {
+                    GroupId = groupId,
+                    UserId = userId,
+                    Type = "JOIN",
+                    CreationDate = DateTime.UtcNow
+                });
                 _context.SaveChangesAsync();
             }
         }
@@ -43,12 +91,30 @@ namespace MonAmieServices
         /// Delete a group from the database
         /// </summary>
         /// <param name="groupId"></param>
-        public void DeleteGroup(int groupId)
+        /// <param name="userIds"></param>
+        public void DeleteGroup(int groupId, List<int> userIds)
         {
             var group = _context.Group.FirstOrDefault(g => g.GroupId == groupId);
 
             if (group != null)
             {
+                foreach(var id in userIds)
+                {
+                    var entity = _context.GroupHasUser.FirstOrDefault(ghu => ghu.UserId == id && ghu.GroupId == groupId);
+
+                    if (entity != null)
+                    {
+                        _context.GroupHasUser.Remove(entity);
+                    }
+                }
+
+                var activity = _context.GroupHasActivity.Where(gha => gha.GroupId == groupId);
+
+                foreach(var act in activity)
+                {
+                    _context.GroupHasActivity.Remove(act);
+                }
+
                 _context.Group.Remove(group);
                 _context.SaveChangesAsync();
             }
@@ -80,7 +146,7 @@ namespace MonAmieServices
         /// <returns></returns>
         public IEnumerable<Group> GetAllGroupsUserBelongsTo(int userId)
         {
-            var groupUsers = _context.GroupHasUser.Where(ghu => ghu.UserId == ghu.UserId);
+            var groupUsers = _context.GroupHasUser.Where(ghu => ghu.UserId == userId);
 
             return _context.Group.Where(g => groupUsers.Any(ghu => ghu.GroupId == g.GroupId));
         }
@@ -126,6 +192,29 @@ namespace MonAmieServices
         }
 
         /// <summary>
+        /// Removes a user from a group
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        public void RemoveUserFromGroup(int userId, int groupId)
+        {
+            var entity = _context.GroupHasUser.FirstOrDefault(ghu => ghu.UserId == userId && ghu.GroupId == groupId);
+
+            if (entity != null)
+            {
+                _context.GroupHasUser.Remove(entity);
+                _context.GroupHasActivity.Add(new GroupHasActivity
+                {
+                    GroupId = groupId,
+                    UserId = userId,
+                    Type = "LEAVE",
+                    CreationDate = DateTime.UtcNow
+                });
+                _context.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
         /// Update a group in the database
         /// </summary>
         /// <param name="group"></param>
@@ -136,7 +225,7 @@ namespace MonAmieServices
             if (entity != null)
             {
                 entity.GroupName = group.GroupName;
-                entity.Description = group.GroupName;
+                entity.Description = group.Description;
                 entity.CategoryId = group.CategoryId;
                 entity.OwnerId = group.OwnerId;
                 entity.State = group.State;

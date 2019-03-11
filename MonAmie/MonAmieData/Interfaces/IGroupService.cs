@@ -34,6 +34,20 @@ namespace MonAmieData.Interfaces
         IEnumerable<Group> GetAllGroupsUserOwns(int userId);
 
         /// <summary>
+        /// Adds a user to a group
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        void AddUserToGroup(int userId, int groupId);
+
+        /// <summary>
+        /// Removes a user from a group
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        void RemoveUserFromGroup(int userId, int groupId);
+
+        /// <summary>
         /// Gets a group by its id
         /// </summary>
         /// <param name="groupId"></param>
@@ -44,7 +58,7 @@ namespace MonAmieData.Interfaces
         /// Adds a group to the database
         /// </summary>
         /// <param name="group"></param>
-        void AddGroup(Group group);
+        int AddGroup(Group group);
 
         /// <summary>
         /// Update a group in the database
@@ -56,7 +70,8 @@ namespace MonAmieData.Interfaces
         /// Delete a group from the database
         /// </summary>
         /// <param name="groupId"></param>
-        void DeleteGroup(int groupId);
+        /// <param name="userIds"></param>
+        void DeleteGroup(int groupId, List<int> userIds);
 
         /// <summary>
         /// Gets all the users in a group (not including the owner)
@@ -71,6 +86,15 @@ namespace MonAmieData.Interfaces
         /// <param name="groupId"></param>
         /// <returns></returns>
         int GetMemberCount(int groupId);
+
+        /// <summary>
+        /// Gets a newly created group's id
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="creationDate"></param>
+        /// <param name="groupName"></param>
+        /// <returns></returns>
+        int GetCreatedGroupId(int ownerId, DateTime creationDate, string groupName);
 
     }
 }

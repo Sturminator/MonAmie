@@ -27,7 +27,8 @@ class GroupsPage extends Component {
             createGroup: false,
             whereTo: "",
             whereToCategoryId: -1,
-            groupSelected: false
+            groupSelected: false,
+            refreshUserGroups: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -42,10 +43,21 @@ class GroupsPage extends Component {
             this.props.dispatch(categoryActions.getAll());
         }
 
-        if (!userGroups.items) {
+        this.props.dispatch(groupActions.getAllForUser(user.id));
+    }
+
+    componentDidUpdate() {
+        const { user } = this.props;
+        const { refreshUserGroups } = this.state;
+
+        if (refreshUserGroups) {
             this.props.dispatch(groupActions.getAllForUser(user.id));
+
+            this.setState({
+                refreshUserGroups: false
+            })
         }
-    }    
+    }
 
     createCategoryDropdown = () => {
         const { categories } = this.props;
@@ -170,9 +182,11 @@ class GroupsPage extends Component {
         });
     }
 
-    onDescriptionChange = (e, { value }) => this.setState({
-        description: value
-    });
+    onRefreshButtonClick = () => {
+        const { user } = this.props;
+
+        this.props.dispatch(groupActions.getAllForUser(user.id));
+    }
 
     onCreateGroupButtonClick = (e) => this.setState({
         createGroup: this.state.createGroup ? false : true,
@@ -190,10 +204,10 @@ class GroupsPage extends Component {
     });
 
     onSaveCreateGroupClick = (e) => {
-        const { user } = this.props;
+        const { user, userGroups } = this.props;
         const { newGroup } = this.state;
 
-        this.props.dispatch(groupActions.addGroup(user.id, newGroup));
+        this.props.dispatch(groupActions.addGroup(user.id, newGroup, userGroups.groups));       
 
         this.setState({
             createGroup: this.state.createGroup ? false : true,
@@ -225,6 +239,13 @@ class GroupsPage extends Component {
             </div>);
 
         if (userGroups.loading)
+            return (<div style={{ paddingTop: '600px' }}>
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>
+            </div>);
+
+        if (!userGroups.groups)
             return (<div style={{ paddingTop: '600px' }}>
                 <Dimmer active>
                     <Loader active size='massive' inline='centered' />
@@ -273,8 +294,9 @@ class GroupsPage extends Component {
                                     <Header.Content style={{ color: 'white' }}>My Groups</Header.Content>
                                 </Header>
                             </Grid.Column>
-                            <Grid.Column>
+                            <Grid.Column>                               
                                 <Popup trigger={<Button floated='right' color='blue' icon='add' onClick={this.onCreateGroupButtonClick} />} content='Create New Group' />
+                                <Popup trigger={<Button floated='right' color='blue' icon='refresh' onClick={this.onRefreshButtonClick} />} content='Refresh' />
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ backgroundColor: 'white' }} />
@@ -290,7 +312,6 @@ class GroupsPage extends Component {
                                 </Header>
                             </Grid.Column>
                             <Grid.Column>
-                                <Popup trigger={<Button floated='right' color='blue' icon='refresh' />} content='Refresh' />
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ backgroundColor: 'white' }} />

@@ -17,7 +17,7 @@ namespace MonAmie.Controllers
         private IGroupService groupService;
         private ICategoryService categoryService;
         private IUserService userService;
-        
+
         public GroupController(IGroupService groupService, ICategoryService categoryService, IUserService userService)
         {
             this.groupService = groupService;
@@ -43,9 +43,10 @@ namespace MonAmie.Controllers
             public int CategoryId { get; set; }
             public string State { get; set; }
             public int MemberCount { get; set; }
-            public DateTime CreationDate { get; set; }
+            public string CreationDate { get; set; }
             public GroupMember Owner { get; set; }
             public List<GroupMember> GroupMembers { get; set; }
+            public List<GroupViewModel> UserGroups { get; set; }
         }
 
         public class Groups
@@ -72,7 +73,7 @@ namespace MonAmie.Controllers
                 OwnerId = result.OwnerId,
                 MemberCount = groupService.GetMemberCount(result.GroupId),
                 CategoryName = categories.FirstOrDefault(c => c.CategoryId == result.CategoryId).CategoryName,
-                CreationDate = result.CreationDate
+                CreationDate = result.CreationDate.ToString("MMMM") + " " + result.CreationDate.Year
             }).ToList().OrderBy(c => c.CategoryName);
 
             return Ok(results);
@@ -87,7 +88,7 @@ namespace MonAmie.Controllers
 
             List<GroupViewModel> groupViews = new List<GroupViewModel>();
 
-            foreach(var g in groups)
+            foreach (var g in groups)
             {
                 groupViews.Add(new GroupViewModel
                 {
@@ -99,7 +100,7 @@ namespace MonAmie.Controllers
                     OwnerId = g.OwnerId,
                     CategoryName = category.CategoryName,
                     MemberCount = groupService.GetMemberCount(g.GroupId),
-                    CreationDate = g.CreationDate
+                    CreationDate = g.CreationDate.ToString("MMMM") + " " + g.CreationDate.Year
                 });
             }
 
@@ -134,7 +135,7 @@ namespace MonAmie.Controllers
                     OwnerId = g.OwnerId,
                     MemberCount = groupService.GetMemberCount(g.GroupId),
                     CategoryName = categories.FirstOrDefault(c => c.CategoryId == g.CategoryId).CategoryName,
-                    CreationDate = g.CreationDate
+                    CreationDate = g.CreationDate.ToString("MMMM") + " " + g.CreationDate.Year
                 });
             }
 
@@ -150,7 +151,7 @@ namespace MonAmie.Controllers
                     OwnerId = g.OwnerId,
                     MemberCount = groupService.GetMemberCount(g.GroupId),
                     CategoryName = categories.FirstOrDefault(c => c.CategoryId == g.CategoryId).CategoryName,
-                    CreationDate = g.CreationDate
+                    CreationDate = g.CreationDate.ToString("MMMM") + " " + g.CreationDate.Year
                 });
             }
 
@@ -167,17 +168,22 @@ namespace MonAmie.Controllers
                 return BadRequest("Invalid groupId of " + groupId + ".");
 
             var group = groupService.GetGroup(groupId);
+
+            if (group == null)
+                return NotFound("Group could not be found.");
+
             var owner = userService.GetById(group.OwnerId);
             var groupMembers = groupService.GetAllUsersInGroup(groupId).ToList();
             var categories = categoryService.GetAllCategories();
 
             List<GroupMember> memberList = new List<GroupMember>();
 
-            foreach(var gm in groupMembers)
+            foreach (var gm in groupMembers)
             {
                 var groupMember = userService.GetById(gm.UserId);
 
-                memberList.Add(new GroupMember {
+                memberList.Add(new GroupMember
+                {
                     UserId = groupMember.UserId,
                     FirstName = groupMember.FirstName,
                     LastName = groupMember.LastName,
@@ -195,7 +201,7 @@ namespace MonAmie.Controllers
                 OwnerId = group.OwnerId,
                 MemberCount = groupMembers.Count + 1,
                 CategoryName = categories.FirstOrDefault(c => c.CategoryId == group.CategoryId).CategoryName,
-                CreationDate = group.CreationDate,
+                CreationDate = group.CreationDate.ToString("MMMM") + " " + group.CreationDate.Year,
                 Owner = new GroupMember
                 {
                     UserId = owner.UserId,
@@ -222,22 +228,44 @@ namespace MonAmie.Controllers
             if (string.IsNullOrEmpty(group.Description) || string.IsNullOrEmpty(group.State) || string.IsNullOrEmpty(group.GroupName) || group.CategoryId < 1)
                 return BadRequest("Missing a description, state, group name, or category.");
 
-            groupService.AddGroup(new Group
+            var categories = categoryService.GetAllCategories();
+
+            var creationDate = DateTime.UtcNow;
+
+            var groupId = groupService.AddGroup(new Group
             {
                 GroupName = group.GroupName,
                 Description = group.Description,
                 CategoryId = group.CategoryId,
                 OwnerId = ownerId,
                 State = group.State,
-                CreationDate = DateTime.UtcNow
+                CreationDate = creationDate
             });
 
-            return Ok();
+            if(groupId > 0)
+            {
+                group.UserGroups.Add(new GroupViewModel
+                {
+                    GroupId = groupId,
+                    GroupName = group.GroupName,
+                    Description = group.Description,
+                    State = group.State,
+                    CategoryId = group.CategoryId,
+                    OwnerId = ownerId,
+                    MemberCount = 1,
+                    CategoryName = categories.FirstOrDefault(c => c.CategoryId == group.CategoryId).CategoryName,
+                    CreationDate = creationDate.ToString("MMMM") + " " + creationDate.Year
+                });
+            }
+
+            List<GroupViewModel> groups = group.UserGroups.OrderBy(g => g.OwnerId).ThenBy(g => g.GroupName).ToList();
+
+            return Ok(groups);
         }
 
         [HttpPut]
-        [Route("api/Group/UpdateGroup")]
-        public IActionResult UpdateGroup([FromBody]Group group)
+        [Route("group/api/Group/UpdateGroup/{groupId}")]
+        public IActionResult UpdateGroup(int groupId, [FromBody]GroupViewModel group)
         {
             if (group == null)
                 return BadRequest("Group cannot be null.");
@@ -247,6 +275,10 @@ namespace MonAmie.Controllers
 
             if (string.IsNullOrEmpty(group.Description) || string.IsNullOrEmpty(group.State) || string.IsNullOrEmpty(group.GroupName) || group.CategoryId < 1)
                 return BadRequest("Missing a description, state, group name, or category.");
+
+            var categories = categoryService.GetAllCategories();
+
+            group.CategoryName = categories.FirstOrDefault(c => c.CategoryId == group.CategoryId).CategoryName;
 
             groupService.UpdateGroup(new Group
             {
@@ -259,19 +291,97 @@ namespace MonAmie.Controllers
                 CreationDate = DateTime.UtcNow
             });
 
-            return Ok();
+            return Ok(group);
         }
 
-        [HttpGet]
-        [Route("api/Group/DeleteGroup/{id}")]
-        public IActionResult DeleteGroup(int id)
+        [HttpDelete]
+        [Route("api/Group/DeleteGroup/{groupId}")]
+        [Route("group/api/Group/DeleteGroup/{groupId}")]
+        public IActionResult DeleteGroup(int groupId, [FromBody]GroupViewModel group)
         {
-            if (id < 1)
+            if (groupId < 1)
                 return BadRequest("Group Id cannot be less than 1");
 
-            groupService.DeleteGroup(id);
+            var userIds = new List<int>();
 
-            return Ok();
+            foreach(var gm in group.GroupMembers)
+            {
+                userIds.Add(gm.UserId);
+            }
+
+            groupService.DeleteGroup(groupId, userIds);
+
+            return Ok(null);
+        }
+
+        [HttpPost]
+        [Route("group/api/Group/AddUserToGroup/{userId}")]
+        public IActionResult AddUserToGroup(int userId, [FromBody]GroupViewModel group)
+        {
+            if (group == null)
+                return BadRequest("Group cannot be null.");
+
+            if (group.GroupId < 1)
+                return BadRequest("Group does not exist.");
+
+            if (userId < 1)
+                return BadRequest("User does not exist");
+
+            var categories = categoryService.GetAllCategories();
+
+            group.CategoryName = categories.FirstOrDefault(c => c.CategoryId == group.CategoryId).CategoryName;
+
+            var user = userService.GetById(userId);
+
+            if (user == null)
+                return NotFound("User could not be found");
+
+            groupService.AddUserToGroup(userId, group.GroupId);
+
+            group.GroupMembers.Add(new GroupMember
+            {
+                UserId = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                State = user.State
+            });
+
+            group.GroupMembers.OrderBy(gm => gm.LastName).ToList();
+
+            group.MemberCount = group.MemberCount + 1;
+
+            return Ok(group);
+        }
+
+        [HttpDelete]
+        [Route("group/api/Group/RemoveUserFromGroup/{userId}")]
+        public IActionResult RemoveUserFromGroup(int userId, [FromBody]GroupViewModel group)
+        {
+            if (group == null)
+                return BadRequest("Group cannot be null.");
+
+            if (group.GroupId < 1)
+                return BadRequest("Group does not exist.");
+
+            if (userId < 1)
+                return BadRequest("User does not exist");
+
+            var categories = categoryService.GetAllCategories();
+
+            group.CategoryName = categories.FirstOrDefault(c => c.CategoryId == group.CategoryId).CategoryName;
+
+            var user = group.GroupMembers.FirstOrDefault(gm => gm.UserId == userId);
+
+            if (user == null)
+                return NotFound("User could not be found");
+
+            groupService.RemoveUserFromGroup(userId, group.GroupId);
+
+            group.GroupMembers.Remove(user);
+
+            group.MemberCount = group.MemberCount - 1;
+
+            return Ok(group);
         }
     }
 }
