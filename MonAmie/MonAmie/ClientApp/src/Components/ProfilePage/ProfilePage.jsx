@@ -22,6 +22,7 @@ class ProfilePage extends Component {
         newCategories: [],
         bio: "",
         imageFile: [],
+        files: undefined,
         editProfile: false,
         editCategories: false,
         groupSelected: false,
@@ -102,7 +103,7 @@ class ProfilePage extends Component {
 
     onEditProfileButtonClick = (e) => this.setState({
         editProfile: this.state.editProfile ? false : true,
-        bio: this.props.userProfile.items.bio
+        bio: this.props.userProfile.items.bio,
     });
 
     onCancelProfileEditClick = (e) => this.setState({
@@ -146,9 +147,9 @@ class ProfilePage extends Component {
         });
     };
 
-    onSaveProfileEditClick = (e, { value }) => {
+    onSaveProfileEditClick = (e) => {
         const { match: { params }, userProfile, user } = this.props;
-        const { bio, imageFile } = this.state;
+        const { bio, files } = this.state;
 
         userProfile.items.bio = bio;
 
@@ -157,15 +158,22 @@ class ProfilePage extends Component {
         //userProfile.items.imageFile = files;
 
 
-        //var idStr = params.userId.split("_")[1];
-        //var id = parseInt(idStr) / 11;
+        var idStr = params.userId.split("_")[1];
+        var id = parseInt(idStr) / 11;
 
         this.setState({
             editProfile: this.state.editProfile ? false : true
         });
 
         this.props.dispatch(userProfileActions.update(userProfile));
-        //this.props.dispatch(imagesActions.uploadImage(userProfile.items.imageFile, id))
+        //this.props.dispatch(imagesActions.uploadImage(files, id))
+    };
+
+    imageChange = (e) => {
+
+        this.setState({
+            files: this.state.files.fill(e.target.value),
+        });
     };
 
     createUserCategoriesTable = () => {
@@ -486,7 +494,7 @@ class ProfilePage extends Component {
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Profile</Modal.Header>
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
                         <label for="files">Upload profile picture</label>
-                        <input type="file" name={"files"} id={"files"} accept=".jpeg, .jpg, .png" />
+                        <input type="file" name={"files"} id={"files"} accept=".jpeg, .jpg, .png" onChange={this.imageChange.bind(this)} />
                         <Form fluid='true'>
                             <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
                                 <TextArea
