@@ -5,8 +5,9 @@ import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions } from '../../Actions';
 import modalStyles from '../../Styles/modal.styles';
 import { states } from '../../Enums';
-import { Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon, Popup, Header, Modal, Form, TextArea, Label } from 'semantic-ui-react';
+import { Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon, Popup, Header, Modal, Form, TextArea, Label, Feed } from 'semantic-ui-react';
 import { history } from '../../Helpers';
+import { create } from 'jss';
 
 class GroupProfilePage extends Component {
     constructor(props) {
@@ -22,7 +23,10 @@ class GroupProfilePage extends Component {
             canUpdateGroup: false,
             updateGroup: false,
             deleteGroup: false,
-            confirmLeave: false
+            confirmLeave: false,
+            userSelected: false,
+            redirectTo: "",
+            showAllActivity: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -178,6 +182,14 @@ class GroupProfilePage extends Component {
         })
     }
 
+    showAllActivityButtonClick = () => {
+        const { showAllActivity } = this.state;
+
+        this.setState({
+            showAllActivity: showAllActivity ? false : true
+        })
+    }
+
     renderMemberLabel = () => {
         const { group, user } = this.props;
 
@@ -192,10 +204,112 @@ class GroupProfilePage extends Component {
         }
     }
 
+    goToProfile = (e, { value }) => {
+        var path = window.location.pathname;
+
+        history.push(path);
+
+        this.setState({
+            userSelected: true,
+            redirectTo: '/profile/' +
+                value.firstName.toLowerCase() + '_' + value.userId * 11
+        });
+    };
+
+    createMemberLabels = () => {
+        const { group } = this.props;
+
+        var labels = []
+
+        if (group.group) {
+            labels.push(<Label value={group.group.owner} onClick={this.goToProfile} style={{ marginBottom: '5px' }} as='a' >
+                <Icon name='star' /> {group.group.owner.firstName} {group.group.owner.lastName}
+            </Label >)
+
+            if (group.group.groupMembers) {
+                for (let i = 0; i < group.group.groupMembers.length; i++) {
+                    labels.push(<Label value={group.group.groupMembers[i]} onClick={this.goToProfile} style={{ marginBottom: '5px' }} as='a' >
+                        {group.group.groupMembers[i].firstName} {group.group.groupMembers[i].lastName}
+                    </Label >)
+                }
+            }
+        }
+
+        return labels
+    }
+
+    createActivityFeed = (createAll) => {
+        const { group } = this.props;
+
+        var activities = [];
+
+        if (group.group) {
+            var groupActivity = group.group.groupActivity;
+            if (groupActivity) {
+
+                if (createAll) {
+                    var loopFor = groupActivity.length;
+                } else {
+                    var loopFor = groupActivity.length > 5 ? 5 : groupActivity.length;
+                }
+
+                for (let i = 0; i < loopFor; i++) {
+                    if (groupActivity[i].type == 'CREATION') {
+                        activities.push(<Feed.Event>
+                            <Feed.Label>
+                                <Icon style={{ color: 'white' }} name='group' />
+                            </Feed.Label>
+                            <Feed.Content>
+                                <Feed.Summary style={{ color: 'white' }}>
+                                    {group.group.groupName} was created
+                                    <Feed.Date style={{ color: 'white' }}>{groupActivity[i].date}</Feed.Date>
+                                </Feed.Summary> 
+                            </Feed.Content>
+                        </Feed.Event>);
+                    }
+                    else if (groupActivity[i].type == 'JOIN') {
+                        activities.push(<Feed.Event>
+                            <Feed.Label>
+                                <Icon style={{ color: 'white' }} name='add user' />
+                            </Feed.Label>
+                            <Feed.Content>
+                                <Feed.Summary style={{ color: 'white' }}>
+                                    <Label onClick={this.goToProfile} color='blue' value={groupActivity[i]} as='a' >
+                                        {groupActivity[i].firstName} {groupActivity[i].lastName}
+                                    </Label > joined the group
+                                    <Feed.Date style={{ color: 'white' }}>{groupActivity[i].date}</Feed.Date>
+                                </Feed.Summary>
+                            </Feed.Content>
+                        </Feed.Event>);
+                    }
+                    else if (groupActivity[i].type == 'LEAVE') {
+                        activities.push(<Feed.Event>
+                            <Feed.Label>
+                                <Icon style={{ color: 'white' }} name='user delete' />
+                            </Feed.Label>
+                            <Feed.Content>
+                                <Feed.Summary style={{ color: 'white' }}>
+                                    <Label onClick={this.goToProfile} color='blue' value={groupActivity[i]} as='a' >
+                                        {groupActivity[i].firstName} {groupActivity[i].lastName}
+                                    </Label >  left the group
+                                    <Feed.Date style={{ color: 'white' }}>{groupActivity[i].date}</Feed.Date>
+                                </Feed.Summary>
+                            </Feed.Content>
+                        </Feed.Event>);
+                    }
+                }
+            }
+        }
+        return activities;
+    }
+
     render() {
         const { group, categories, user } = this.props;
-        const { canUpdateGroup, editedGroup, updateGroup, deleteGroup, confirmLeave } = this.state;
+        const { canUpdateGroup, editedGroup, updateGroup, deleteGroup, confirmLeave, redirectTo, userSelected, showAllActivity } = this.state;
         var memberFormat = "Member";
+
+        if (userSelected)
+            return <Redirect to={redirectTo} />
 
         if (group.loading)
             return (<div style={{ paddingTop: '600px' }}>
@@ -203,7 +317,6 @@ class GroupProfilePage extends Component {
                     <Loader active size='massive' inline='centered' />
                 </Dimmer>
             </div>);
-
 
         if (deleteGroup)
             return <Redirect to='/groups' />
@@ -231,6 +344,17 @@ class GroupProfilePage extends Component {
                     <NavigationBar>
                     </NavigationBar>
                     <style>{`html, body {background-color: #24305E !important; } `}</style>
+                    <Modal style={modalStyles.EditProfileModal} size='tiny' open={showAllActivity} onClose={this.close}>
+                        <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Activity for {group.group.groupName} </Modal.Header>
+                        <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
+                            <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
+                                <Feed size='large' children={this.createActivityFeed(true)} />
+                            </Segment>
+                        </Modal.Content>
+                        <Modal.Actions style={{ backgroundColor: '#374785' }}>
+                            <Button positive onClick={this.showAllActivityButtonClick} content='Done' />
+                        </Modal.Actions>
+                    </Modal>
                     <Modal style={modalStyles.confirmDeleteModal} size='tiny' open={confirmLeave} onClose={this.close}>
                         <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Leave Group</Modal.Header>
                         <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
@@ -276,8 +400,31 @@ class GroupProfilePage extends Component {
                                 <Container style={{ color: 'white' }} content={group.group.description} />
                             </Segment>
                             <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
-                                <Header size='large' style={{ color: 'white' }} textAlign='left'>Recent Activity</Header>
+                                <Grid columns='equal'>
+                                    <Grid.Column>
+                                        <Header size='large' style={{ color: 'white' }} textAlign='left'>Latest Activity</Header>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <Popup trigger={<Button floated='right' color='blue' icon='list' onClick={this.showAllActivityButtonClick} />} content='All Activity' />
+                                    </Grid.Column>
+                                </Grid>
                                 <Divider style={{ backgroundColor: 'white' }} />
+                                <Feed size='large' children={this.createActivityFeed(false)} />
+                            </Segment>
+                            <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
+                                <Grid columns='equal'>
+                                    <Grid.Column>
+                                        <Header size='large' style={{ color: 'white' }} textAlign='left'>Members</Header>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                    </Grid.Column>
+                                </Grid>
+                                <Divider style={{ backgroundColor: 'white' }} />
+                                <Label.Group size='medium' color='blue' children={this.createMemberLabels()} />
                             </Segment>
                         </Segment>
                     </Container>
@@ -290,6 +437,17 @@ class GroupProfilePage extends Component {
                 <NavigationBar>
                 </NavigationBar>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
+                <Modal style={modalStyles.EditProfileModal} size='tiny' open={showAllActivity} onClose={this.close}>
+                    <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Activity for {group.group.groupName} </Modal.Header>
+                    <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
+                        <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
+                            <Feed size='large' children={this.createActivityFeed(true)} />
+                        </Segment>
+                    </Modal.Content>
+                    <Modal.Actions style={{ backgroundColor: '#374785' }}>
+                        <Button positive onClick={this.showAllActivityButtonClick} content='Done' />
+                    </Modal.Actions>
+                </Modal>
                 <Modal style={modalStyles.confirmDeleteModal} size='tiny' open={confirmLeave} onClose={this.close}>
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Delete Group</Modal.Header>
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
@@ -363,8 +521,31 @@ class GroupProfilePage extends Component {
                             <Container style={{ color: 'white' }} content={group.group.description} />
                         </Segment>
                         <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
-                            <Header size='large' style={{ color: 'white' }} textAlign='left'>Recent Activity</Header>
+                            <Grid columns='equal'>
+                                <Grid.Column>
+                                    <Header size='large' style={{ color: 'white' }} textAlign='left'>Latest Activity</Header>
+                                </Grid.Column>
+                                <Grid.Column>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <Popup trigger={<Button floated='right' color='blue' icon='list' onClick={this.showAllActivityButtonClick} />} content='All Activity' />
+                                </Grid.Column>
+                            </Grid>
                             <Divider style={{ backgroundColor: 'white' }} />
+                            <Feed size='large' children={this.createActivityFeed(false)} />
+                        </Segment>
+                        <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
+                            <Grid columns='equal'>
+                                <Grid.Column>
+                                    <Header size='large' style={{ color: 'white' }} textAlign='left'>Members</Header>
+                                </Grid.Column>
+                                <Grid.Column>
+                                </Grid.Column>
+                                <Grid.Column>
+                                </Grid.Column>
+                            </Grid>
+                            <Divider style={{ backgroundColor: 'white' }} />
+                            <Label.Group size='medium' color='blue' children={this.createMemberLabels()} />
                         </Segment>
                     </Segment>
                 </Container>

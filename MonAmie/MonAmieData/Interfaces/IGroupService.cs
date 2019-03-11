@@ -34,18 +34,25 @@ namespace MonAmieData.Interfaces
         IEnumerable<Group> GetAllGroupsUserOwns(int userId);
 
         /// <summary>
+        /// Gets all activity for a group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        IEnumerable<GroupHasActivity> GetActivityForGroup(int groupId);
+
+        /// <summary>
         /// Adds a user to a group
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="groupId"></param>
-        void AddUserToGroup(int userId, int groupId);
+        int AddUserToGroup(int userId, int groupId);
 
         /// <summary>
         /// Removes a user from a group
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="groupId"></param>
-        void RemoveUserFromGroup(int userId, int groupId);
+        int RemoveUserFromGroup(int userId, int groupId);
 
         /// <summary>
         /// Gets a group by its id

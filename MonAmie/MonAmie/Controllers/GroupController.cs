@@ -33,6 +33,16 @@ namespace MonAmie.Controllers
             public string State { get; set; }
         }
 
+        public class GroupActivity
+        {
+            public int ActivityId { get; set; }
+            public int UserId { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Type { get; set; }
+            public string Date { get; set; }
+        }
+
         public class GroupViewModel
         {
             public int GroupId { get; set; }
@@ -46,6 +56,7 @@ namespace MonAmie.Controllers
             public string CreationDate { get; set; }
             public GroupMember Owner { get; set; }
             public List<GroupMember> GroupMembers { get; set; }
+            public List<GroupActivity> GroupActivity { get; set; }
             public List<GroupViewModel> UserGroups { get; set; }
         }
 
@@ -174,9 +185,11 @@ namespace MonAmie.Controllers
 
             var owner = userService.GetById(group.OwnerId);
             var groupMembers = groupService.GetAllUsersInGroup(groupId).ToList();
+            var groupActivity = groupService.GetActivityForGroup(groupId).OrderByDescending(ga => ga.CreationDate).ToList();
             var categories = categoryService.GetAllCategories();
 
             List<GroupMember> memberList = new List<GroupMember>();
+            List<GroupActivity> activityList = new List<GroupActivity>();
 
             foreach (var gm in groupMembers)
             {
@@ -189,6 +202,24 @@ namespace MonAmie.Controllers
                     LastName = groupMember.LastName,
                     State = groupMember.State
                 });
+            }
+
+            foreach(var ga in groupActivity)
+            {
+                var user = userService.GetById(ga.UserId);
+
+                var dateWhen = DateTime.UtcNow - ga.CreationDate;
+
+                activityList.Add(new GroupActivity
+                {
+                    ActivityId = ga.GroupHasActivityId,
+                    UserId = ga.UserId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Type = ga.Type,
+                    Date = GetDateString(dateWhen)
+                });
+
             }
 
             var results = new GroupViewModel
@@ -209,7 +240,8 @@ namespace MonAmie.Controllers
                     LastName = owner.LastName,
                     State = owner.State
                 },
-                GroupMembers = memberList.OrderBy(gm => gm.LastName).ToList()
+                GroupMembers = memberList.OrderBy(gm => gm.LastName).ToList(),
+                GroupActivity = activityList.ToList()
             };
 
             return Ok(results);
@@ -336,7 +368,7 @@ namespace MonAmie.Controllers
             if (user == null)
                 return NotFound("User could not be found");
 
-            groupService.AddUserToGroup(userId, group.GroupId);
+            var activityId = groupService.AddUserToGroup(userId, group.GroupId);
 
             group.GroupMembers.Add(new GroupMember
             {
@@ -345,6 +377,19 @@ namespace MonAmie.Controllers
                 LastName = user.LastName,
                 State = user.State
             });
+
+            if(activityId != 0)
+            {
+                group.GroupActivity.Insert(0, new GroupActivity
+                {
+                    ActivityId = activityId,
+                    UserId = user.UserId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Date = "Just Now",
+                    Type = "JOIN"
+                });
+            }
 
             group.GroupMembers.OrderBy(gm => gm.LastName).ToList();
 
@@ -375,13 +420,81 @@ namespace MonAmie.Controllers
             if (user == null)
                 return NotFound("User could not be found");
 
-            groupService.RemoveUserFromGroup(userId, group.GroupId);
+            var activityId = groupService.RemoveUserFromGroup(userId, group.GroupId);
+
+            if (activityId != 0)
+            {
+                group.GroupActivity.Insert(0, new GroupActivity
+                {
+                    ActivityId = activityId,
+                    UserId = user.UserId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Date = "Just Now",
+                    Type = "LEAVE"
+                });
+            }
 
             group.GroupMembers.Remove(user);
 
             group.MemberCount = group.MemberCount - 1;
 
             return Ok(group);
+        }
+
+        private string GetDateString(TimeSpan dateWhen)
+        {
+            var dateString = "";
+
+            if (dateWhen.Hours < 1 && dateWhen.Minutes < 1)
+            {
+                dateString = "Just Now";
+            }
+            else if (dateWhen.Hours < 1 && dateWhen.Minutes >= 1)
+            {
+                if (dateWhen.Minutes == 1)
+                    dateString = dateWhen.Minutes + " Minute Ago";
+                else
+                    dateString = dateWhen.Minutes + " Minutes Ago";
+            }
+            else if (dateWhen.Hours >= 1 && dateWhen.Days < 1)
+            {
+                if (dateWhen.Hours == 1)
+                    dateString = dateWhen.Hours + " Hour Ago";
+                else
+                    dateString = dateWhen.Hours + " Hours Ago";
+            }
+            else if (dateWhen.Days < 30)
+            {
+                if (dateWhen.Days == 1)
+                    dateString = dateWhen.Days + " Days Ago";
+                else
+                    dateString = dateWhen.Days + " Days Ago";
+            }
+            else if (dateWhen.Days < 365)
+            {
+                double monthsDouble = dateWhen.Days / 30;
+
+                int months = Convert.ToInt32(Math.Floor(monthsDouble));
+
+                if (months == 1)
+                    dateString = months + " Month Ago";
+                else
+                    dateString = months + " Months Ago";
+            }
+            else
+            {
+                double yearsDouble = dateWhen.Days / 365;
+
+                int years = Convert.ToInt32(Math.Floor(yearsDouble));
+
+                if (years == 1)
+                    dateString = years + " Year Ago";
+                else
+                    dateString = years + " Years Ago";
+            }
+
+            return dateString;
         }
     }
 }
