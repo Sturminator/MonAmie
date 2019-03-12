@@ -71,7 +71,7 @@ namespace MonAmieData.Interfaces
         /// Update a group in the database
         /// </summary>
         /// <param name="group"></param>
-        void UpdateGroup(Group group);
+        int UpdateGroup(Group group);
 
         /// <summary>
         /// Delete a group from the database

@@ -32,7 +32,7 @@ namespace MonAmieServices
         /// <param name="group"></param>
         public int AddGroup(Group group)
         {
-            if(group != null)
+            if (group != null)
             {
                 _context.Group.Add(group);
                 _context.GroupHasActivity.Add(new GroupHasActivity
@@ -42,7 +42,7 @@ namespace MonAmieServices
                     Type = "CREATION",
                     CreationDate = group.CreationDate
                 });
-                _context.SaveChanges();               
+                _context.SaveChanges();
             }
             return group.GroupId;
         }
@@ -68,7 +68,7 @@ namespace MonAmieServices
         {
             var entity = _context.GroupHasUser.FirstOrDefault(ghu => ghu.UserId == userId && ghu.GroupId == groupId);
 
-            if(entity == null)
+            if (entity == null)
             {
                 _context.GroupHasUser.Add(new GroupHasUser
                 {
@@ -105,7 +105,7 @@ namespace MonAmieServices
 
             if (group != null)
             {
-                foreach(var id in userIds)
+                foreach (var id in userIds)
                 {
                     var entity = _context.GroupHasUser.FirstOrDefault(ghu => ghu.UserId == id && ghu.GroupId == groupId);
 
@@ -117,7 +117,7 @@ namespace MonAmieServices
 
                 var activity = _context.GroupHasActivity.Where(gha => gha.GroupId == groupId);
 
-                foreach(var act in activity)
+                foreach (var act in activity)
                 {
                     _context.GroupHasActivity.Remove(act);
                 }
@@ -232,12 +232,29 @@ namespace MonAmieServices
         /// Update a group in the database
         /// </summary>
         /// <param name="group"></param>
-        public void UpdateGroup(Group group)
+        public int UpdateGroup(Group group)
         {
             var entity = _context.Group.SingleOrDefault(g => g.GroupId == group.GroupId);
 
             if (entity != null)
             {
+                var activity = new GroupHasActivity();
+
+                if (entity.Description != group.Description)
+                {
+                     
+                    activity = new GroupHasActivity
+                    {
+                        GroupId = group.GroupId,
+                        UserId = group.OwnerId,
+                        Type = "DESC",
+                        NewVal = group.Description,
+                        CreationDate = DateTime.UtcNow
+                    };
+
+                    _context.GroupHasActivity.Add(activity);
+                }
+
                 entity.GroupName = group.GroupName;
                 entity.Description = group.Description;
                 entity.CategoryId = group.CategoryId;
@@ -246,7 +263,11 @@ namespace MonAmieServices
 
                 _context.Group.Update(entity);
                 _context.SaveChangesAsync();
+
+                return activity.GroupHasActivityId;
             }
+
+            return 0;
         }
 
         /// <summary>

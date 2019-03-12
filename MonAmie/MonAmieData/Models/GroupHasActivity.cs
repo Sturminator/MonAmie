@@ -19,6 +19,9 @@ namespace MonAmieData.Models
         [Column(TypeName = "varchar(25)")]
         public string Type { get; set; }
 
+        [Column(TypeName = "varchar(500)")]
+        public string NewVal { get; set; }
+
         [Required]
         [Column(TypeName = "smalldatetime")]
         public DateTime CreationDate { get; set; }

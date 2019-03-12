@@ -40,6 +40,7 @@ namespace MonAmie.Controllers
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public string Type { get; set; }
+            public string NewVal { get; set; }
             public string Date { get; set; }
         }
 
@@ -217,6 +218,7 @@ namespace MonAmie.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Type = ga.Type,
+                    NewVal = ga.NewVal,
                     Date = GetDateString(dateWhen)
                 });
 
@@ -312,7 +314,7 @@ namespace MonAmie.Controllers
 
             group.CategoryName = categories.FirstOrDefault(c => c.CategoryId == group.CategoryId).CategoryName;
 
-            groupService.UpdateGroup(new Group
+            var activityId = groupService.UpdateGroup(new Group
             {
                 GroupId = group.GroupId,
                 GroupName = group.GroupName,
@@ -322,6 +324,18 @@ namespace MonAmie.Controllers
                 OwnerId = group.OwnerId,
                 CreationDate = DateTime.UtcNow
             });
+
+            if (activityId != 0)
+            {
+                group.GroupActivity.Insert(0, new GroupActivity
+                {
+                    ActivityId = activityId,
+                    UserId = group.OwnerId,
+                    Date = "Just Now",
+                    Type = "DESC",
+                    NewVal = group.Description
+                });
+            }
 
             return Ok(group);
         }

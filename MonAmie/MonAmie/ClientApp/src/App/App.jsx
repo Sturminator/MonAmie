@@ -29,15 +29,10 @@ class App extends Component {
     }
 
     render() {
-        const { alert } = this.props;
-
         return (
             <div>
                 <div>
                     <div>
-                        {alert.message &&
-                            <div className={'alert ${alert.type}'}>{alert.message}</div>
-                        }
                         <Router history={history}>
                             <div>
                                 <PrivateRoute exact path="/" component={HomePage} />

@@ -36,12 +36,12 @@ namespace MonAmie.Controllers
             var user = userService.GetByEmail(userDto.Email);
 
             if (user == null)
-                return BadRequest(new { message = "No user registered to this email" });
+                return BadRequest(new { message = "Incorrect email/password" });
 
             var hashedPwd = passwordService.GenerateSHA256Hash(userDto.Password, user.PasswordSalt);
 
             if (hashedPwd != user.PasswordHash)
-                return BadRequest(new { message = "Password is incorrect" });
+                return BadRequest(new { message = "Incorrect email/password" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
@@ -117,7 +117,7 @@ namespace MonAmie.Controllers
                         return BadRequest(new { message = ex.Message });
                     }
                 }
-                return BadRequest(new { message = "User already exists" });
+                return BadRequest(new { message = "Email already registered" });
             }
 
             return BadRequest(new { message = "Birthdate entered is not correctly formatted" });

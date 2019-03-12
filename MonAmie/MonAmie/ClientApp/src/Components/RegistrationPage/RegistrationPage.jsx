@@ -1,12 +1,11 @@
 ﻿import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { authActions } from '../../Actions';
+import { authActions, alertActions } from '../../Actions';
 import { history } from '../../Helpers';
-import { Form, Button, Divider, Image, Container, Segment, Grid, Loader } from 'semantic-ui-react';
+import { Form, Button, Divider, Image, Container, Segment, Grid, Loader, Message } from 'semantic-ui-react';
 import { states, genders } from '../../Enums';
 import logo from '../../Images/logo.png';
-import Background0 from '../../Images/login.jpg';
 
 class RegistrationPage extends Component {
     constructor(props) {
@@ -23,7 +22,8 @@ class RegistrationPage extends Component {
                 state: "",
             },
             submitted: false,
-            redirectToLogin: false
+            redirectToLogin: false,
+            fieldsInvalid: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -31,6 +31,8 @@ class RegistrationPage extends Component {
         this.handleRedirect = this.handleRedirect.bind(this);
         this.handleStateChange = this.handleStateChange.bind(this);
         this.handleGenderChange = this.handleGenderChange.bind(this);
+        this.dismissInvalidFieldMessage = this.dismissInvalidFieldMessage.bind(this);
+        this.dismissMessage = this.dismissMessage.bind(this);
     }
 
     handleChange(event) {
@@ -78,8 +80,37 @@ class RegistrationPage extends Component {
         const { user } = this.state;
         const { dispatch } = this.props;
         if (user.firstName && user.lastName && user.email && user.password && user.birthdate && user.state && user.gender) {
-            this.setState({ submitted: true });
+            this.setState({ submitted: true, fieldsInvalid: false });
             dispatch(authActions.register(user));
+        } else {
+            this.setState({ fieldsInvalid: true })
+        }
+    }
+
+    dismissInvalidFieldMessage() {
+        this.setState({ fieldsInvalid: false });
+    }
+
+    dismissMessage() {
+        const { dispatch } = this.props;
+        dispatch(alertActions.clear());
+    }
+
+    renderMessage() {
+        const { alert } = this.props;
+        const { fieldsInvalid } = this.state;
+
+        if (alert.message) {
+            if (alert.type == 'alert-error') {
+                return (<Message negative onDismiss={this.dismissMessage} > <Message.Header>{alert.message}</Message.Header></ Message>);
+            }
+
+            if (alert.type == 'alert-success') {
+                return (<Message positive onDismiss={this.dismissMessage}>{alert.message}</Message>);
+            }
+        }
+        else if (fieldsInvalid) {
+            return (<Message negative onDismiss={this.dismissInvalidFieldMessage} > <Message.Header>Please fill out all fields</Message.Header></ Message>);
         }
     }
 
@@ -93,12 +124,10 @@ class RegistrationPage extends Component {
         return (
             <div>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
-                <Image src={Background0} fluid style={{ maxHeight: '450px' }} />
-                <Grid textAlign='center' verticalAlign=' middle' style={{marginTop: '10px'}}>
+                <Grid textAlign='center' verticalAlign=' middle' style={{marginTop: '50px'}}>
                     <Grid.Column style={{ maxWidth: 600 }}>
                         <Segment style={{ backgroundColor: '#a8d0e6' }}>
                             <Image centered src={logo} size='medium' />
-                            <Loader active={submitted} />
                             <Form>
                                 <Form.Field>
                                     <label>First Name</label>
@@ -122,10 +151,11 @@ class RegistrationPage extends Component {
                                     <Form.Select clearable search fluid label="State" options={states} placeholder="Choose an option" value={user.state} onChange={this.handleStateChange} />
                                 </Form.Group>
                             </Form>
-                            <Button fluid color='green' onClick={this.handleSubmit}>Register</Button>
+                            <Button loading={registering} fluid color='green' onClick={this.handleSubmit}>Register</Button>
                             <Divider fluid horizontal>Already have an account?</Divider>
                             <Button fluid color='blue' onClick={this.handleRedirect}>Login</Button>
                         </Segment>
+                        {this.renderMessage()}
                     </Grid.Column>
                 </Grid>
             </div>
@@ -134,9 +164,10 @@ class RegistrationPage extends Component {
 }
 
 function mapStateToProps(state) {
-    const { registering } = state.registration;
+    const { registering, alert } = state;
     return {
-        registering
+        registering,
+        alert
     };
 }
 

@@ -7,7 +7,6 @@ import modalStyles from '../../Styles/modal.styles';
 import { states } from '../../Enums';
 import { Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon, Popup, Header, Modal, Form, TextArea, Label, Feed } from 'semantic-ui-react';
 import { history } from '../../Helpers';
-import { create } from 'jss';
 
 class GroupProfilePage extends Component {
     constructor(props) {
@@ -263,7 +262,7 @@ class GroupProfilePage extends Component {
                                 <Feed.Summary style={{ color: 'white' }}>
                                     {group.group.groupName} was created
                                     <Feed.Date style={{ color: 'white' }}>{groupActivity[i].date}</Feed.Date>
-                                </Feed.Summary> 
+                                </Feed.Summary>
                             </Feed.Content>
                         </Feed.Event>);
                     }
@@ -294,6 +293,22 @@ class GroupProfilePage extends Component {
                                     </Label >  left the group
                                     <Feed.Date style={{ color: 'white' }}>{groupActivity[i].date}</Feed.Date>
                                 </Feed.Summary>
+                            </Feed.Content>
+                        </Feed.Event>);
+                    }
+                    else if (groupActivity[i].type == 'DESC') {
+                        activities.push(<Feed.Event>
+                            <Feed.Label>
+                                <Icon style={{ color: 'white' }} name='pencil' />
+                            </Feed.Label>
+                            <Feed.Content>
+                                <Feed.Summary style={{ color: 'white' }}>
+                                    {group.group.groupName} updated its description
+                                    <Feed.Date style={{ color: 'white' }}>{groupActivity[i].date}</Feed.Date>
+                                </Feed.Summary>
+                                <Feed.Extra text style={{ color: 'white' }}>
+                                    {groupActivity[i].newVal}
+                                 </Feed.Extra>
                             </Feed.Content>
                         </Feed.Event>);
                     }
