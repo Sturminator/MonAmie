@@ -63,8 +63,9 @@ namespace MonAmie.Controllers
         }
 
         [HttpGet]
+        [Route("api/User/GetAllForUser/{id}/{state}")]
         [Route("api/User/GetAllForUser/{id}")]
-        public IActionResult GetAllForUser(int id)
+        public IActionResult GetAllForUser(int id, string state)
         {
             var users = userService.GetAllUsers();
             var friends = friendService.GetAllFriendshipsForUser(id);
@@ -73,12 +74,17 @@ namespace MonAmie.Controllers
             var sentRequests = friendService.GetAllSentFriendRequestsForUser(id);
             var loggedInInterests = categoryService.GetAllCategoriesForUser(id);
 
+            if (!string.IsNullOrEmpty(state))
+            {
+                users = users.Where(u => u.State == state);
+            }
+
             users = users.Where(u => !friends.Any(f => f.FriendId == u.UserId));
             users = users.Where(u => !friendRequests.Any(fr => fr.UserId == u.UserId));
             users = users.Where(u => !sentRequests.Any(sr => sr.PendingFriendId == u.UserId));
             users = users.Where(u => u.UserId != id);
 
-            List<UserDisplay> results = new List<UserDisplay>();
+            List<UserDisplay> userList = new List<UserDisplay>();
 
             foreach(var user in users)
             {
@@ -132,7 +138,7 @@ namespace MonAmie.Controllers
                     }
                 }
 
-                results.Add(new UserDisplay
+                userList.Add(new UserDisplay
                 {
                     Id = user.UserId,
                     FirstName = user.FirstName,
@@ -145,9 +151,9 @@ namespace MonAmie.Controllers
                 });
             }
 
-            results = results.OrderByDescending(res => res.SharedCount).ToList();
+            userList = userList.OrderByDescending(res => res.SharedCount).ToList();
 
-            return Ok(results);
+            return Ok(userList);
         }
 
         [HttpPut]

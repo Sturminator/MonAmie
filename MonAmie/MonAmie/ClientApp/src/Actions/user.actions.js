@@ -28,11 +28,11 @@ function getAll() {
     function failure(error) { return { type: userConstants.GETALL_FAILURE, error } }
 }
 
-function getAllForUser(id) {
+function getAllForUser(id, state) {
     return dispatch => {
         dispatch(request(id));
 
-        userService.getAllForUser(id)
+        userService.getAllForUser(id, state)
             .then(
                 users => dispatch(success(users)),
                 error => dispatch(failure(error.toString()))

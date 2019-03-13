@@ -18,13 +18,17 @@ function getAll() {
     return fetch(`api/User/GetAll`, requestOptions).then(handleResponse);
 }
 
-function getAllForUser(id) {
+function getAllForUser(id, state) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
 
-    return fetch(`api/User/GetAllForUser/` + id, requestOptions).then(handleResponse);
+    if (state) {
+        return fetch(`api/User/GetAllForUser/` + id + `/` + state, requestOptions).then(handleResponse);
+    } else {
+        return fetch(`api/User/GetAllForUser/` + id, requestOptions).then(handleResponse);
+    }
 }
 
 function getById(id) {

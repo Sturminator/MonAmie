@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { userActions, friendActions } from '../../Actions';
-import { Segment, Container, Grid, Header, Divider, Card, Dimmer, Loader, Button, Popup, Modal } from 'semantic-ui-react';
+import { Segment, Container, Grid, Header, Divider, Card, Dimmer, Loader, Button, Popup, Modal, Checkbox } from 'semantic-ui-react';
 import { history } from '../../Helpers';
 import modalStyles from '../../Styles/modal.styles';
 
@@ -17,22 +17,29 @@ class FriendsPage extends Component {
         acceptedRequest: false,
         refreshUsers: false,
         addToUsers: false,
-        removeFromUsers: false
+        removeFromUsers: false,
+        showAllStates: false
     };
 
     componentDidMount() {
         const { user, users } = this.props;
+        const { showAllStates } = this.state;
 
         if (!users.items) {
             this.props.dispatch(friendActions.getAllFriends(user.id));
             this.props.dispatch(friendActions.getAllRequests(user.id));
-            this.props.dispatch(userActions.getAllForUser(user.id));
+
+            if (showAllStates) {
+                this.props.dispatch(userActions.getAllForUser(user.id));
+            } else {
+                this.props.dispatch(userActions.getAllForUser(user.id, user.state));
+            }
         }
     }
 
     componentDidUpdate() {
         const { user, users, friends } = this.props;
-        const { acceptedRequest, refreshUsers, addToUsers, removeFromUsers, targetedFriendId } = this.state;
+        const { acceptedRequest, refreshUsers, addToUsers, removeFromUsers, targetedFriendId, showAllStates } = this.state;
 
         if (addToUsers) {
             this.props.dispatch(userActions.addToCurrentUsers(user.id, targetedFriendId, users.items));
@@ -62,7 +69,11 @@ class FriendsPage extends Component {
         }
 
         if (refreshUsers) {
-            this.props.dispatch(userActions.getAllForUser(user.id));
+            if (showAllStates) {
+                this.props.dispatch(userActions.getAllForUser(user.id));
+            } else {
+                this.props.dispatch(userActions.getAllForUser(user.id, user.state));
+            }
 
             this.setState({
                 refreshUsers: false
@@ -242,38 +253,58 @@ class FriendsPage extends Component {
 
         if (users.items) {
             // Outer loop to create parent
-            for (let i = 0; i < users.items.length; i++) {
-                if (user.id != users.items[i].id) {
-                    var children = []
-                    //Inner loop to create children
-                    children.push(<Card.Content>
-                        <Popup trigger={<Button value={users.items[i]} floated='right' onClick={this.goToProfile} color='blue' icon='user' />} content='View Profile' />
-                    </Card.Content>)
-                    children.push(<Card.Header textAlign='left'>
-                        {users.items[i].firstName + ' ' + users.items[i].lastName}
-                    </Card.Header>)
-                    children.push(<Card.Meta textAlign='left'>{users.items[i].state} - {users.items[i].age} years old</Card.Meta>)
-                    children.push(<Card.Meta textAlign='left'>
-                        Shared Interests: {users.items[i].sharedCount}
-                    </Card.Meta>)
-                    children.push(<Card.Description textAlign='left'>
-                        {users.items[i].interestsInfo}
-                    </Card.Description>)
-                    children.push(<Card.Content extra><Divider style={{ backgroundColor: 'white' }} />
-                        <Button onClick={this.addFriend} value={users.items[i]} fluid color='green'>Send Friend Request</Button>
-                    </Card.Content>)
-                    //Create the parent and add the children
-                    cards.push(<Card style={{ backgroundColor: '#374785' }} key={i + 1} value={users.items[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
+            var userList = users.items;
+            if (userList.length > 0) {
+                for (let i = 0; i < userList.length; i++) {
+                    if (user.id != userList[i].id) {
+                        var children = []
+                        //Inner loop to create children
+                        children.push(<Card.Content>
+                            <Popup trigger={<Button value={userList[i]} floated='right' onClick={this.goToProfile} color='blue' icon='user' />} content='View Profile' />
+                        </Card.Content>)
+                        children.push(<Card.Header textAlign='left'>
+                            {userList[i].firstName + ' ' + userList[i].lastName}
+                        </Card.Header>)
+                        children.push(<Card.Meta textAlign='left'>{userList[i].state} - {userList[i].age} years old</Card.Meta>)
+                        children.push(<Card.Meta textAlign='left'>
+                            Shared Interests: {userList[i].sharedCount}
+                        </Card.Meta>)
+                        children.push(<Card.Description textAlign='left'>
+                            {userList[i].interestsInfo}
+                        </Card.Description>)
+                        children.push(<Card.Content extra><Divider style={{ backgroundColor: 'white' }} />
+                            <Button onClick={this.addFriend} value={userList[i]} fluid color='green'>Send Friend Request</Button>
+                        </Card.Content>)
+                        //Create the parent and add the children
+                        cards.push(<Card style={{ backgroundColor: '#374785' }} key={i + 1} value={userList[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
+                    }
                 }
+            } else {
+                return (<Header as='h1' textAlign='center'>
+                    <Header.Content style={{ color: 'white' }}>No users found</Header.Content>
+                </Header>);
             }
         }
 
-        return cards
+        return (<Card.Group stackable centered children={cards} />);
+    }
+
+    toggleAllStates = () => {
+        const { showAllStates } = this.state;
+        const { user } = this.props;
+
+        if (!showAllStates) {
+            this.props.dispatch(userActions.getAllForUser(user.id));
+        } else {
+            this.props.dispatch(userActions.getAllForUser(user.id, user.state));
+        }
+
+        this.setState({ showAllStates: showAllStates ? false : true })
     }
 
     render() {
         const { user, users, friends, requests } = this.props;
-        const { userSelected, redirectTo, confirmDelete, targetedFriendName } = this.state;
+        const { userSelected, redirectTo, confirmDelete, targetedFriendName, showAllStates } = this.state;
 
         if (!user) {
             return <Redirect to='/login' />
@@ -320,43 +351,44 @@ class FriendsPage extends Component {
                 </Modal>
                 <Container fluid style={{ margin: '5px' }}>
                     <Segment fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
-                    <Grid stackable columns='equal'>
-                        <Grid.Column>
-                            <Container fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
-                                <Header as='h1' textAlign='center'>
-                                    <Header.Content style={{ color: 'white' }}>Friends</Header.Content>
-                                </Header>
-                                <Divider style={{ backgroundColor: 'white' }} />
-                                <Card.Group stackable centered itemsPerRow={3} children={this.createFriendCards()} />
-                            </Container>
+                        <Grid stackable columns='equal'>
+                            <Grid.Column>
+                                <Container fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
+                                    <Header as='h1' textAlign='center'>
+                                        <Header.Content style={{ color: 'white' }}>Friends</Header.Content>
+                                    </Header>
+                                    <Divider style={{ backgroundColor: 'white' }} />
+                                    <Card.Group stackable centered itemsPerRow={3} children={this.createFriendCards()} />
+                                </Container>
                             </Grid.Column>
-                        <Grid.Column>
-                            <Grid stackable columns='equal'>
-                                <Grid.Column>
-                                    <Container fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
-                                        <Header as='h1' textAlign='center'>
-                                            <Header.Content style={{ color: 'white' }}>Incoming Requests</Header.Content>
-                                        </Header>
-                                        <Divider style={{ backgroundColor: 'white' }} />
-                                        <Card.Group fluid itemsPerRow={1} children={this.createRequestCards(true)} />
-                                    </Container>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Container fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
-                                        <Header as='h1' textAlign='center'>
-                                            <Header.Content style={{ color: 'white' }}>Outgoing Requests</Header.Content>
-                                        </Header>
-                                        <Divider style={{ backgroundColor: 'white' }} />
-                                        <Card.Group fluid itemsPerRow={1} children={this.createRequestCards(false)} />
-                                    </Container>
-                                </Grid.Column>
-                            </Grid>
-                        </Grid.Column>
+                            <Grid.Column>
+                                <Grid stackable columns='equal'>
+                                    <Grid.Column>
+                                        <Container fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
+                                            <Header as='h1' textAlign='center'>
+                                                <Header.Content style={{ color: 'white' }}>Incoming Requests</Header.Content>
+                                            </Header>
+                                            <Divider style={{ backgroundColor: 'white' }} />
+                                            <Card.Group fluid itemsPerRow={1} children={this.createRequestCards(true)} />
+                                        </Container>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <Container fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
+                                            <Header as='h1' textAlign='center'>
+                                                <Header.Content style={{ color: 'white' }}>Outgoing Requests</Header.Content>
+                                            </Header>
+                                            <Divider style={{ backgroundColor: 'white' }} />
+                                            <Card.Group fluid itemsPerRow={1} children={this.createRequestCards(false)} />
+                                        </Container>
+                                    </Grid.Column>
+                                </Grid>
+                            </Grid.Column>
                         </Grid>
                     </Segment>
                     <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
                         <Grid columns='equal'>
                             <Grid.Column>
+                                <Popup trigger={<Checkbox style={{ color: 'white' }} toggle onChange={this.toggleAllStates} checked={showAllStates} />} content='Show All States' />
                             </Grid.Column>
                             <Grid.Column>
                                 <Header as='h1' textAlign='center'>
@@ -368,7 +400,7 @@ class FriendsPage extends Component {
                             </Grid.Column>
                         </Grid>
                         <Divider style={{ backgroundColor: 'white' }} />
-                        <Card.Group centered children={this.createUserCards()} />
+                        {this.createUserCards()}
                     </Segment>
                 </Container>
             </div>
