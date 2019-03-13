@@ -10,6 +10,7 @@ export const groupService = {
     getGroup,
     addUserToGroup,
     removeUserFromGroup,
+    getHomePageGroups,
     logout
 }
 
@@ -97,6 +98,15 @@ function getGroup(groupId) {
     };
 
     return fetch(`api/Group/GetGroup/` + groupId, requestOptions).then(handleResponse);
+}
+
+function getHomePageGroups(userId, state) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`api/Group/GetHomePageGroups/` + userId + `/` + state, requestOptions).then(handleResponse);
 }
 
 function logout() {

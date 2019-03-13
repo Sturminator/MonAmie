@@ -456,6 +456,92 @@ namespace MonAmie.Controllers
             return Ok(group);
         }
 
+        [HttpGet]
+        [Route("api/Group/GetHomePageGroups/{userId}/{state}")]
+        public IActionResult GetHomePageGroups(int userId, string state)
+        {
+            var ownedGroups = groupService.GetAllGroupsUserOwns(userId).ToList();
+            var memberGroups = groupService.GetAllGroupsUserBelongsTo(userId).ToList();
+            var categories = categoryService.GetAllCategories();
+            var userCategories = categoryService.GetAllCategoriesForUser(userId);
+            var groups = groupService.GetAllGroupsForState(state);
+
+            List<GroupViewModel> userGroups = new List<GroupViewModel>();
+            List<GroupViewModel> suggestedGroups = new List<GroupViewModel>();
+
+            groups = groups.Where(g => userCategories.Any(uc => uc.CategoryId == g.CategoryId)).ToList();
+
+            foreach (var g in ownedGroups)
+            {
+                userGroups.Add(new GroupViewModel
+                {
+                    GroupId = g.GroupId,
+                    GroupName = g.GroupName,
+                    Description = g.Description,
+                    State = g.State,
+                    CategoryId = g.CategoryId,
+                    OwnerId = g.OwnerId,
+                    MemberCount = groupService.GetMemberCount(g.GroupId),
+                    CategoryName = categories.FirstOrDefault(c => c.CategoryId == g.CategoryId).CategoryName,
+                    CreationDate = g.CreationDate.ToString("MMMM") + " " + g.CreationDate.Year
+                });
+            }
+
+            foreach (var g in memberGroups)
+            {
+                userGroups.Add(new GroupViewModel
+                {
+                    GroupId = g.GroupId,
+                    GroupName = g.GroupName,
+                    Description = g.Description,
+                    State = g.State,
+                    CategoryId = g.CategoryId,
+                    OwnerId = g.OwnerId,
+                    MemberCount = groupService.GetMemberCount(g.GroupId),
+                    CategoryName = categories.FirstOrDefault(c => c.CategoryId == g.CategoryId).CategoryName,
+                    CreationDate = g.CreationDate.ToString("MMMM") + " " + g.CreationDate.Year
+                });
+            }
+
+            userGroups = userGroups.OrderBy(g => g.OwnerId).ThenBy(g => g.GroupName).ToList();
+
+            groups = groups.Where(g => !userGroups.Any(ug => ug.GroupId == g.GroupId)).ToList();
+
+            var selectCount = 5;
+            var count = 0;
+            Random rand = new Random();
+
+            foreach (var g in groups)
+            {
+                int chance = rand.Next(1, groups.Count() - count);
+
+                if(chance <= selectCount)
+                {
+                    suggestedGroups.Add(new GroupViewModel
+                    {
+                        GroupId = g.GroupId,
+                        GroupName = g.GroupName,
+                        Description = g.Description,
+                        State = g.State,
+                        CategoryId = g.CategoryId,
+                        OwnerId = g.OwnerId,
+                        MemberCount = groupService.GetMemberCount(g.GroupId),
+                        CategoryName = categories.FirstOrDefault(c => c.CategoryId == g.CategoryId).CategoryName,
+                        CreationDate = g.CreationDate.ToString("MMMM") + " " + g.CreationDate.Year
+                    });
+
+                    selectCount--;
+                }
+
+                count++;
+
+                if (selectCount == 0)
+                    break;
+            }
+
+            return Ok(new { userGroups, suggestedGroups });
+        }
+
         private string GetDateString(TimeSpan dateWhen)
         {
             var dateString = "";

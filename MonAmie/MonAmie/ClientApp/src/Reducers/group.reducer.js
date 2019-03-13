@@ -162,3 +162,27 @@ export function userGroups(state = {}, action) {
             return state; 
     }
 }
+
+export function homePageGroups(state = {}, action) {
+    switch (action.type) {
+        case groupConstants.GETHOMEPAGEGROUPS_REQUEST:
+            return {
+                loading: true,
+                userId: action.userId
+            };
+        case groupConstants.GETHOMEPAGEGROUPS_SUCCESS:
+            return {
+                loading: false,
+                groups: action.groups
+            };
+        case groupConstants.GETHOMEPAGEGROUPS_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
+        case authConstants.LOGOUT:
+            return {}
+        default:
+            return state; 
+    }
+}

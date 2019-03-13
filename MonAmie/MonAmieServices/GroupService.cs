@@ -279,5 +279,15 @@ namespace MonAmieServices
         {
             return _context.GroupHasActivity.Where(gha => gha.GroupId == groupId);
         }
+
+        /// <summary>
+        /// Get all groups in a state
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public IEnumerable<Group> GetAllGroupsForState(string state)
+        {
+            return _context.Group.Where(g => g.State == state);
+        }
     }
 }

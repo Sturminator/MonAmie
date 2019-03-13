@@ -20,6 +20,13 @@ namespace MonAmieData.Interfaces
         IEnumerable<Group> GetAllGroupsForCategory(int categoryId);
 
         /// <summary>
+        /// Get all groups in a state
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        IEnumerable<Group> GetAllGroupsForState(string state);
+
+        /// <summary>
         /// Get all groups a user belongs to
         /// </summary>
         /// <param name="userId"></param>

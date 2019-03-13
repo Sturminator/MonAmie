@@ -13,6 +13,7 @@ export const groupActions = {
     getGroup,
     addUserToGroup,
     removeUserFromGroup,
+    getHomePageGroups,
     logout
 }
 
@@ -158,6 +159,22 @@ function removeUserFromGroup(userId, group) {
     function request(userId) { return { type: groupConstants.REMOVEUSERFROMGROUP_REQUEST, userId } }
     function success(group) { return { type: groupConstants.REMOVEUSERFROMGROUP_SUCCESS, group } }
     function failure(error) { return { type: groupConstants.REMOVEUSERFROMGROUP_FAILURE, error } }
+}
+
+function getHomePageGroups(userId, state) {
+    return dispatch => {
+        dispatch(request(userId));
+
+        groupService.getHomePageGroups(userId, state)
+            .then(
+                groups => dispatch(success(groups)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(userId) { return { type: groupConstants.GETHOMEPAGEGROUPS_REQUEST, userId } }
+    function success(groups) { return { type: groupConstants.GETHOMEPAGEGROUPS_SUCCESS, groups } }
+    function failure(error) { return { type: groupConstants.GETHOMEPAGEGROUPS_FAILURE, error } }
 }
 
 function logout() {
