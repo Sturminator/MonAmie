@@ -5,7 +5,7 @@ import { NavigationBar } from '../../Components';
 import { userProfileActions, categoryActions, imagesActions, groupActions } from '../../Actions';
 import {
     Table, Form, Segment, TextArea, Divider, Header, Label, Dropdown,
-    Icon, Grid, Container, Loader, Dimmer, Button, Popup, Modal
+    Icon, Grid, Container, Loader, Dimmer, Button, Popup, Modal, Input
 } from 'semantic-ui-react';
 
 import modalStyles from '../../Styles/modal.styles';
@@ -21,8 +21,6 @@ class ProfilePage extends Component {
         originalCategories: [],
         newCategories: [],
         bio: "",
-        imageFile: [],
-        files: undefined,
         editProfile: false,
         editCategories: false,
         groupSelected: false,
@@ -30,7 +28,7 @@ class ProfilePage extends Component {
     };
 
     componentDidMount() {
-        const { match: { params }, userProfile, user, images } = this.props;
+        const { match: { params }, userProfile, user } = this.props;
         var idStr = params.userId.split("_")[1];
         var id = parseInt(idStr) / 11;
 
@@ -38,13 +36,11 @@ class ProfilePage extends Component {
             this.props.dispatch(userProfileActions.getById(id, user.id));
             this.props.dispatch(categoryActions.getAll());
             this.props.dispatch(groupActions.getAllForUser(id));
-            //this.props.dispatch(imagesActions.viewImage(id));
         }
         else if (userProfile.items.id != id) {
             this.props.dispatch(userProfileActions.getById(id, user.id));
             this.props.dispatch(categoryActions.getAll());
             this.props.dispatch(groupActions.getAllForUser(id));
-            //this.props.dispatch(imagesActions.viewImage(id));
         }
     }
 
@@ -103,12 +99,15 @@ class ProfilePage extends Component {
 
     onEditProfileButtonClick = (e) => this.setState({
         editProfile: this.state.editProfile ? false : true,
-        bio: this.props.userProfile.items.bio,
+        bio: this.props.userProfile.items.bio
     });
 
-    onCancelProfileEditClick = (e) => this.setState({
-        editProfile: this.state.editProfile ? false : true
-    });
+    onCancelProfileEditClick = (e) => {
+        this.setState({
+            editProfile: this.state.editProfile ? false : true
+        });
+        window.location.reload();
+    }
 
     onAddInterestToUser = (e, { value }) => {
         var array = [...this.state.newCategories];
@@ -148,32 +147,17 @@ class ProfilePage extends Component {
     };
 
     onSaveProfileEditClick = (e) => {
-        const { match: { params }, userProfile, user } = this.props;
-        const { bio, files } = this.state;
+        const { userProfile } = this.props;
+        const { bio } = this.state;
 
         userProfile.items.bio = bio;
-
-
-        //value.files;
-        //userProfile.items.imageFile = files;
-
-
-        var idStr = params.userId.split("_")[1];
-        var id = parseInt(idStr) / 11;
 
         this.setState({
             editProfile: this.state.editProfile ? false : true
         });
 
         this.props.dispatch(userProfileActions.update(userProfile));
-        //this.props.dispatch(imagesActions.uploadImage(files, id))
-    };
-
-    imageChange = (e) => {
-
-        this.setState({
-            files: this.state.files.fill(e.target.value),
-        });
+        window.location.reload();
     };
 
     createUserCategoriesTable = () => {
@@ -342,11 +326,14 @@ class ProfilePage extends Component {
     }
 
     render() {
-        const { user, userProfile, images, userGroups } = this.props;
-        const { bio, editProfile, editCategories, image, files, groupSelected, redirectTo } = this.state;
+        const { user, userProfile, userGroups } = this.props;
 
-        if (groupSelected)
+        const { bio, editProfile, editCategories, groupSelected, redirectTo } = this.state;
+
+        if (groupSelected) {
             return <Redirect to={redirectTo} />
+        }
+
 
         if (!user) {
             return <Redirect to='/login' />
@@ -493,8 +480,13 @@ class ProfilePage extends Component {
                 <Modal style={modalStyles.EditProfileModal} size='tiny' open={editProfile} onClose={this.close}>
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Edit Profile</Modal.Header>
                     <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
-                        <label for="files">Upload profile picture</label>
-                        <input type="file" name={"files"} id={"files"} accept=".jpeg, .jpg, .png" onChange={this.imageChange.bind(this)} />
+                        <iframe name="hiddenFrame" class="hide"></iframe>
+                        <Form fluid='true' encType="multipart/form-data" action={"/api/UserImage/UploadImage/"} method="post" target="hiddenFrame">
+                            <b>Upload profile picture</b>
+                            <input type="file" name="files" accept=".jpeg, .jpg, .png" />
+                            <input type="hidden" name="userId" value={userProfile.items.id}/>
+                            <button>Save Profile Picture</button>
+                        </Form>
                         <Form fluid='true'>
                             <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
                                 <TextArea

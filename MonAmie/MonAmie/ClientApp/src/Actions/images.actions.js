@@ -7,6 +7,7 @@ export const imagesActions = {
     index,
     viewImage,
     uploadImage,
+    upload,
     logout
 };
 
@@ -62,6 +63,22 @@ function uploadImage(files, id)
     function request(id) { return { type: imagesConstants.UPLOADIMAGE_REQUEST, files, id } }
     function success(requests) { return { type: imagesConstants.UPLOADIMAGE_SUCCESS, requests } }
     function failure(error) { return { type: imagesConstants.UPLOADIMAGE_FAILURE, error } }
+}
+
+function upload(form) {
+    return dispatch => {
+        dispatch(request(form));
+
+        imagesService.upload(form)
+            .then(
+                form => dispatch(success(form)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(form) { return { type: imagesConstants.UPLOAD_REQUEST, form } }
+    function success(form) { return { type: imagesConstants.UPLOAD_SUCCESS, form } }
+    function failure(error) { return { type: imagesConstants.UPLOAD_FAILURE, error } }
 }
 
 function logout()

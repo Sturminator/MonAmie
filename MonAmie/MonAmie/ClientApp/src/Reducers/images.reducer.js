@@ -48,6 +48,21 @@ export function images(state = {}, action) {
                 loading: false,
                 error: action.error
             };
+        case imagesConstants.UPLOAD_REQUEST:
+            return {
+                loading: true,
+                id: action.id
+            };
+        case imagesConstants.UPLOAD_SUCCESS:
+            return {
+                loading: false,
+                items: action.requests
+            };
+        case imagesConstants.UPLOAD_FAILURE:
+            return {
+                loading: false,
+                error: action.error
+            };
 
         case authConstants.LOGOUT:
             return {}

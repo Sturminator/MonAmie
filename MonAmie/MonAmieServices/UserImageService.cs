@@ -98,7 +98,10 @@ namespace MonAmieServices
 
             if (entity != null)
             {
-                _context.UserImage.Update(userImage);
+                _context.UserImage.Remove(entity);
+                _context.SaveChanges();
+
+                _context.UserImage.Add(userImage);
                 _context.SaveChanges();
             }
         }

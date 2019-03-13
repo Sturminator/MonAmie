@@ -4,6 +4,7 @@ export const imagesService = {
     index,
     viewImage,
     uploadImage,
+    upload,
     logout
 };
 
@@ -28,13 +29,33 @@ function viewImage(id) {
 
 function uploadImage(files, id) {
 
+
+    var newObject = {
+        'name': files.name,
+        'data': files.data,
+        'width': files.width,
+        'height': files.height,
+        'type': files.type
+    };
+
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(files)
+        body: JSON.stringify(newObject)
     };
 
     return fetch(`api/UserImage/UploadImage/` + id, requestOptions).then(handleResponse);
+}
+
+function upload(form) {
+
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+    };
+
+    return fetch(`api/UserImage/Upload/`, requestOptions).then(handleResponse);
 }
 
 function logout() {
