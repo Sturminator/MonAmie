@@ -26,6 +26,7 @@ namespace MonAmieData
         public DbSet<UserMessage> UserMessage { get; set; }
         public DbSet<UserHasFriend> UserHasFriend { get; set; }
         public DbSet<UserHasFriendRequest> UserHasFriendRequest { get; set; }
+        public DbSet<GroupImage> GroupImage { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

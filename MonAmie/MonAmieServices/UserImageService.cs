@@ -98,10 +98,13 @@ namespace MonAmieServices
 
             if (entity != null)
             {
-                _context.UserImage.Remove(entity);
-                _context.SaveChanges();
+                entity.FileName = userImage.FileName;
+                entity.Data = userImage.Data;
+                entity.Width = userImage.Width;
+                entity.Height = userImage.Height;
+                entity.ContentType = userImage.ContentType;
 
-                _context.UserImage.Add(userImage);
+                _context.UserImage.Update(entity);
                 _context.SaveChanges();
             }
         }
