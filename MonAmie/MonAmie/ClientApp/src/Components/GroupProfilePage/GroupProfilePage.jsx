@@ -105,9 +105,19 @@ class GroupProfilePage extends Component {
         });
     }
 
-    onCancelEditGroupButtonClick = () => this.setState({
-        updateGroup: false
-    });
+    handleImageChange = () => {
+        this.setState({
+            canUpdateGroup: true
+        });
+    }
+
+
+    onCancelEditGroupButtonClick = () => {
+        this.setState({
+            updateGroup: false
+        });
+        window.location.reload();
+    }
 
     onSaveEditGroupButtonClick = (e) => {
         const { editedGroup } = this.state;
@@ -123,6 +133,8 @@ class GroupProfilePage extends Component {
         this.setState({
             updateGroup: this.state.updateGroup ? false : true
         })
+
+        window.location.reload();
     };
 
     onEditGroupButtonClick = () => {
@@ -394,7 +406,11 @@ class GroupProfilePage extends Component {
                             </Grid>
                             <Container>
                                 <Header as='h1' icon textAlign='center'>
-                                    <Icon name='group' />
+                                    <object data={"/api/GroupImage/ViewImageDirect/" + group.group.id} type="image/png" width="200" height="180">
+                                        <object data={"/api/GroupImage/ViewImageDirect/" + group.group.groupId} type="image/png" width="250" height="250">
+                                            <Icon name='group' size='massive' />
+                                        </object>
+                                    </object>
                                     <Header.Content style={{ color: 'white' }}>{group.group.groupName}</Header.Content>
                                 </Header>
                                 <Grid fluid='true' columns={3}>
@@ -482,6 +498,7 @@ class GroupProfilePage extends Component {
                                 <Form.Select clearable search fluid label="State" placeholder="Choose an option" options={states} noResultsMessage='No results found.' value={editedGroup.state} onChange={this.handleStateChange} />
                                 <Form.Select clearable noResultsMessage='No results found.' placeholder="Search/Select a category" search fluid label="Category" options={this.createCategoryDropdown()} value={editedGroup.categoryId} onChange={this.handleCategoryChange} />
                             </Form.Group>
+                            <iframe name="hiddenFrame" class="hide"></iframe>
                             <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
                                 <TextArea
                                     name='description'
@@ -493,6 +510,12 @@ class GroupProfilePage extends Component {
                                 />
                                 <Header sub style={{ color: 'white' }}>Characters: {editedGroup.description ? editedGroup.description.length : 0} / 500</Header>
                             </Segment>
+                        </Form>
+                        <Form fluid='true' encType="multipart/form-data" action={"/api/GroupImage/UploadImage/"} method="post" target="hiddenFrame" onSubmit={this.handleImageChange}>
+                            <b>Upload profile picture</b>
+                            <input type="file" name="files" accept=".jpeg, .jpg, .png" />
+                            <input type="hidden" name="groupId" value={group.group.groupId} />
+                            <Button type="submit">Save Profile Picture</Button>
                         </Form>
                     </Modal.Content>
                     <Modal.Actions style={{ backgroundColor: '#374785' }}>
@@ -515,7 +538,9 @@ class GroupProfilePage extends Component {
                         </Grid>
                         <Container>
                             <Header as='h1' icon textAlign='center'>
-                                <Icon name='group' />
+                                <object data={"/api/GroupImage/ViewImageDirect/" + group.group.groupId} type="image/png" width="200" height="180">
+                                    <Icon name='group' size='massive'/>
+                                </object>
                                 <Header.Content style={{ color: 'white' }}>{group.group.groupName}</Header.Content>
                             </Header>
                             <Grid fluid='true' columns={3}>

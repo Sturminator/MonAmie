@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions } from '../../Actions';
-import { Dimmer, Loader, Container, Segment, Divider, Grid, Header, Card, Button, Popup } from 'semantic-ui-react';
+import { Dimmer, Loader, Container, Segment, Divider, Grid, Header, Card, Button, Popup, Icon } from 'semantic-ui-react';
 import { history } from '../../Helpers';
 
 class GroupsCategoryPage extends Component {
@@ -46,6 +46,9 @@ class GroupsCategoryPage extends Component {
             for (let i = 0; i < groupList.length; i++) {
                 var children = [];
                 children.push(<Card.Content>
+                    <object data={"/api/GroupImage/ViewImageDirect/" + groupList[i].groupId} type="image/png" width="160" height="140">
+                        <Icon name='group' size='massive' />
+                    </object>
                     <Popup trigger={<Button onClick={this.goToProfile} value={groupList[i]} floated='right' color='blue' icon='group' />} content='View Profile' />
                 </Card.Content>)
                 children.push(<Card.Header textAlign='left'>

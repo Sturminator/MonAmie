@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { userActions, friendActions } from '../../Actions';
-import { Segment, Container, Grid, Header, Divider, Card, Dimmer, Loader, Button, Popup, Modal, Checkbox } from 'semantic-ui-react';
+import { Segment, Container, Grid, Header, Divider, Card, Dimmer, Loader, Button, Popup, Modal, Checkbox, Icon } from 'semantic-ui-react';
 import { history } from '../../Helpers';
 import modalStyles from '../../Styles/modal.styles';
 
@@ -186,6 +186,9 @@ class FriendsPage extends Component {
                     var children = []
                     //Inner loop to create children
                     children.push(<Card.Content>
+                        <object data={"/api/UserImage/ViewImageDirect/" + friends.items[i].id} type="image/png" width="60" height="60">
+                            <Icon name='user' size='huge' />
+                        </object>
                         <Popup trigger={<Button value={friends.items[i]} floated='left' onClick={this.onDeleteFriendClick} color='red' icon='remove user' />} content='Remove Friend' />
                         <Popup trigger={<Button value={friends.items[i]} floated='right' onClick={this.goToProfile} color='blue' icon='user' />} content='View Profile' />
                     </Card.Content>)
@@ -214,6 +217,9 @@ class FriendsPage extends Component {
                     var children = []
                     //Inner loop to create children
                     children.push(<Card.Content>
+                        <object data={"/api/UserImage/ViewImageDirect/" + requests.items[i].id} type="image/png" width="60" height="60">
+                            <Icon name='user' size='huge' />
+                        </object>
                         <Popup trigger={<Button value={requests.items[i]} floated='right' onClick={this.goToProfile} color='blue' icon='user' />} content='View Profile' />
                     </Card.Content>)
                     children.push(<Card.Header textAlign='center'>
@@ -260,6 +266,9 @@ class FriendsPage extends Component {
                         var children = []
                         //Inner loop to create children
                         children.push(<Card.Content>
+                            <object data={"/api/UserImage/ViewImageDirect/" + userList[i].id} type="image/png" width="60" height="60">
+                                <Icon name='user' size='huge' />
+                            </object>
                             <Popup trigger={<Button value={userList[i]} floated='right' onClick={this.goToProfile} color='blue' icon='user' />} content='View Profile' />
                         </Card.Content>)
                         children.push(<Card.Header textAlign='left'>

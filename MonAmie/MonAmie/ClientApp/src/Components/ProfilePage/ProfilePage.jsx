@@ -14,8 +14,6 @@ import { userProfile } from '../../Reducers/userProfile.reducer';
 import { images } from '../../Reducers/images.reducer';
 import { object } from 'prop-types';
 
-import UIcon from '../../Images/icon.png';
-
 class ProfilePage extends Component {
     state = {
         originalCategories: [],
@@ -383,7 +381,7 @@ class ProfilePage extends Component {
                             <Container>
                                 <Header as='h1' icon textAlign='center'>
                                     <object data={"/api/UserImage/ViewImageDirect/" + userProfile.items.id} type="image/png" width="250" height="250">
-                                        <img src={UIcon} alt="User Profile Picture" width="120" height="120" />
+                                        <Icon name='user' />
                                     </object>
                                     <Header.Content style={{ color: 'white' }}>{userProfile.items.fullName}</Header.Content>
                                 </Header>
@@ -485,7 +483,7 @@ class ProfilePage extends Component {
                             <b>Upload profile picture</b>
                             <input type="file" name="files" accept=".jpeg, .jpg, .png" />
                             <input type="hidden" name="userId" value={userProfile.items.id}/>
-                            <button>Save Profile Picture</button>
+                            <Button type="submit">Save Profile Picture</Button>
                         </Form>
                         <Form fluid='true'>
                             <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
@@ -519,7 +517,7 @@ class ProfilePage extends Component {
                         <Container>
                             <Header as='h1' icon textAlign='center'>
                                 <object data={"/api/UserImage/ViewImageDirect/" + userProfile.items.id} type="image/png" width="250" height="250">
-                                    <img src={UIcon} alt="User Profile Picture" width="120" height="120" />
+                                    <Icon name='user' />
                                 </object>
                                 <Header.Content style={{ color: 'white' }}>{userProfile.items.fullName}</Header.Content>
                             </Header>

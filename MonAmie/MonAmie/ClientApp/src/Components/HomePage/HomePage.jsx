@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Card, Grid, Container, Dimmer, Loader, Segment, Header, Popup, Divider, Button } from 'semantic-ui-react';
+import { Card, Grid, Container, Dimmer, Loader, Segment, Header, Popup, Divider, Button, Icon } from 'semantic-ui-react';
 import { NavigationBar } from '../../Components';
 import { groupActions, friendActions } from '../../Actions';
 import { history } from '../../Helpers';
@@ -35,6 +35,9 @@ class HomePage extends Component {
             for (let i = 0; i < userGroups.length; i++) {
                 var children = [];
                 children.push(<Card.Content>
+                    <object data={"/api/GroupImage/ViewImageDirect/" + userGroups[i].groupId} type="image/png" width="140" height="130">
+                        <Icon name='group' size='massive' />
+                    </object>
                     <Popup trigger={<Button onClick={this.goToGroupProfile} value={userGroups[i]} floated='right' color='blue' icon='group' />} content='View Profile' />
                 </Card.Content>)
                 children.push(<Card.Header textAlign='left'>
@@ -67,6 +70,9 @@ class HomePage extends Component {
                 for (let i = 0; i < suggestedGroups.length; i++) {
                     var children = [];
                     children.push(<Card.Content>
+                        <object data={"/api/GroupImage/ViewImageDirect/" + suggestedGroups[i].groupId} type="image/png" width="140" height="130">
+                            <Icon name='group' size='massive' />
+                        </object>
                         <Popup trigger={<Button onClick={this.goToGroupProfile} value={suggestedGroups[i]} floated='right' color='blue' icon='group' />} content='View Profile' />
                     </Card.Content>)
                     children.push(<Card.Header textAlign='left'>
@@ -105,6 +111,9 @@ class HomePage extends Component {
                     var children = []
                     //Inner loop to create children
                     children.push(<Card.Content>
+                        <object data={"/api/UserImage/ViewImageDirect/" + friends.items[i].id} type="image/png" width="120" height="110">
+                            <Icon name='user' size='massive' />
+                        </object>
                         <Popup trigger={<Button value={friends.items[i]} floated='right' onClick={this.goToProfile} color='blue' icon='user' />} content='View Profile' />
                     </Card.Content>)
                     children.push(<Card.Header textAlign='center'>

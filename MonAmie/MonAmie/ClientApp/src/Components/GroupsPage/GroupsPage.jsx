@@ -5,7 +5,7 @@ import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions } from '../../Actions';
 import {
     Container, Grid, Header, Segment, Popup, Button, Divider,
-    Modal, Form, TextArea, Image, Card, Dimmer, Loader
+    Modal, Form, TextArea, Image, Card, Dimmer, Loader, Icon
 } from 'semantic-ui-react';
 import { states } from '../../Enums';
 import modalStyles from '../../Styles/modal.styles';
@@ -104,6 +104,9 @@ class GroupsPage extends Component {
             for (let i = 0; i < userGroups.groups.length; i++) {
                 var children = [];
                 children.push(<Card.Content>
+                    <object data={"/api/GroupImage/ViewImageDirect/" + userGroups.groups[i].groupId} type="image/png" width="140" height="120">
+                        <Icon name='group' size='massive'/>
+                    </object>
                     <Popup trigger={<Button onClick={this.goToProfile} value={userGroups.groups[i]} floated='right' color='blue' icon='group' />} content='View Profile' />
                 </Card.Content>)
                 children.push(<Card.Header textAlign='left'>

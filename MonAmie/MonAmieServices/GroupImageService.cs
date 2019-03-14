@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace MonAmieServices
 {
-    class GroupImageService : IGroupImageService
+    public class GroupImageService : IGroupImageService
     {
         private MonAmieContext _context;
 
