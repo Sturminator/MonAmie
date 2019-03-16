@@ -45,8 +45,14 @@ export default {
         color: 'white'
     },
 
-    cardStyle: {
-        backgroundColor: '#374785',
-        display: 'inline-block'
+    customButton: {
+        marginTop: '10px',
+        marginBottom: '10px',
+        color: 'white'
+    },
+
+    customGroupButtom: {
+        marginTop: '10px',
+        color: 'white'
     }
 }

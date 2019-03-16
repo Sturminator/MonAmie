@@ -511,11 +511,11 @@ class GroupProfilePage extends Component {
                                 <Header sub style={{ color: 'white' }}>Characters: {editedGroup.description ? editedGroup.description.length : 0} / 500</Header>
                             </Segment>
                         </Form>
-                        <Form fluid='true' encType="multipart/form-data" action={"/api/GroupImage/UploadImage/"} method="post" target="hiddenFrame" onSubmit={this.handleImageChange}>
-                            <b>Upload profile picture</b>
-                            <input type="file" name="files" accept=".jpeg, .jpg, .png" />
+                        <Form style={{marginTop: '10px'}} fluid='true' encType="multipart/form-data" action={"/api/GroupImage/UploadImage/"} method="post" target="hiddenFrame" onSubmit={this.handleImageChange}>
+                            <b style={{color: 'black'}}>Upload profile picture</b>
+                            <input style={{ backgroundColor: '#374785', color: 'white' }} type="file" name="files" accept=".jpeg, .jpg, .png" />
                             <input type="hidden" name="groupId" value={group.group.groupId} />
-                            <Button type="submit">Save Profile Picture</Button>
+                            <Button style={modalStyles.customGroupButtom} color='green' type="submit">Save Profile Picture</Button>
                         </Form>
                     </Modal.Content>
                     <Modal.Actions style={{ backgroundColor: '#374785' }}>

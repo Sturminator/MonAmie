@@ -481,9 +481,9 @@ class ProfilePage extends Component {
                         <iframe name="hiddenFrame" class="hide"></iframe>
                         <Form fluid='true' encType="multipart/form-data" action={"/api/UserImage/UploadImage/"} method="post" target="hiddenFrame">
                             <b>Upload profile picture</b>
-                            <input type="file" name="files" accept=".jpeg, .jpg, .png" />
-                            <input type="hidden" name="userId" value={userProfile.items.id}/>
-                            <Button style={{marginTop: '10px', marginBottom: '10px'}} type="submit">Save Profile Picture</Button>
+                            <input style={{ backgroundColor: '#374785', color: 'white'}} type="file" name="files" accept=".jpeg, .jpg, .png" />
+                            <input type="hidden" name="userId" value={userProfile.items.id} />
+                            <Button style={modalStyles.customButton} color='green' type="submit">Save Profile Picture</Button>
                         </Form>
                         <Form fluid='true'>
                             <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
