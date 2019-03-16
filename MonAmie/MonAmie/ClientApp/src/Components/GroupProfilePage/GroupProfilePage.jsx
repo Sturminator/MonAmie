@@ -1,11 +1,11 @@
-﻿import React, { Component } from 'react';
+﻿import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions } from '../../Actions';
 import modalStyles from '../../Styles/modal.styles';
 import { states } from '../../Enums';
-import { Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon, Popup, Header, Modal, Form, TextArea, Label, Feed } from 'semantic-ui-react';
+import { Ref, Sticky, Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon, Popup, Header, Modal, Form, TextArea, Label, Feed, Rail, Breadcrumb, Menu } from 'semantic-ui-react';
 import { history } from '../../Helpers';
 
 class GroupProfilePage extends Component {
@@ -25,13 +25,18 @@ class GroupProfilePage extends Component {
             confirmLeave: false,
             userSelected: false,
             redirectTo: "",
-            showAllActivity: false
+            showAllActivity: false,
+            context: null
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleCategoryChange = this.handleCategoryChange.bind(this);
         this.handleStateChange = this.handleStateChange.bind(this);
     }
+
+    handleContextRef = ref => {
+        this.setState({ context: ref });
+    };
 
     componentDidMount() {
         const { match: { params }, group, categories } = this.props;
@@ -320,7 +325,7 @@ class GroupProfilePage extends Component {
                                 </Feed.Summary>
                                 <Feed.Extra text style={{ color: 'white' }}>
                                     {groupActivity[i].newVal}
-                                 </Feed.Extra>
+                                </Feed.Extra>
                             </Feed.Content>
                         </Feed.Event>);
                     }
@@ -328,6 +333,10 @@ class GroupProfilePage extends Component {
             }
         }
         return activities;
+    }
+
+    createCommentSection() {
+
     }
 
     render() {
@@ -368,8 +377,7 @@ class GroupProfilePage extends Component {
         if (group.group.ownerId != user.id) {
             return (
                 <div>
-                    <NavigationBar>
-                    </NavigationBar>
+                    <NavigationBar />
                     <style>{`html, body {background-color: #24305E !important; } `}</style>
                     <Modal style={modalStyles.EditProfileModal} size='tiny' open={showAllActivity} onClose={this.close}>
                         <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Activity for {group.group.groupName} </Modal.Header>
@@ -457,6 +465,18 @@ class GroupProfilePage extends Component {
                                 <Divider style={{ backgroundColor: 'white' }} />
                                 <Label.Group size='medium' color='blue' children={this.createMemberLabels()} />
                             </Segment>
+                            <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
+                                <Grid columns='equal'>
+                                    <Grid.Column>
+                                        <Header size='large' style={{ color: 'white' }} textAlign='left'>Comments</Header>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                    </Grid.Column>
+                                </Grid>
+                                <Divider style={{ backgroundColor: 'white' }} />
+                            </Segment>
                         </Segment>
                     </Container>
                 </div>
@@ -464,9 +484,17 @@ class GroupProfilePage extends Component {
         }
 
         return (
-            <div>
-                <NavigationBar>
-                </NavigationBar>
+            <div ref={this.handleContextRef} >
+                <Rail
+                    internal
+                    position="left"
+                    attached
+                    style={{ width: "100%" }}
+                >
+                    <Sticky context={this.state.context}>
+                        <NavigationBar />
+                    </Sticky>
+                </Rail>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
                 <Modal style={modalStyles.EditProfileModal} size='tiny' open={showAllActivity} onClose={this.close}>
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Activity for {group.group.groupName} </Modal.Header>
@@ -511,8 +539,8 @@ class GroupProfilePage extends Component {
                                 <Header sub style={{ color: 'white' }}>Characters: {editedGroup.description ? editedGroup.description.length : 0} / 500</Header>
                             </Segment>
                         </Form>
-                        <Form style={{marginTop: '10px'}} fluid='true' encType="multipart/form-data" action={"/api/GroupImage/UploadImage/"} method="post" target="hiddenFrame" onSubmit={this.handleImageChange}>
-                            <b style={{color: 'black'}}>Upload profile picture</b>
+                        <Form style={{ marginTop: '10px' }} fluid='true' encType="multipart/form-data" action={"/api/GroupImage/UploadImage/"} method="post" target="hiddenFrame" onSubmit={this.handleImageChange}>
+                            <b style={{ color: 'black' }}>Upload profile picture</b>
                             <input style={{ backgroundColor: '#374785', color: 'white' }} type="file" name="files" accept=".jpeg, .jpg, .png" />
                             <input type="hidden" name="groupId" value={group.group.groupId} />
                             <Button style={modalStyles.customGroupButtom} color='green' type="submit">Save Profile Picture</Button>
@@ -539,7 +567,7 @@ class GroupProfilePage extends Component {
                         <Container>
                             <Header as='h1' icon textAlign='center'>
                                 <object data={"/api/GroupImage/ViewImageDirect/" + group.group.groupId} type="image/png" width="200" height="180">
-                                    <Icon name='group' size='massive'/>
+                                    <Icon name='group' size='massive' />
                                 </object>
                                 <Header.Content style={{ color: 'white' }}>{group.group.groupName}</Header.Content>
                             </Header>
@@ -586,6 +614,18 @@ class GroupProfilePage extends Component {
                             </Grid>
                             <Divider style={{ backgroundColor: 'white' }} />
                             <Label.Group size='medium' color='blue' children={this.createMemberLabels()} />
+                        </Segment>
+                        <Segment style={{ backgroundColor: '#374785', minHeight: '150px' }}>
+                            <Grid columns='equal'>
+                                <Grid.Column>
+                                    <Header size='large' style={{ color: 'white' }} textAlign='left'>Comments</Header>
+                                </Grid.Column>
+                                <Grid.Column>
+                                </Grid.Column>
+                                <Grid.Column>
+                                </Grid.Column>
+                            </Grid>
+                            <Divider style={{ backgroundColor: 'white' }} />
                         </Segment>
                     </Segment>
                 </Container>
