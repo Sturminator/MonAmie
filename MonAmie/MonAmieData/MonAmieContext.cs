@@ -16,10 +16,8 @@ namespace MonAmieData
         public DbSet<Interest> Interest { get; set; }
         public DbSet<Group> Group { get; set; }
         public DbSet<Event> Event { get; set; }
-        public DbSet<Tag> Tag { get; set; }
         public DbSet<GroupHasUser> GroupHasUser { get; set; }
         public DbSet<GroupHasActivity> GroupHasActivity { get; set; }
-        public DbSet<GroupHasTag> GroupHasTag { get; set; }
         public DbSet<UserHasInterest> UserHasInterest { get; set; }
         public DbSet<UserHasCategory> UserHasCategory { get; set; }
         public DbSet<UserImage> UserImage { get; set; }      
@@ -27,6 +25,7 @@ namespace MonAmieData
         public DbSet<UserHasFriend> UserHasFriend { get; set; }
         public DbSet<UserHasFriendRequest> UserHasFriendRequest { get; set; }
         public DbSet<GroupImage> GroupImage { get; set; }
+        public DbSet<GroupComment> GroupComment { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -85,6 +84,18 @@ namespace MonAmieData
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<GroupHasActivity>()
+                .HasOne(g => g.User)
+                .WithMany()
+                .HasForeignKey(g => g.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<GroupComment>()
+                .HasOne(g => g.Group)
+                .WithMany()
+                .HasForeignKey(g => g.GroupId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<GroupComment>()
                 .HasOne(g => g.User)
                 .WithMany()
                 .HasForeignKey(g => g.UserId)

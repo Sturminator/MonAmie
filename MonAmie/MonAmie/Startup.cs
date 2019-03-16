@@ -82,6 +82,7 @@ namespace MonAmie
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IUserImageService, UserImageService>();
             services.AddScoped<IGroupImageService, GroupImageService>();
+            services.AddScoped<ICommentService, CommentService>();
 
             services.AddSpaStaticFiles(configuration =>
             {
