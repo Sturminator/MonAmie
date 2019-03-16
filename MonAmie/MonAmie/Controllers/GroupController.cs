@@ -546,18 +546,18 @@ namespace MonAmie.Controllers
         {
             var dateString = "";
 
-            if (dateWhen.Hours < 1 && dateWhen.Minutes < 1)
+            if (dateWhen.Hours < 1 && dateWhen.Minutes < 1 && dateWhen.Days == 0)
             {
                 dateString = "Just Now";
             }
-            else if (dateWhen.Hours < 1 && dateWhen.Minutes >= 1)
+            else if (dateWhen.Hours < 1 && dateWhen.Minutes >= 1 && dateWhen.Days == 0)
             {
                 if (dateWhen.Minutes == 1)
                     dateString = dateWhen.Minutes + " Minute Ago";
                 else
                     dateString = dateWhen.Minutes + " Minutes Ago";
             }
-            else if (dateWhen.Hours >= 1 && dateWhen.Days < 1)
+            else if (dateWhen.Hours >= 1 && dateWhen.Days < 1 && dateWhen.Days == 0)
             {
                 if (dateWhen.Hours == 1)
                     dateString = dateWhen.Hours + " Hour Ago";
