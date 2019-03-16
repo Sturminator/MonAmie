@@ -15,7 +15,7 @@ namespace MonAmieData.Models
         [Required]
         public int UserId { get; set; }
 
-        public int ParentId { get; set; }
+        public int? ParentId { get; set; }
 
         [Column(TypeName = "varchar(MAX)")]
         public string Comment { get; set; }

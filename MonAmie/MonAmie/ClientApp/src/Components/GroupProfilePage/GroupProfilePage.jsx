@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
-import { categoryActions, groupActions } from '../../Actions';
+import { categoryActions, groupActions, commentsActions } from '../../Actions';
 import modalStyles from '../../Styles/modal.styles';
 import { states } from '../../Enums';
 import { Sticky, Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon, Popup, Header, Modal, Form, TextArea, Label, Feed, Rail } from 'semantic-ui-react';
@@ -50,9 +50,11 @@ class GroupProfilePage extends Component {
 
         if (!group.group) {
             this.props.dispatch(groupActions.getGroup(id));
+            this.props.dispatch(commentsActions.getAllForGroup(id));
         }
         else if (group.group.groupId != id) {
             this.props.dispatch(groupActions.getGroup(id));
+            this.props.dispatch(commentsActions.getAllForGroup(id));
         }
     }
 

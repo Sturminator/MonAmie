@@ -28,7 +28,7 @@ namespace MonAmie.Controllers
             public int GroupCommentId { get; set; }
             public int GroupId { get; set; }
             public int UserId { get; set; }
-            public int ParentId { get; set; }
+            public int? ParentId { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public string Comment { get; set; }
@@ -60,7 +60,7 @@ namespace MonAmie.Controllers
                     GroupCommentId = comment.GroupCommentId,
                     GroupId = comment.GroupId,
                     UserId = comment.UserId,
-                    ParentId = comment.ParentId,
+                    ParentId = comment.ParentId != null ? (int)(comment.ParentId) : comment.ParentId,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Comment = comment.Comment,
