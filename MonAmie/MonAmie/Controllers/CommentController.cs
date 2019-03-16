@@ -33,6 +33,11 @@ namespace MonAmie.Controllers
             public string LastName { get; set; }
             public string Comment { get; set; }
             public string Date { get; set; }
+        }
+
+        public class GroupCommentViewModel
+        {
+            public GroupCommentModel Comment { get; set; }
             public List<GroupCommentModel> CurrentComments { get; set; }
         }
 
@@ -69,7 +74,7 @@ namespace MonAmie.Controllers
         [HttpPost]
         [Route("api/GroupComment/AddGroupComment/{groupId}")]
         [Route("group/api/GroupComment/AddGroupComment/{groupId}")]
-        public IActionResult AddGroupComment(int groupId, [FromBody]GroupCommentModel groupComment)
+        public IActionResult AddGroupComment(int groupId, [FromBody]GroupCommentViewModel groupComment)
         {
             if (groupComment == null)
                 return BadRequest("Comment cannot be null.");
@@ -77,31 +82,31 @@ namespace MonAmie.Controllers
             if (groupId < 1)
                 return BadRequest("Group could not be found.");
 
-            if (string.IsNullOrEmpty(groupComment.Comment))
+            if (string.IsNullOrEmpty(groupComment.Comment.Comment))
                 return BadRequest("Missing a comment.");
 
             var groupCommentId = commentService.AddGroupComment(new GroupComment
             {
                 GroupId = groupId,
-                UserId = groupComment.UserId,
-                ParentId = groupComment.ParentId,
-                Comment = groupComment.Comment,
+                UserId = groupComment.Comment.UserId,
+                ParentId = groupComment.Comment.ParentId,
+                Comment = groupComment.Comment.Comment,
                 PostDate = DateTime.UtcNow              
             });
 
             if (groupCommentId > 0)
             {
-                var user = userService.GetById(groupComment.UserId);
+                var user = userService.GetById(groupComment.Comment.UserId);
 
                 groupComment.CurrentComments.Add(new GroupCommentModel
                 {
                     GroupCommentId = groupCommentId,
-                    GroupId = groupComment.GroupId,
-                    UserId = groupComment.UserId,
-                    ParentId = groupComment.ParentId,
+                    GroupId = groupComment.Comment.GroupId,
+                    UserId = groupComment.Comment.UserId,
+                    ParentId = groupComment.Comment.ParentId,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Comment = groupComment.Comment,
+                    Comment = groupComment.Comment.Comment,
                     Date = "Just Now"
                 });
             }
@@ -112,7 +117,7 @@ namespace MonAmie.Controllers
         [HttpPut]
         [Route("api/GroupComment/UpdateGroupComment/{groupCommentId}")]
         [Route("group/api/GroupComment/UpdateGroupComment/{groupCommentId}")]
-        public IActionResult UpdateGroupComment(int groupCommentId, [FromBody]GroupCommentModel groupComment)
+        public IActionResult UpdateGroupComment(int groupCommentId, [FromBody]GroupCommentViewModel groupComment)
         {
             if (groupComment == null)
                 return BadRequest("Comment cannot be null.");
@@ -120,12 +125,12 @@ namespace MonAmie.Controllers
             if (groupCommentId < 1)
                 return BadRequest("Group could not be found.");
 
-            if (string.IsNullOrEmpty(groupComment.Comment))
+            if (string.IsNullOrEmpty(groupComment.Comment.Comment))
                 return BadRequest("Missing a comment.");
 
-            commentService.UpdateGroupComment(groupCommentId, groupComment.Comment);
+            commentService.UpdateGroupComment(groupCommentId, groupComment.Comment.Comment);
 
-            groupComment.CurrentComments.FirstOrDefault(cc => cc.GroupCommentId == groupCommentId).Comment = groupComment.Comment;
+            groupComment.CurrentComments.FirstOrDefault(cc => cc.GroupCommentId == groupCommentId).Comment = groupComment.Comment.Comment;
 
 
             return Ok(groupComment.CurrentComments);

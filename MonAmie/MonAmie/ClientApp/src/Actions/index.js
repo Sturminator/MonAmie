@@ -6,3 +6,4 @@ export * from './user.actions';
 export * from './friend.actions';
 export * from './images.actions';
 export * from './group.actions';
+export * from './comments.actions';

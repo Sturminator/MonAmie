@@ -1,4 +1,4 @@
-﻿// These are the redux friend action types that are able to be dispatched in the app
+﻿// These are the redux group action types that are able to be dispatched in the app
 // Async actions that perform http requests involve a request followed by a success or error response.
 
 export const groupConstants = {

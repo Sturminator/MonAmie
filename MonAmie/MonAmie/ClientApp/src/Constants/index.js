@@ -6,3 +6,4 @@ export * from './user.constants';
 export * from './friend.constants';
 export * from './images.constants';
 export * from './group.constants';
+export * from './comments.constants';

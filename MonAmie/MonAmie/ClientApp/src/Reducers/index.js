@@ -8,6 +8,7 @@ import { users } from './user.reducer';
 import { friends, requests } from './friend.reducer';
 import { images } from './images.reducer';
 import { groups, userGroups, group, homePageGroups } from './group.reducer';
+import { groupComments } from './comments.reducer';
 
 const rootReducer = combineReducers({
     authentication,
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
     groups,
     userGroups,
     group,
-    homePageGroups
+    homePageGroups,
+    groupComments
 });
 
 export default rootReducer;

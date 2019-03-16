@@ -5,3 +5,4 @@ export * from './user.service';
 export * from './friend.service';
 export * from './images.service';
 export * from './group.service';
+export * from './comments.service';
