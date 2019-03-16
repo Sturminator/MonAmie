@@ -376,8 +376,17 @@ class GroupProfilePage extends Component {
 
         if (group.group.ownerId != user.id) {
             return (
-                <div>
-                    <NavigationBar />
+                <div ref={this.handleContextRef}>
+                    <Rail
+                        internal
+                        position="left"
+                        attached
+                        style={{ width: "100%" }}
+                    >
+                        <Sticky context={this.state.context}>
+                            <NavigationBar />
+                        </Sticky>
+                    </Rail>
                     <style>{`html, body {background-color: #24305E !important; } `}</style>
                     <Modal style={modalStyles.EditProfileModal} size='tiny' open={showAllActivity} onClose={this.close}>
                         <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Activity for {group.group.groupName} </Modal.Header>
