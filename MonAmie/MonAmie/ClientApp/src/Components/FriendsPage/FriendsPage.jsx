@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { userActions, friendActions } from '../../Actions';
-import { Segment, Container, Grid, Header, Divider, Card, Dimmer, Loader, Button, Popup, Modal, Checkbox, Icon } from 'semantic-ui-react';
+import { Segment, Container, Grid, Header, Divider, Card, Dimmer, Loader, Button, Popup, Modal, Checkbox, Icon, Rail, Sticky } from 'semantic-ui-react';
 import { history } from '../../Helpers';
 import modalStyles from '../../Styles/modal.styles';
 
@@ -18,7 +18,12 @@ class FriendsPage extends Component {
         refreshUsers: false,
         addToUsers: false,
         removeFromUsers: false,
-        showAllStates: false
+        showAllStates: false,
+        context: null
+    };
+
+    handleContextRef = ref => {
+        this.setState({ context: ref });
     };
 
     componentDidMount() {
@@ -344,9 +349,17 @@ class FriendsPage extends Component {
             </div>);
 
         return (
-            <div>
-                <NavigationBar>
-                </NavigationBar>
+            <div ref={this.handleContextRef}>
+                <Rail
+                    internal
+                    position="left"
+                    attached
+                    style={{width: "100%" }}
+                >
+                    <Sticky context={this.state.context}>
+                        <NavigationBar />
+                    </Sticky>
+                </Rail>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
                 <Modal style={modalStyles.confirmDeleteModal} size='tiny' open={confirmDelete} onClose={this.close}>
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Remove Friend</Modal.Header>
@@ -358,7 +371,7 @@ class FriendsPage extends Component {
                         <Button positive onClick={this.onConfirmDeleteFriendClick} icon='checkmark' labelPosition='right' content='Yes' />
                     </Modal.Actions>
                 </Modal>
-                <Container fluid style={{ margin: '5px' }}>
+                <Container fluid style={{ margin: '5px', marginTop: '50px' }}>
                     <Segment fluid='true' style={{ backgroundColor: '#a8d0e6', minHeight: '275px' }}>
                         <Grid stackable columns='equal'>
                             <Grid.Column>

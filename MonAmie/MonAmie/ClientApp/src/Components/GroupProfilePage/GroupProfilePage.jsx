@@ -1,11 +1,11 @@
-﻿import React, { Component, createRef } from 'react';
+﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions } from '../../Actions';
 import modalStyles from '../../Styles/modal.styles';
 import { states } from '../../Enums';
-import { Ref, Sticky, Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon, Popup, Header, Modal, Form, TextArea, Label, Feed, Rail, Breadcrumb, Menu } from 'semantic-ui-react';
+import { Sticky, Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon, Popup, Header, Modal, Form, TextArea, Label, Feed, Rail } from 'semantic-ui-react';
 import { history } from '../../Helpers';
 
 class GroupProfilePage extends Component {
