@@ -185,7 +185,7 @@ class FriendsPage extends Component {
                 if (user.id !== friends.items[i].id) {
                     var children = []
                     //Inner loop to create children
-                    children.push(<Card.Content>
+                    children.push(<Card.Content style={{ paddingBottom: '10px' }}>
                         <object data={"/api/UserImage/ViewImageDirect/" + friends.items[i].id} type="image/png" width="60" height="60">
                             <Icon name='user' size='huge' />
                         </object>
@@ -216,7 +216,7 @@ class FriendsPage extends Component {
                 if (incoming === requests.items[i].incoming) {
                     var children = []
                     //Inner loop to create children
-                    children.push(<Card.Content>
+                    children.push(<Card.Content style={{ paddingBottom: '10px' }}>
                         <object data={"/api/UserImage/ViewImageDirect/" + requests.items[i].id} type="image/png" width="60" height="60">
                             <Icon name='user' size='huge' />
                         </object>
@@ -265,7 +265,7 @@ class FriendsPage extends Component {
                     if (user.id != userList[i].id) {
                         var children = []
                         //Inner loop to create children
-                        children.push(<Card.Content>
+                        children.push(<Card.Content style={{paddingBottom: '10px'}}>
                             <object data={"/api/UserImage/ViewImageDirect/" + userList[i].id} type="image/png" width="60" height="60">
                                 <Icon name='user' size='huge' />
                             </object>
@@ -285,7 +285,7 @@ class FriendsPage extends Component {
                             <Button onClick={this.addFriend} value={userList[i]} fluid color='green'>Send Friend Request</Button>
                         </Card.Content>)
                         //Create the parent and add the children
-                        cards.push(<Card style={{ backgroundColor: '#374785' }} key={i + 1} value={userList[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
+                        cards.push(<Card style={{ backgroundColor: '#374785'}} key={i + 1} value={userList[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
                     }
                 }
             } else {

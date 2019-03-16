@@ -103,7 +103,7 @@ class GroupsPage extends Component {
         if (userGroups.groups) {
             for (let i = 0; i < userGroups.groups.length; i++) {
                 var children = [];
-                children.push(<Card.Content>
+                children.push(<Card.Content style={{ paddingBottom: '10px' }}>
                     <object data={"/api/GroupImage/ViewImageDirect/" + userGroups.groups[i].groupId} type="image/png" width="140" height="120">
                         <Icon name='group' size='massive'/>
                     </object>

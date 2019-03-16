@@ -34,7 +34,7 @@ class HomePage extends Component {
             var userGroups = homePageGroups.groups.userGroups;
             for (let i = 0; i < userGroups.length; i++) {
                 var children = [];
-                children.push(<Card.Content>
+                children.push(<Card.Content style={{ paddingBottom: '10px' }}>
                     <object data={"/api/GroupImage/ViewImageDirect/" + userGroups[i].groupId} type="image/png" width="140" height="130">
                         <Icon name='group' size='massive' />
                     </object>
@@ -69,7 +69,7 @@ class HomePage extends Component {
             if (suggestedGroups.length > 0) {
                 for (let i = 0; i < suggestedGroups.length; i++) {
                     var children = [];
-                    children.push(<Card.Content>
+                    children.push(<Card.Content style={{ paddingBottom: '10px' }}>
                         <object data={"/api/GroupImage/ViewImageDirect/" + suggestedGroups[i].groupId} type="image/png" width="140" height="130">
                             <Icon name='group' size='massive' />
                         </object>
@@ -110,7 +110,7 @@ class HomePage extends Component {
                 if (user.id !== friends.items[i].id) {
                     var children = []
                     //Inner loop to create children
-                    children.push(<Card.Content>
+                    children.push(<Card.Content style={{ paddingBottom: '10px' }}>
                         <object data={"/api/UserImage/ViewImageDirect/" + friends.items[i].id} type="image/png" width="120" height="110">
                             <Icon name='user' size='massive' />
                         </object>

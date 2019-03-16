@@ -45,7 +45,7 @@ class GroupsCategoryPage extends Component {
 
             for (let i = 0; i < groupList.length; i++) {
                 var children = [];
-                children.push(<Card.Content>
+                children.push(<Card.Content style={{ paddingBottom: '10px' }}>
                     <object data={"/api/GroupImage/ViewImageDirect/" + groupList[i].groupId} type="image/png" width="160" height="140">
                         <Icon name='group' size='massive' />
                     </object>

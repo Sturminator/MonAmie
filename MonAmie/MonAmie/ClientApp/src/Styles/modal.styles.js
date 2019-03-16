@@ -43,5 +43,10 @@ export default {
         marginRight: 'auto',
         backgroundColor: '#374785',
         color: 'white'
+    },
+
+    cardStyle: {
+        backgroundColor: '#374785',
+        display: 'inline-block'
     }
 }

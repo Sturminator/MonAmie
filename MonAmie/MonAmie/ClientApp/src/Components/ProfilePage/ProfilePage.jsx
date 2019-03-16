@@ -483,7 +483,7 @@ class ProfilePage extends Component {
                             <b>Upload profile picture</b>
                             <input type="file" name="files" accept=".jpeg, .jpg, .png" />
                             <input type="hidden" name="userId" value={userProfile.items.id}/>
-                            <Button type="submit">Save Profile Picture</Button>
+                            <Button style={{marginTop: '10px', marginBottom: '10px'}} type="submit">Save Profile Picture</Button>
                         </Form>
                         <Form fluid='true'>
                             <Segment style={{ textAlign: "right", backgroundColor: '#374785' }}>
