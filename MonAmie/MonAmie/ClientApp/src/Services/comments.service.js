@@ -21,7 +21,7 @@ function addGroupComment(groupId, groupComment, currentComments) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ groupComment: groupComment, currentComments: currentComments })
+        body: JSON.stringify({ comment: groupComment, currentComments: currentComments })
     };
 
     return fetch(`api/Comment/AddGroupComment/` + groupId, requestOptions).then(handleResponse);

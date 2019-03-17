@@ -24,6 +24,9 @@ namespace MonAmieData.Models
         [Column(TypeName = "smalldatetime")]
         public DateTime PostDate { get; set; }
 
+        [Required]
+        public bool HasChildren { get; set; }
+
         public virtual User User { get; set; }
         public virtual Group Group { get; set; }
     }

@@ -14,6 +14,13 @@ namespace MonAmieData.Interfaces
         IEnumerable<GroupComment> GetCommentsForGroup(int groupId);
 
         /// <summary>
+        /// Gets any children comments for a group comment
+        /// </summary>
+        /// <param name="groupCommentId"></param>
+        /// <returns></returns>
+        IEnumerable<GroupComment> GetChildCommentsForGroupComment(int groupCommentId);
+
+        /// <summary>
         /// Adds a group comment to the database
         /// </summary>
         /// <param name="groupComment"></param>

@@ -33,6 +33,8 @@ namespace MonAmie.Controllers
             public string LastName { get; set; }
             public string Comment { get; set; }
             public string Date { get; set; }
+            public bool HasChildren { get; set; }
+            public List<GroupCommentModel> Children { get; set; }
         }
 
         public class GroupCommentViewModel
@@ -55,6 +57,8 @@ namespace MonAmie.Controllers
                 var user = userService.GetById(comment.UserId);
                 var dateWhen = DateTime.UtcNow - comment.PostDate;
 
+                var children = GetChildren(comment);
+
                 results.Add(new GroupCommentModel
                 {
                     GroupCommentId = comment.GroupCommentId,
@@ -64,7 +68,9 @@ namespace MonAmie.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Comment = comment.Comment,
-                    Date = GetDateString(dateWhen)
+                    Date = GetDateString(dateWhen),
+                    HasChildren = comment.HasChildren,
+                    Children = children
                 });
             }
 
@@ -72,8 +78,8 @@ namespace MonAmie.Controllers
         }
 
         [HttpPost]
-        [Route("api/GroupComment/AddGroupComment/{groupId}")]
-        [Route("group/api/GroupComment/AddGroupComment/{groupId}")]
+        [Route("api/Comment/AddGroupComment/{groupId}")]
+        [Route("group/api/Comment/AddGroupComment/{groupId}")]
         public IActionResult AddGroupComment(int groupId, [FromBody]GroupCommentViewModel groupComment)
         {
             if (groupComment == null)
@@ -96,18 +102,25 @@ namespace MonAmie.Controllers
 
             if (groupCommentId > 0)
             {
+                if(groupComment.Comment.ParentId != null)
+                {
+                    return GetAllForGroup(groupId);
+                }
+
                 var user = userService.GetById(groupComment.Comment.UserId);
 
-                groupComment.CurrentComments.Add(new GroupCommentModel
+                groupComment.CurrentComments.Insert(0, new GroupCommentModel
                 {
                     GroupCommentId = groupCommentId,
-                    GroupId = groupComment.Comment.GroupId,
+                    GroupId = groupId,
                     UserId = groupComment.Comment.UserId,
                     ParentId = groupComment.Comment.ParentId,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Comment = groupComment.Comment.Comment,
-                    Date = "Just Now"
+                    Date = "Just Now",
+                    HasChildren = false,
+                    Children = new List<GroupCommentModel>()
                 });
             }
 
@@ -115,8 +128,8 @@ namespace MonAmie.Controllers
         }
 
         [HttpPut]
-        [Route("api/GroupComment/UpdateGroupComment/{groupCommentId}")]
-        [Route("group/api/GroupComment/UpdateGroupComment/{groupCommentId}")]
+        [Route("api/Comment/UpdateGroupComment/{groupCommentId}")]
+        [Route("group/api/Comment/UpdateGroupComment/{groupCommentId}")]
         public IActionResult UpdateGroupComment(int groupCommentId, [FromBody]GroupCommentViewModel groupComment)
         {
             if (groupComment == null)
@@ -132,13 +145,12 @@ namespace MonAmie.Controllers
 
             groupComment.CurrentComments.FirstOrDefault(cc => cc.GroupCommentId == groupCommentId).Comment = groupComment.Comment.Comment;
 
-
             return Ok(groupComment.CurrentComments);
         }
 
         [HttpDelete]
-        [Route("api/GroupComment/DeleteGroupComment/{groupCommentId}")]
-        [Route("group/api/GroupComment/DeleteGroupComment/{groupCommentId}")]
+        [Route("api/Comment/DeleteGroupComment/{groupCommentId}")]
+        [Route("group/api/Comment/DeleteGroupComment/{groupCommentId}")]
         public IActionResult DeleteGroupComment(int groupCommentId, [FromBody]List<GroupCommentModel> currentComments)
         {
             if (groupCommentId < 1)
@@ -146,18 +158,60 @@ namespace MonAmie.Controllers
 
             commentService.DeleteGroupComment(groupCommentId);
 
-            var comment = currentComments.FirstOrDefault(cc => cc.GroupCommentId == groupCommentId);
+            return Ok(DeleteComment(groupCommentId, currentComments));
+        }
 
-            currentComments.Remove(comment);
+        private List<GroupCommentModel> DeleteComment(int groupCommentId, List<GroupCommentModel> commentList)
+        {
+            var comment = commentList.FirstOrDefault(cc => cc.GroupCommentId == groupCommentId);
 
-            var childComments = currentComments.Where(cc => cc.ParentId == groupCommentId);
-
-            foreach(var child in childComments)
+            if(comment != null)
             {
-                currentComments.Remove(child);
+                commentList.Remove(comment);
+            }
+            else
+            {
+                foreach (var c in commentList)
+                {
+                    c.Children = DeleteComment(groupCommentId, c.Children);
+                }
             }
 
-            return Ok(currentComments);
+            return commentList;
+        }
+
+        private List<GroupCommentModel> GetChildren(GroupComment comment)
+        {
+            List<GroupCommentModel> results = new List<GroupCommentModel>();
+
+            if (comment.HasChildren)
+            {
+                var children = commentService.GetChildCommentsForGroupComment(comment.GroupCommentId).OrderByDescending(gc => gc.PostDate).ToList();
+
+                foreach(var child in children)
+                {
+                    var user = userService.GetById(child.UserId);
+                    var dateWhen = DateTime.UtcNow - child.PostDate;
+
+                    var childrenOfChildren = GetChildren(child);
+
+                    results.Add(new GroupCommentModel
+                    {
+                        GroupCommentId = child.GroupCommentId,
+                        GroupId = child.GroupId,
+                        UserId = child.UserId,
+                        ParentId = child.ParentId != null ? (int)(child.ParentId) : child.ParentId,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Comment = child.Comment,
+                        Date = GetDateString(dateWhen),
+                        HasChildren = child.HasChildren,
+                        Children = childrenOfChildren
+                    });
+                }               
+            }
+
+            return results;
         }
 
         private string GetDateString(TimeSpan dateWhen)

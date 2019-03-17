@@ -5,8 +5,9 @@ import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions, commentsActions } from '../../Actions';
 import modalStyles from '../../Styles/modal.styles';
 import { states } from '../../Enums';
-import { Sticky, Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon, Popup, Header, Modal, Form, TextArea, Label, Feed, Rail } from 'semantic-ui-react';
+import { Sticky, Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon, Popup, Header, Modal, Form, TextArea, Label, Feed, Rail, Comment, Card } from 'semantic-ui-react';
 import { history } from '../../Helpers';
+import { group } from '../../Reducers/group.reducer';
 
 class GroupProfilePage extends Component {
     constructor(props) {
@@ -26,7 +27,12 @@ class GroupProfilePage extends Component {
             userSelected: false,
             redirectTo: "",
             showAllActivity: false,
-            context: null
+            context: null,
+            targetedComment: "",
+            newComment: "",
+            newReply: "",
+            commentToDelete: "",
+            confirmDeleteComment: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -73,6 +79,14 @@ class GroupProfilePage extends Component {
         }
         return categoryOptions;
     }
+
+    onNewCommentChange = (e, { value }) => this.setState({
+        newComment: value
+    });
+
+    onNewReplyChange = (e, { value }) => this.setState({
+        newReply: value
+    });
 
     handleChange(event) {
         const { name, value } = event.target;
@@ -144,6 +158,29 @@ class GroupProfilePage extends Component {
         window.location.reload();
     };
 
+    onAddCommentButtonClick = (e) => {
+        const { newComment } = this.state;
+        const { group, user, groupComments } = this.props;
+
+        this.props.dispatch(commentsActions.addGroupComment(group.group.groupId, { userId: user.id, comment: newComment}, groupComments.comments));
+
+        this.setState({
+            newComment: ""
+        })
+    };
+
+    onAddReplyButtonClick = (e) => {
+        const { newReply, targetedComment } = this.state;
+        const { group, user, groupComments } = this.props;
+
+        this.props.dispatch(commentsActions.addGroupComment(group.group.groupId, { userId: user.id, comment: newReply, parentId: targetedComment }, groupComments.comments));
+
+        this.setState({
+            newReply: "",
+            targetedComment: ""
+        })
+    };
+
     onEditGroupButtonClick = () => {
         const { editedGroup } = this.state;
         const { group } = this.props;
@@ -175,6 +212,25 @@ class GroupProfilePage extends Component {
     onCancelLeaveGroupClick = () => {
         this.setState({
             confirmLeave: false
+        })
+    }
+
+    onCancelDeleteCommentClick = () => {
+        this.setState({
+            confirmDeleteComment: false,
+            commentToDelete: ""
+        })
+    }
+
+    onConfirmDeleteCommentClick = () => {
+        const { groupComments } = this.props;
+        const { commentToDelete } = this.state;
+
+        this.props.dispatch(commentsActions.deleteGroupComment(commentToDelete, groupComments.comments));
+
+        this.setState({
+            confirmDeleteComment: false,
+            commentToDelete: ""
         })
     }
 
@@ -231,6 +287,41 @@ class GroupProfilePage extends Component {
             userSelected: true,
             redirectTo: '/profile/' +
                 value.firstName.toLowerCase() + '_' + value.userId * 11
+        });
+    };
+
+    goToProfileFromComment = (e) => {
+        var path = window.location.pathname;
+        var firstName = e.target.getAttribute('firstName');
+        var userId = e.target.getAttribute('userId');
+
+        history.push(path);
+
+        this.setState({
+            userSelected: true,
+            redirectTo: '/profile/' +
+                firstName.toLowerCase() + '_' + parseInt(userId) * 11
+        });
+    };
+
+    showReplyBoxForComment = (e) => {
+        const { targetedComment } = this.state;
+        var groupCommentId = e.target.getAttribute('commentId');
+
+        if (targetedComment != groupCommentId) {
+            this.setState({
+                targetedComment: groupCommentId,
+                newReply: ""
+            });
+        }
+    };
+
+    confirmDeleteComment = (e) => {
+        var groupCommentId = e.target.getAttribute('commentId');
+
+        this.setState({
+            commentToDelete: groupCommentId,
+            confirmDeleteComment: true
         });
     };
 
@@ -337,13 +428,201 @@ class GroupProfilePage extends Component {
         return activities;
     }
 
-    createCommentSection() {
+    createCommentChildrenSection(comment) {
+        const { user, group } = this.props;
+        const { targetedComment, newReply } = this.state;
 
+        var comments = [];
+
+        if (comment.children.length > 0) {
+            for (let i = 0; i < comment.children.length; i++) {
+                if (comment.children[i].userId == user.id) {
+                    comments.push(<Comment>
+                        <Comment.Content>
+                            <Segment style={{ maxWidth: '400px', display: 'inline-block' }}>
+                                <Comment.Author onClick={this.goToProfileFromComment} firstName={comment.children[i].firstName} userId={comment.children[i].userId} as='a'>
+                                    <object firstName={comment.children[i].firstName} userId={comment.children[i].userId} data={"/api/UserImage/ViewImageDirect/" + comment.children[i].userId} type="image/png" width="25" height="25">
+                                        <Icon name='user' />
+                                    </object> {comment.children[i].firstName} {comment.children[i].lastName}</Comment.Author>
+                                <Comment.Metadata>
+                                    <div>{comment.children[i].date}</div>
+                                </Comment.Metadata>
+                                <Comment.Text>&emsp;{comment.children[i].comment}</Comment.Text>
+                            </Segment>
+                            <Comment.Actions style={{ marginTop: '-9px' }}>
+                                <Comment.Action commentId={comment.children[i].groupCommentId} onClick={this.showReplyBoxForComment} style={{ color: 'white' }}>&emsp; Reply</Comment.Action>
+                                <Comment.Action commentId={comment.children[i].groupCommentId} onClick={this.confirmDeleteComment} style={{ color: 'white' }}>Delete</Comment.Action>
+                            </Comment.Actions>
+                            <Form reply hidden={comment.children[i].groupCommentId != targetedComment}>
+                                <Form.TextArea onChange={this.onNewReplyChange} style={{ maxHeight: '60px', maxWidth: '400px' }} placeholder='Write a reply...' />
+                                <Button onClick={this.onAddReplyButtonClick} color='green' disabled={newReply.replace(/\s/g, "").length < 1} content='Add Reply' labelPosition='left' icon='edit' />
+                            </Form>
+                        </Comment.Content>
+                        {this.createCommentChildrenSection(comment.children[i])}
+                    </Comment>);
+                } else if (group.group.ownerId == user.id) {
+                    comments.push(<Comment>
+                        <Comment.Content>
+                            <Segment style={{ maxWidth: '400px', display: 'inline-block' }}>
+                                <Comment.Author onClick={this.goToProfileFromComment} firstName={comment.children[i].firstName} userId={comment.children[i].userId} as='a'>
+                                    <object firstName={comment.children[i].firstName} userId={comment.children[i].userId} data={"/api/UserImage/ViewImageDirect/" + comment.children[i].userId} type="image/png" width="25" height="25">
+                                        <Icon name='user' />
+                                    </object> {comment.children[i].firstName} {comment.children[i].lastName}</Comment.Author>
+                                <Comment.Metadata>
+                                    <div>{comment.children[i].date}</div>
+                                </Comment.Metadata>
+                                <Comment.Text>&emsp;{comment.children[i].comment}</Comment.Text>
+                            </Segment>
+                            <Comment.Actions style={{ marginTop: '-9px' }}>
+                                <Comment.Action commentId={comment.children[i].groupCommentId} onClick={this.showReplyBoxForComment} style={{ color: 'white' }}>&emsp; Reply</Comment.Action>
+                                <Comment.Action commentId={comment.children[i].groupCommentId} onClick={this.confirmDeleteComment} style={{ color: 'white' }}>Delete</Comment.Action>
+                            </Comment.Actions>
+                            <Form reply hidden={comment.children[i].groupCommentId != targetedComment}>
+                                <Form.TextArea onChange={this.onNewReplyChange} style={{ maxHeight: '60px', maxWidth: '400px' }} placeholder='Write a reply...' />
+                                <Button onClick={this.onAddReplyButtonClick} color='green' disabled={newReply.replace(/\s/g, "").length < 1} content='Add Reply' labelPosition='left' icon='edit' />
+                            </Form>
+                        </Comment.Content>
+                        {this.createCommentChildrenSection(comment.children[i])}
+                    </Comment>);
+                }
+                else {
+                    comments.push(<Comment>
+                        <Comment.Content>
+                            <Segment style={{ maxWidth: '400px', display: 'inline-block' }}>
+                                <Comment.Author onClick={this.goToProfileFromComment} firstName={comment.children[i].firstName} userId={comment.children[i].userId} as='a'>
+                                    <object firstName={comment.children[i].firstName} userId={comment.children[i].userId} data={"/api/UserImage/ViewImageDirect/" + comment.children[i].userId} type="image/png" width="25" height="25">
+                                        <Icon name='user' />
+                                    </object> {comment.children[i].firstName} {comment.children[i].lastName}</Comment.Author>
+                                <Comment.Metadata>
+                                    <div>{comment.children[i].date}</div>
+                                </Comment.Metadata>
+                                <Comment.Text>&emsp;{comment.children[i].comment}</Comment.Text>
+                            </Segment>
+                            <Comment.Actions style={{ marginTop: '-9px' }}>
+                                <Comment.Action commentId={comment.children[i].groupCommentId} onClick={this.showReplyBoxForComment} style={{ color: 'white' }}>&emsp; Reply</Comment.Action>
+                            </Comment.Actions>
+                            <Form reply hidden={comment.children[i].groupCommentId != targetedComment}>
+                                <Form.TextArea onChange={this.onNewReplyChange} style={{ maxHeight: '60px', maxWidth: '400px' }} placeholder='Write a reply...' />
+                                <Button onClick={this.onAddReplyButtonClick} color='green' disabled={newReply.replace(/\s/g, "").length < 1} content='Add Reply' labelPosition='left' icon='edit' />
+                            </Form>
+                        </Comment.Content>
+                        {this.createCommentChildrenSection(comment.children[i])}
+                    </Comment>);
+                }
+            }
+
+            return (<Comment.Group children={comments} />);
+        }
+    }
+
+    createCommentSection() {
+        const { groupComments, user, group } = this.props;
+        const { targetedComment, newReply } = this.state;
+
+        var comments = [];
+
+        if (groupComments.loading)
+            return (
+                <Dimmer active>
+                    <Loader active size='massive' inline='centered' />
+                </Dimmer>);
+
+        if (groupComments.comments) {
+            if (groupComments.comments.length > 0) {
+                for (let i = 0; i < groupComments.comments.length; i++) {
+                    if (groupComments.comments[i].userId == user.id) {
+                        comments.push(<Comment>
+                            <Comment.Content>
+                                <Segment style={{ maxWidth: '400px', display: 'inline-block' }}>
+                                    <Comment.Author onClick={this.goToProfileFromComment} firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} as='a'>
+                                        <object firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} data={"/api/UserImage/ViewImageDirect/" + groupComments.comments[i].userId} type="image/png" width="25" height="25">
+                                            <Icon name='user' />
+                                        </object> {groupComments.comments[i].firstName} {groupComments.comments[i].lastName}</Comment.Author>
+                                    <Comment.Metadata>
+                                        <div>{groupComments.comments[i].date}</div>
+                                    </Comment.Metadata>
+                                    <Comment.Text>&emsp;{groupComments.comments[i].comment}</Comment.Text>
+                                </Segment>
+                                <Comment.Actions style={{ marginTop: '-9px' }}>
+                                    <Comment.Action commentId={groupComments.comments[i].groupCommentId} onClick={this.showReplyBoxForComment} style={{ color: 'white' }}>&emsp; Reply</Comment.Action>
+                                    <Comment.Action commentId={groupComments.comments[i].groupCommentId} onClick={this.confirmDeleteComment} style={{ color: 'white' }}>Delete</Comment.Action>
+                                </Comment.Actions>
+                                <Form reply hidden={groupComments.comments[i].groupCommentId != targetedComment}>
+                                    <Form.TextArea onChange={this.onNewReplyChange} style={{ maxHeight: '60px', maxWidth: '400px' }} placeholder='Write a reply...' />
+                                    <Button onClick={this.onAddReplyButtonClick} color='green' disabled={newReply.replace(/\s/g, "").length < 1} content='Add Reply' labelPosition='left' icon='edit' />
+                                </Form>
+                            </Comment.Content>
+                            {this.createCommentChildrenSection(groupComments.comments[i])}
+                        </Comment>);
+                    } else if (group.group.ownerId == user.id) {
+                        comments.push(<Comment>
+                            <Comment.Content>
+                                <Segment style={{ maxWidth: '400px', display: 'inline-block' }}>
+                                    <Comment.Author onClick={this.goToProfileFromComment} firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} as='a'>
+                                        <object firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} data={"/api/UserImage/ViewImageDirect/" + groupComments.comments[i].userId} type="image/png" width="25" height="25">
+                                            <Icon name='user' />
+                                        </object> {groupComments.comments[i].firstName} {groupComments.comments[i].lastName}</Comment.Author>
+                                    <Comment.Metadata>
+                                        <div>{groupComments.comments[i].date}</div>
+                                    </Comment.Metadata>
+                                    <Comment.Text>&emsp;{groupComments.comments[i].comment}</Comment.Text>
+                                </Segment>
+                                <Comment.Actions style={{ marginTop: '-9px' }}>
+                                    <Comment.Action commentId={groupComments.comments[i].groupCommentId} onClick={this.showReplyBoxForComment} style={{ color: 'white' }}>&emsp; Reply</Comment.Action>
+                                    <Comment.Action commentId={groupComments.comments[i].groupCommentId} onClick={this.confirmDeleteComment} style={{ color: 'white' }}>Delete</Comment.Action>
+                                </Comment.Actions>
+                                <Form reply hidden={groupComments.comments[i].groupCommentId != targetedComment}>
+                                    <Form.TextArea onChange={this.onNewReplyChange} style={{ maxHeight: '60px', maxWidth: '400px' }} placeholder='Write a reply...' />
+                                    <Button onClick={this.onAddReplyButtonClick} color='green' disabled={newReply.replace(/\s/g, "").length < 1} content='Add Reply' labelPosition='left' icon='edit' />
+                                </Form>
+                            </Comment.Content>
+                            {this.createCommentChildrenSection(groupComments.comments[i])}
+                        </Comment>);
+                    }
+                    else {
+                        comments.push(<Comment>
+                            <Comment.Content>
+                                <Segment style={{ maxWidth: '400px', display: 'inline-block' }}>
+                                    <Comment.Author onClick={this.goToProfileFromComment} firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} as='a'>
+                                        <object firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} data={"/api/UserImage/ViewImageDirect/" + groupComments.comments[i].userId} type="image/png" width="25" height="25">
+                                            <Icon name='user' />
+                                        </object> {groupComments.comments[i].firstName} {groupComments.comments[i].lastName}</Comment.Author>
+                                    <Comment.Metadata>
+                                        <div>{groupComments.comments[i].date}</div>
+                                    </Comment.Metadata>
+                                    <Comment.Text>&emsp;{groupComments.comments[i].comment}</Comment.Text>
+                                </Segment>
+                                <Comment.Actions style={{ marginTop: '-9px' }}>
+                                    <Comment.Action commentId={groupComments.comments[i].groupCommentId} onClick={this.showReplyBoxForComment} style={{ color: 'white' }}>&emsp; Reply</Comment.Action>
+                                </Comment.Actions>
+                                <Form reply hidden={groupComments.comments[i].groupCommentId != targetedComment}>
+                                    <Form.TextArea onChange={this.onNewReplyChange} style={{ maxHeight: '60px', maxWidth: '400px' }} placeholder='Write a reply...' />
+                                    <Button onClick={this.onAddReplyButtonClick} color='green' disabled={newReply.replace(/\s/g, "").length < 1} content='Add Reply' labelPosition='left' icon='edit' />
+                                </Form>
+                            </Comment.Content>
+                            {this.createCommentChildrenSection(groupComments.comments[i])}
+                        </Comment>);
+                    }
+                }
+
+                return (<Comment.Group children={comments} />);
+            }
+            else {
+                return (<Header as='h1' textAlign='center'>
+                    <Header.Content style={{ color: 'white' }}>Be the first to comment!</Header.Content>
+                </Header>);
+            }
+        }
+        else {
+            return (<Header as='h1' textAlign='center'>
+                <Header.Content style={{ color: 'white' }}>Be the first to comment!</Header.Content>
+            </Header>);
+        }
     }
 
     render() {
         const { group, categories, user } = this.props;
-        const { canUpdateGroup, editedGroup, updateGroup, deleteGroup, confirmLeave, redirectTo, userSelected, showAllActivity } = this.state;
+        const { canUpdateGroup, editedGroup, updateGroup, deleteGroup, confirmLeave, redirectTo, userSelected, showAllActivity, newComment, confirmDeleteComment } = this.state;
         var memberFormat = "Member";
 
         if (userSelected)
@@ -409,6 +688,16 @@ class GroupProfilePage extends Component {
                         <Modal.Actions style={{ backgroundColor: '#374785' }}>
                             <Button negative onClick={this.onCancelLeaveGroupClick}>No</Button>
                             <Button positive onClick={this.onConfirmLeaveGroupClick} icon='checkmark' labelPosition='right' content='Yes' />
+                        </Modal.Actions>
+                    </Modal>
+                    <Modal style={modalStyles.confirmDeleteModal} size='tiny' open={confirmDeleteComment} onClose={this.close}>
+                        <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Delete Comment</Modal.Header>
+                        <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
+                            <Header as='h2' style={{ color: 'white' }}>Are you sure you want to delete this comment?</Header>
+                        </Modal.Content>
+                        <Modal.Actions style={{ backgroundColor: '#374785' }}>
+                            <Button negative onClick={this.onCancelDeleteCommentClick}>No</Button>
+                            <Button positive onClick={this.onConfirmDeleteCommentClick} icon='checkmark' labelPosition='right' content='Yes' />
                         </Modal.Actions>
                     </Modal>
                     <Container style={{ marginTop: '50px' }}>
@@ -487,6 +776,11 @@ class GroupProfilePage extends Component {
                                     </Grid.Column>
                                 </Grid>
                                 <Divider style={{ backgroundColor: 'white' }} />
+                                <Form reply >
+                                    <Form.TextArea onChange={this.onNewCommentChange} value={newComment} style={{ maxHeight: '60px' }} placeholder='Write a comment...' />
+                                    <Button onClick={this.onAddCommentButtonClick} disabled={newComment.replace(/\s/g, "").length < 1} floated='right' color='green' content='Add Comment' labelPosition='left' icon='edit' />
+                                </Form>
+                                {this.createCommentSection()}
                             </Segment>
                         </Segment>
                     </Container>
@@ -563,6 +857,16 @@ class GroupProfilePage extends Component {
                         <Button disabled={!canUpdateGroup} onClick={this.onSaveEditGroupButtonClick} positive icon='checkmark' labelPosition='right' content='Save' />
                     </Modal.Actions>
                 </Modal>
+                <Modal style={modalStyles.confirmDeleteModal} size='tiny' open={confirmDeleteComment} onClose={this.close}>
+                    <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Delete Comment</Modal.Header>
+                    <Modal.Content style={{ backgroundColor: '#a8d0e6' }}>
+                        <Header as='h2' style={{ color: 'white' }}>Are you sure you want to delete this comment?</Header>
+                    </Modal.Content>
+                    <Modal.Actions style={{ backgroundColor: '#374785' }}>
+                        <Button negative onClick={this.onCancelDeleteCommentClick}>No</Button>
+                        <Button positive onClick={this.onConfirmDeleteCommentClick} icon='checkmark' labelPosition='right' content='Yes' />
+                    </Modal.Actions>
+                </Modal>
                 <Container style={{ marginTop: '50px' }}>
                     <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
                         <Grid fluid='true' columns='equal'>
@@ -637,6 +941,11 @@ class GroupProfilePage extends Component {
                                 </Grid.Column>
                             </Grid>
                             <Divider style={{ backgroundColor: 'white' }} />
+                            <Form reply >
+                                <Form.TextArea onChange={this.onNewCommentChange} value={newComment} style={{ maxHeight: '60px' }} placeholder='Write a comment...' />
+                                <Button onClick={this.onAddCommentButtonClick} disabled={newComment.replace(/\s/g, "").length < 1} floated='right' color='green' content='Add Comment' labelPosition='left' icon='edit' />
+                            </Form>
+                            {this.createCommentSection()}
                         </Segment>
                     </Segment>
                 </Container>
@@ -646,12 +955,13 @@ class GroupProfilePage extends Component {
 }
 
 function mapStateToProps(state) {
-    const { authentication, group, categories } = state;
+    const { authentication, group, categories, groupComments } = state;
     const { user } = authentication;
     return {
         user,
         group,
-        categories
+        categories,
+        groupComments
     };
 }
 
