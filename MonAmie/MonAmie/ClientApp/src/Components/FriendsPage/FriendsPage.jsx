@@ -270,7 +270,7 @@ class FriendsPage extends Component {
                     if (user.id != userList[i].id) {
                         var children = []
                         //Inner loop to create children
-                        children.push(<Card.Content style={{paddingBottom: '10px'}}>
+                        children.push(<Card.Content style={{ paddingBottom: '10px' }}>
                             <object data={"/api/UserImage/ViewImageDirect/" + userList[i].id} type="image/png" width="60" height="60">
                                 <Icon name='user' size='huge' />
                             </object>
@@ -283,24 +283,23 @@ class FriendsPage extends Component {
                         children.push(<Card.Meta textAlign='left'>
                             Shared Interests: {userList[i].sharedCount}
                         </Card.Meta>)
-                        children.push(<Card.Description textAlign='left'>
-                            {userList[i].interestsInfo}
-                        </Card.Description>)
                         children.push(<Card.Content extra><Divider style={{ backgroundColor: 'white' }} />
                             <Button onClick={this.addFriend} value={userList[i]} fluid color='green'>Send Friend Request</Button>
                         </Card.Content>)
                         //Create the parent and add the children
-                        cards.push(<Card style={{ backgroundColor: '#374785'}} key={i + 1} value={userList[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
+                        cards.push(<Card style={{ backgroundColor: '#374785' }} key={i + 1} value={userList[i]} > <Card.Content textAlign='center' children={children} /></ Card>)
                     }
                 }
+
+                return (<Card.Group stackable centered children={cards} />);
             } else {
                 return (<Header as='h1' textAlign='center'>
                     <Header.Content style={{ color: 'white' }}>No users found</Header.Content>
                 </Header>);
             }
+        } else {
+            return (<Loader active size='massive' inline='centered' />);
         }
-
-        return (<Card.Group stackable centered children={cards} />);
     }
 
     toggleAllStates = () => {
@@ -326,13 +325,6 @@ class FriendsPage extends Component {
 
         if (userSelected)
             return <Redirect to={redirectTo} />
-
-        if (users.loading)
-            return (<div style={{ paddingTop: '600px' }}>
-                <Dimmer active>
-                    <Loader active size='massive' inline='centered' />
-                </Dimmer>
-            </div>);
 
         if (friends.loading)
             return (<div style={{ paddingTop: '600px' }}>

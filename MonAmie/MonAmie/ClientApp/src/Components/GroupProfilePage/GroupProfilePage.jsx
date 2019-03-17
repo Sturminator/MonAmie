@@ -442,7 +442,7 @@ class GroupProfilePage extends Component {
                             <Segment style={{ maxWidth: '400px', display: 'inline-block' }}>
                                 <Comment.Author onClick={this.goToProfileFromComment} firstName={comment.children[i].firstName} userId={comment.children[i].userId} as='a'>
                                     <object firstName={comment.children[i].firstName} userId={comment.children[i].userId} data={"/api/UserImage/ViewImageDirect/" + comment.children[i].userId} type="image/png" width="25" height="25">
-                                        <Icon name='user' />
+                                        <Icon firstName={comment.children[i].firstName} userId={comment.children[i].userId} name='user' />
                                     </object> {comment.children[i].firstName} {comment.children[i].lastName}</Comment.Author>
                                 <Comment.Metadata>
                                     <div>{comment.children[i].date}</div>
@@ -466,7 +466,7 @@ class GroupProfilePage extends Component {
                             <Segment style={{ maxWidth: '400px', display: 'inline-block' }}>
                                 <Comment.Author onClick={this.goToProfileFromComment} firstName={comment.children[i].firstName} userId={comment.children[i].userId} as='a'>
                                     <object firstName={comment.children[i].firstName} userId={comment.children[i].userId} data={"/api/UserImage/ViewImageDirect/" + comment.children[i].userId} type="image/png" width="25" height="25">
-                                        <Icon name='user' />
+                                        <Icon firstName={comment.children[i].firstName} userId={comment.children[i].userId} name='user' />
                                     </object> {comment.children[i].firstName} {comment.children[i].lastName}</Comment.Author>
                                 <Comment.Metadata>
                                     <div>{comment.children[i].date}</div>
@@ -491,7 +491,7 @@ class GroupProfilePage extends Component {
                             <Segment style={{ maxWidth: '400px', display: 'inline-block' }}>
                                 <Comment.Author onClick={this.goToProfileFromComment} firstName={comment.children[i].firstName} userId={comment.children[i].userId} as='a'>
                                     <object firstName={comment.children[i].firstName} userId={comment.children[i].userId} data={"/api/UserImage/ViewImageDirect/" + comment.children[i].userId} type="image/png" width="25" height="25">
-                                        <Icon name='user' />
+                                        <Icon firstName={comment.children[i].firstName} userId={comment.children[i].userId} name='user' />
                                     </object> {comment.children[i].firstName} {comment.children[i].lastName}</Comment.Author>
                                 <Comment.Metadata>
                                     <div>{comment.children[i].date}</div>
@@ -536,7 +536,7 @@ class GroupProfilePage extends Component {
                                 <Segment style={{ maxWidth: '400px', display: 'inline-block' }}>
                                     <Comment.Author onClick={this.goToProfileFromComment} firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} as='a'>
                                         <object firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} data={"/api/UserImage/ViewImageDirect/" + groupComments.comments[i].userId} type="image/png" width="25" height="25">
-                                            <Icon name='user' />
+                                            <Icon firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} name='user' />
                                         </object> {groupComments.comments[i].firstName} {groupComments.comments[i].lastName}</Comment.Author>
                                     <Comment.Metadata>
                                         <div>{groupComments.comments[i].date}</div>
@@ -560,7 +560,7 @@ class GroupProfilePage extends Component {
                                 <Segment style={{ maxWidth: '400px', display: 'inline-block' }}>
                                     <Comment.Author onClick={this.goToProfileFromComment} firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} as='a'>
                                         <object firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} data={"/api/UserImage/ViewImageDirect/" + groupComments.comments[i].userId} type="image/png" width="25" height="25">
-                                            <Icon name='user' />
+                                            <Icon firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} name='user' />
                                         </object> {groupComments.comments[i].firstName} {groupComments.comments[i].lastName}</Comment.Author>
                                     <Comment.Metadata>
                                         <div>{groupComments.comments[i].date}</div>
@@ -585,7 +585,7 @@ class GroupProfilePage extends Component {
                                 <Segment style={{ maxWidth: '400px', display: 'inline-block' }}>
                                     <Comment.Author onClick={this.goToProfileFromComment} firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} as='a'>
                                         <object firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} data={"/api/UserImage/ViewImageDirect/" + groupComments.comments[i].userId} type="image/png" width="25" height="25">
-                                            <Icon name='user' />
+                                            <Icon firstName={groupComments.comments[i].firstName} userId={groupComments.comments[i].userId} name='user' />
                                         </object> {groupComments.comments[i].firstName} {groupComments.comments[i].lastName}</Comment.Author>
                                     <Comment.Metadata>
                                         <div>{groupComments.comments[i].date}</div>

@@ -94,7 +94,7 @@ namespace MonAmie.Controllers
 
                 var interestsInfo = user.FirstName + " has no interests currently";
 
-                int count = 0;
+                /*int count = 0;
 
                 if (userInterests.Count() > 0)
                 {
@@ -136,7 +136,7 @@ namespace MonAmie.Controllers
                             count++;
                         }
                     }
-                }
+                }*/
 
                 userList.Add(new UserDisplay
                 {
