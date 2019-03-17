@@ -147,7 +147,7 @@ class RegistrationPage extends Component {
                                 </Form.Field>
                                 <Form.Group widths="equal">
                                     <Form.Input type='date' fluid label="Date of Birth" placeholder="Date of Birth" value={user.birthdate} name='birthdate' onChange={this.handleChange} />
-                                    <Form.Select clearable fluid label="Gender" placeholder="Gender" options={genders} value={user.gender} name='gender' onChange={this.handleGenderChange} />
+                                    <Form.Select clearable search fluid label="Gender" placeholder="Gender" options={genders} value={user.gender} name='gender' onChange={this.handleGenderChange} />
                                     <Form.Select clearable search fluid label="State" options={states} placeholder="Choose an option" value={user.state} onChange={this.handleStateChange} />
                                 </Form.Group>
                             </Form>
