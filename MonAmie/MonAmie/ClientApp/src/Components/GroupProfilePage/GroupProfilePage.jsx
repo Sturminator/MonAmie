@@ -316,6 +316,14 @@ class GroupProfilePage extends Component {
         }
     };
 
+    refreshComments = () => {
+        const { group } = this.props;
+
+        if (group.group) {
+            this.props.dispatch(commentsActions.getAllForGroup(group.group.groupId));
+        }
+    }
+
     confirmDeleteComment = (e) => {
         var groupCommentId = e.target.getAttribute('commentId');
 
@@ -522,10 +530,7 @@ class GroupProfilePage extends Component {
         var comments = [];
 
         if (groupComments.loading)
-            return (
-                <Dimmer active>
-                    <Loader active size='massive' inline='centered' />
-                </Dimmer>);
+            return (<Loader active size='massive' inline='centered' />);
 
         if (groupComments.comments) {
             if (groupComments.comments.length > 0) {
@@ -773,6 +778,7 @@ class GroupProfilePage extends Component {
                                     <Grid.Column>
                                     </Grid.Column>
                                     <Grid.Column>
+                                        <Popup trigger={<Button floated='right' onClick={this.refreshComments} color='blue' icon='refresh' />} content='Refresh' />
                                     </Grid.Column>
                                 </Grid>
                                 <Divider style={{ backgroundColor: 'white' }} />
