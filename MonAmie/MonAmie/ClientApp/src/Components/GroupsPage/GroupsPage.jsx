@@ -5,7 +5,7 @@ import { NavigationBar } from '../../Components';
 import { categoryActions, groupActions } from '../../Actions';
 import {
     Container, Grid, Header, Segment, Popup, Button, Divider,
-    Modal, Form, TextArea, Image, Card, Dimmer, Loader, Icon
+    Modal, Form, TextArea, Image, Card, Dimmer, Loader, Icon, Rail, Sticky
 } from 'semantic-ui-react';
 import { states } from '../../Enums';
 import modalStyles from '../../Styles/modal.styles';
@@ -28,13 +28,18 @@ class GroupsPage extends Component {
             whereTo: "",
             whereToCategoryId: -1,
             groupSelected: false,
-            refreshUserGroups: false
+            refreshUserGroups: false,
+            context: null
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleCategoryChange = this.handleCategoryChange.bind(this);
         this.handleStateChange = this.handleStateChange.bind(this);
     }
+
+    handleContextRef = ref => {
+        this.setState({ context: ref });
+    };
 
     componentDidMount() {
         const { categories, userGroups, user } = this.props;
@@ -256,9 +261,17 @@ class GroupsPage extends Component {
             </div>);
 
         return (
-            <div>
-                <NavigationBar>
-                </NavigationBar>
+            <div ref={this.handleContextRef}>
+                <Rail
+                    internal
+                    position="left"
+                    attached
+                    style={{ width: "100%" }}
+                >
+                    <Sticky context={this.state.context}>
+                        <NavigationBar />
+                    </Sticky>
+                </Rail>
                 <style>{`html, body {background-color: #24305E !important; } `}</style>
                 <Modal style={modalStyles.createGroupModal} size='tiny' open={createGroup} onClose={this.close}>
                     <Modal.Header style={{ backgroundColor: '#374785', color: 'white' }}>Create Group</Modal.Header>
@@ -287,7 +300,7 @@ class GroupsPage extends Component {
                         <Button disabled={!canCreateGroup} onClick={this.onSaveCreateGroupClick} positive icon='checkmark' labelPosition='right' content='Create' />
                     </Modal.Actions>
                 </Modal>
-                <Container fluid style={{ margin: '5px' }}>
+                <Container fluid style={{ margin: '5px', marginTop: '50px'  }}>
                     <Segment fluid='true' style={{ backgroundColor: '#a8d0e6' }}>
                         <Grid columns='equal'>
                             <Grid.Column>
