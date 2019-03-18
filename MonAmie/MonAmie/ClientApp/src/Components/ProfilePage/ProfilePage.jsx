@@ -155,7 +155,8 @@ class ProfilePage extends Component {
         });
 
         this.props.dispatch(userProfileActions.update(userProfile));
-        window.location.reload();
+        setTimeout("location.reload(true);", 10);
+        //window.location.reload();
     };
 
     createUserCategoriesTable = () => {
