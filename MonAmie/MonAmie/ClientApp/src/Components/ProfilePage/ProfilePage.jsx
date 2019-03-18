@@ -49,6 +49,7 @@ class ProfilePage extends Component {
             var idStr = props.location.pathname.split("_")[1];
             var id = parseInt(idStr) / 11;
             this.props.dispatch(userProfileActions.getById(id, user.id));
+            this.props.dispatch(groupActions.getAllForUser(id));
         }
     }
 
