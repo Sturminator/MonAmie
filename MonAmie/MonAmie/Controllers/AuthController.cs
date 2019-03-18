@@ -87,6 +87,13 @@ namespace MonAmie.Controllers
 
             if (DateTime.TryParse(userDto.Birthdate, out DateTime dobInput))
             {
+                var dateCheck = dobInput.AddYears(13);
+
+                if(dateCheck > DateTime.Today)
+                {
+                    return BadRequest(new { message = "User must be 13 years of age or older" });
+                }
+
                 if(userService.IsEmailAvailable(emailInput))
                 {
                     try
