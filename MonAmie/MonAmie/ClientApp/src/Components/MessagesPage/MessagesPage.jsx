@@ -8,6 +8,11 @@ import { history } from '../../Helpers';
 import modalStyles from '../../Styles/modal.styles';
 
 class MessagesPage extends Component {
+
+    ///
+    //Blank page with a navigation bar for Msgs page
+    //We were unable to implement a msg system for users and groups
+    ///
     render() {
         const { user, users } = this.props;
 

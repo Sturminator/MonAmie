@@ -33,7 +33,12 @@ namespace MonAmie.Controllers
             return Ok(userImageIds);
         }
 
-        
+        /// <summary>
+        /// Not used
+        /// React - Redux image display
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("profile/api/UserImage/ViewImage/{id}")]
         public IActionResult ViewImage(int id)
@@ -53,6 +58,11 @@ namespace MonAmie.Controllers
             return null;
         }
 
+        /// <summary>
+        /// http get vs React - Redux get
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("api/UserImage/ViewImageDirect/{id}")]
         public IActionResult ViewImageDirect(int id)
@@ -72,6 +82,14 @@ namespace MonAmie.Controllers
             return null;
         }
 
+        /// <summary>
+        /// Not used in current version
+        /// still needs some work
+        /// was unable to properly pass a file object via React - Redux
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("profile/api/UserImage/UploadImage/{id}")]
         public IActionResult UploadImage(int id, object files)
@@ -114,59 +132,27 @@ namespace MonAmie.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Not used or finalized
+        /// was meant for a html form to be passed via React - Redux
+        /// </summary>
+        /// <param name="form"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("profile/api/UserImage/Upload")]
         public dynamic UploadJustFile([FromBody]IFormCollection form)
         {
-            
-
+           
             return Ok();
         }
 
-        private static void UploadFile(IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-                throw new Exception("File is empty!");
-            byte[] fileArray;
-            using (var stream = file.OpenReadStream())
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                fileArray = memoryStream.ToArray();
-            }
-            //TODO: You can do it what you want with you file, I just skip this step
-        }
-
-        private void UploadedFile(IFormFile file, int id)
-        {
-            IFormFile uploadedImage = file;
-
-            if (uploadedImage.ContentType.ToLower().StartsWith("image/"))
-            {
-                MemoryStream ms = new MemoryStream();
-                uploadedImage.OpenReadStream().CopyTo(ms);
-
-                //string temp = (string)files;
-
-                //temp = temp.Replace("C:\\fakepath\\", "");
-
-                Image image = Image.FromStream(ms);
-
-                UserImage imageEntity = new UserImage
-                {
-                    UserImageId = id,
-                    FileName = "",//uploadedImage.Name,
-                    //Data = ms.ToArray(),
-                    Width = image.Width,
-                    Height = image.Height,
-                    //ContentType = uploadedImage.ContentType,
-                    UserId = id
-                };
-
-                userImageService.AddUserImage(imageEntity);
-            }
-        }
-
+        /// <summary>
+        /// http image saving
+        /// html form is sent and used to get user id and image file
+        /// image is saved to DB
+        /// </summary>
+        /// <param name="files"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("api/UserImage/UploadImage")]
         public IActionResult UploadImage(IFormCollection files)

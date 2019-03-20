@@ -7,6 +7,10 @@ import { Segment, Container, Grid, Header, Divider, Card, Dimmer, Loader, Button
 import { history } from '../../Helpers';
 import modalStyles from '../../Styles/modal.styles';
 
+///
+//Page for displaying friends and matches
+//Page will also display incoming and outoging friend requests
+///
 class FriendsPage extends Component {
     state = {
         userSelected: false,

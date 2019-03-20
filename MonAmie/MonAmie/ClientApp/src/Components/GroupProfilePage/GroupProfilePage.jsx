@@ -9,6 +9,11 @@ import { Sticky, Dimmer, Loader, Container, Segment, Grid, Divider, Button, Icon
 import { history } from '../../Helpers';
 import { group } from '../../Reducers/group.reducer';
 
+
+///
+//Profile page for Groups
+//Page will display group profile, comments, bio, members of group, group owner
+///
 class GroupProfilePage extends Component {
     constructor(props) {
         super(props);

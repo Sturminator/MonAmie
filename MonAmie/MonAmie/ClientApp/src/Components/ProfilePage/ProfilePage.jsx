@@ -14,6 +14,12 @@ import { userProfile } from '../../Reducers/userProfile.reducer';
 import { images } from '../../Reducers/images.reducer';
 import { object } from 'prop-types';
 
+
+///
+//Profile page for users and friends
+//Profle pages will display interests, bio, Groups they are a member of, and a profile picture
+//Users will have buttons to allow them to edit their interests, bio, and profile picture
+///
 class ProfilePage extends Component {
     state = {
         originalCategories: [],
@@ -105,6 +111,8 @@ class ProfilePage extends Component {
         this.setState({
             editProfile: this.state.editProfile ? false : true
         });
+
+        //refresh of profile incase profile image was uploaded and submited and the rest of the profile was not saved
         window.location.reload();
     }
 
@@ -156,8 +164,9 @@ class ProfilePage extends Component {
         });
 
         this.props.dispatch(userProfileActions.update(userProfile));
+
+        //Delay for refresh after saving profile edit - this refresh is to update userprofile image
         setTimeout("location.reload(true);", 10);
-        //window.location.reload();
     };
 
     createUserCategoriesTable = () => {

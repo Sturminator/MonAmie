@@ -7,6 +7,10 @@ import { Form, Button, Divider, Image, Container, Segment, Grid, Loader, Message
 import { states, genders } from '../../Enums';
 import logo from '../../Images/logo.png';
 
+///
+//Registration page for new users
+//New users will enter their information to signup for Mon Amie
+///
 class RegistrationPage extends Component {
     constructor(props) {
         super(props);

@@ -27,9 +27,16 @@ function viewImage(id) {
     return fetch(`api/UserImage/ViewImage/` + id, requestOptions).then(handleResponse);
 }
 
+///
+//Function was not used for images as intended
+//Form was submited via http post instead
+//because of issues with file not properly formating with JSON.stringify
+///
 function uploadImage(files, id) {
 
-
+    ///
+    //File object needs to be expanded to store data also
+    ///
     var newObject = {
         'name': files.name,
         'data': files.data,

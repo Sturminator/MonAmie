@@ -5,6 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
+/// <summary>
+/// Not used in current version of software
+/// was intended to be used to narrow match results for users to city via and not just state
+/// </summary>
 namespace MonAmieServices
 {
     public class ZipService : IZipService

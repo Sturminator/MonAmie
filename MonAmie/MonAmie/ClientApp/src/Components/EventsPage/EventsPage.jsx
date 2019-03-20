@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import { NavigationBar } from '../../Components';
 
 class EventsPage extends Component {
+    ///
+    //Blank page with a navigation bar for Events page
+    //We were unable to implement an Events system for users and groups
+    ///
     render() {
         return (
             <div>

@@ -6,6 +6,10 @@ import { history } from '../../Helpers';
 import { Form, Button, Divider, Image, Container, Segment, Grid, Loader, Message } from 'semantic-ui-react';
 import logo from '../../Images/logo.png';
 
+
+///
+//Login page for users to sign in
+///
 class LoginPage extends Component {
     constructor(props) {
         super(props);

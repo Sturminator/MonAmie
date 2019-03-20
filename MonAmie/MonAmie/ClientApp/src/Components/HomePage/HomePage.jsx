@@ -7,6 +7,11 @@ import { groupActions, friendActions } from '../../Actions';
 import { history } from '../../Helpers';
 import './card_theme.css';
 
+
+///
+//Home page for user after login
+//Home page will display friends, groups you are a member of and suggested groups to join
+///
 class HomePage extends Component {
     constructor(props) {
         super(props);
